@@ -1,0 +1,712 @@
+/* Fllopi Flooring & Painting Solutions HTML-5 Template */
+
+/*** 
+
+====================================================================
+	RTL CSS
+====================================================================
+
+***/
+
+.rtl .row,
+.rtl .header-top_info li,
+.rtl .d-flex{
+	flex-direction: row-reverse;
+}
+
+.rtl .main-menu .navigation > li{
+	float:right;
+}
+
+.rtl .sticky-header .logo{
+	float:right;
+	padding-left:25px;
+}
+
+.rtl .main-menu{
+	text-align:right;
+}
+
+.rtl .service-block_one-inner,
+.rtl .slider-one_content-outer,
+.rtl .main-header .main-menu .navigation > li > ul > li > ul > li,
+.rtl .main-header .main-menu .navigation > li > ul > li,
+.rtl .main-menu .navigation > li > ul > li{
+	text-align:right;
+}
+
+.rtl .main-header .main-menu .navigation > li > ul{
+	
+}
+
+.rtl .main-header .main-menu .navigation > li > ul > li > a:before{
+	right:0px;
+	left:auto;
+}
+
+.rtl .main-menu .navigation > li > ul > li:hover > a{
+	padding-left:0px !important;
+	padding-right:30px;
+}
+
+.rtl .main-menu .navigation > li > ul > li > a:before{
+	left:auto;
+	right:8px;
+}
+
+.rtl .main-menu .navigation > li > ul > li.dropdown > a:after{
+	right:auto;
+	left:10px;
+	transform:rotate(180deg);
+}
+
+.rtl .main-menu .navigation > li > ul > li > ul{
+	left:auto;
+	right:100%;
+}
+
+.rtl .main-menu .navigation li > ul > li.dropdown:hover > ul{
+	
+}
+
+.rtl .main-header .main-menu .navigation > li > ul > li > ul{
+	right:100%;
+	left:auto;
+}
+
+.rtl .main-menu .navigation > li > ul{
+	left:auto;
+	right:0px;
+}
+
+.rtl .main-menu .navigation > li.dropdown:hover > ul{
+	left:auto;
+	right:0px;
+}
+
+.rtl .main-menu .navigation > li > ul > li > ul > li:hover > a{
+	padding-left:0px;
+	padding-right:30px;
+}
+
+.rtl .main-menu .navigation > li > ul > li > ul > li > a:before{
+	left:auto;
+	right:8px;
+	opacity: 0;
+}
+
+.rtl .main-header .main-menu .navigation > li:first-child{
+	margin-right: 0px;
+}
+
+.rtl .main-header .main-menu .navigation > li:last-child{
+	margin-right:30px;
+}
+
+.rtl .main-header .header-upper .logo-box{
+	margin-right:0px;
+	margin-left:30px;
+}
+
+.rtl .main-header .header-lower .logo-box .logo:before{
+	width:100%;
+}
+
+.rtl .main-header .header-lower .logo-box .logo{
+	padding-left:30px;
+}
+
+.rtl .main-header .header-lower .nav-outer{
+	margin-left:0px;
+	margin-right:30px;
+}
+
+.rtl .search-popup .form-group input[type="text"],
+.rtl .search-popup .form-group input[type="search"]{
+	text-align:right;
+	padding-right:60px;
+}
+
+.rtl .search-popup .form-group input[type="submit"],
+.rtl .search-popup .form-group button{
+	left:auto;
+	right:10px;
+}
+
+.rtl .search-popup .close-search{
+	left:25px;
+	right:auto;
+}
+
+.rtl .sidebar-info-contents .lower-box{
+	text-align:right;
+}
+
+.rtl .post-block .inner-box{
+	padding-left:0px;
+	padding-right:120px;
+}
+
+.rtl .post-block .inner-box .image{
+	left:auto;
+	right:0px;
+}
+
+.rtl .slider-one_image{
+	margin-left:0px;
+}
+
+.rtl .projects-block_one-content,
+.rtl .services-three_content-outer,
+.rtl .service-block_two-title,
+.rtl .about-one_content-outer,
+.rtl .slider-one_content-inner{
+	text-align:right;
+}
+
+.rtl .about-one_image-outer{
+	margin:0px;
+}
+
+.rtl .about-one_feature-inner{
+	padding-left:0px;
+	padding-right:70px;
+}
+
+.rtl .about-one_feature-icon{
+	right:0px;
+	left:auto;
+}
+
+.rtl .service-block_one-upper{
+	padding-left:0px;
+	padding-right:110px;
+}
+
+.rtl .service-block_one-icon{
+	right:0px;
+	left:auto;
+}
+
+.rtl .cta-one_content-outer{
+	padding-left:0px;
+	text-align:right;
+	padding-right:30px;
+}
+
+.rtl .services-three_feature-inner{
+	padding-left:0px;
+	padding-right:65px;
+	text-align:right;
+}
+
+.rtl .services-three_feature-icon{
+	left:auto;
+	right:0px;
+}
+
+.rtl .default-skills .default-skill-title{
+	text-align:left;
+}
+
+.rtl .contact-one_info-outer,
+.rtl .testimonial-block_one-lower,
+.rtl .testimonial-block_one-author_content,
+.rtl .default-form .form-group input[type="text"],
+.rtl .default-form .form-group input[type="password"],
+.rtl .default-form .form-group input[type="tel"],
+.rtl .default-form .form-group input[type="email"],
+.rtl .default-form .form-group textarea{
+	text-align:right;
+}
+
+.rtl .testimonial-block_one-quote{
+	right:55%;
+}
+
+.rtl .contact-one_form-outer{
+	margin-left:0px;
+	text-align:right;
+}
+
+.rtl .contact-one_list li{
+	padding-left:0px;
+	padding-right:105px;
+}
+
+.rtl .contact-one_list li span{
+	left:auto;
+	right:0px;
+}
+
+.rtl .about-two_tiles,
+.rtl .contact-one_phone .side-icon{
+	display:none;
+}
+
+.rtl .contact-one_phone:before{
+	right:0px;
+}
+
+.rtl .service-detail,
+.rtl .faq-one,
+.rtl .project-detail,
+.rtl .main-footer,
+.rtl .projects-three .sec-title,
+.rtl .trust-one_content-outer,
+.rtl .news-block_one-content,
+.rtl .team-block_one-content,
+.rtl .team-one .sec-title,
+.rtl .projects-two .sec-title,
+.rtl .counter-block_one-inner,
+.rtl .slider-two_content-inner,
+.rtl .projects-block_two-content,
+.rtl .about-three_content-outer,
+.rtl .news-block_two-content,
+.rtl .faq-one .title-box,
+.rtl .project-detail_info,
+.rtl .sidebar-widget,
+.rtl .blog-detail,
+.rtl .payment-box,
+.rtl .coupon-box,
+.rtl .contact-two,
+.rtl .shop-comment-form,
+.rtl .news-block_three-inner,
+.rtl .map-one .info-column_inner,
+.rtl .checkout-one .form-column .inner-column,
+.rtl .shipping-form .form-group input[type="text"],
+.rtl .shipping-form .form-group input[type="password"],
+.rtl .shipping-form .form-group input[type="tel"],
+.rtl .shipping-form .form-group input[type="email"],
+.rtl .shipping-form .form-group select,
+.rtl .shipping-form .form-group textarea,
+.rtl .shipping-form .form-group .ui-selectmenu-button.ui-button,
+.rtl .newsletter-box .form-group input[type="text"],
+.rtl .newsletter-box .form-group input[type="email"],
+.rtl .shop-comment-form .form-group input[type="text"],
+.rtl .shop-comment-form .form-group input[type="password"],
+.rtl .shop-comment-form .form-group input[type="tel"],
+.rtl .shop-comment-form .form-group input[type="email"],
+.rtl .shop-comment-form .form-group textarea,
+.rtl .contact-form .form-group input[type="text"],
+.rtl .contact-form .form-group input[type="password"],
+.rtl .contact-form .form-group input[type="tel"],
+.rtl .contact-form .form-group input[type="email"],
+.rtl .contact-form .form-group textarea{
+	text-align:right;
+}
+
+.rtl .coupon-form .form-group input[type="text"],
+.rtl .coupon-form .form-group input[type="search"]{
+	text-align:right;
+	padding-right:20px;
+}
+
+.rtl .coupon-form .form-group button{
+	left:0px;
+	right:auto;
+}
+
+.rtl .service-block_three-title{
+	text-align:right;
+	padding-right:45px;
+}
+
+.rtl .team-block_one-share{
+	left:0%;
+}
+
+.rtl .news-block_one-meta li{
+	padding-left:0px;
+	padding-right:25px;
+}
+
+.rtl .news-block_one-meta li .icon{
+	right:0px;
+	left:auto;
+}
+
+.rtl .news-widget-block{
+	padding-left:0px;
+	padding-right:105px;
+}
+
+.rtl .news-widget_image{
+	right:0px;
+	left:auto;
+}
+
+.rtl .footer-list li a{
+	padding-left:0px;
+	padding-right:15px;
+}
+
+.rtl .footer-list li a:before{
+	right:0px;
+	left:auto;
+}
+
+.rtl .main-footer .links-widget{
+	padding-left:0px;
+	padding-right:30px;
+}
+
+.rtl .slider-two_tiles{
+	left:0px;
+	right:50px;
+}
+
+.rtl .about-two_content-outer{
+	padding-left:0px;
+	padding-right:50px;
+	text-align:right;
+}
+
+.rtl .about-two_checked{
+	left:10px;
+	right:auto;
+}
+
+.rtl .projects-two .projects-two_arrows{
+	left:0px;
+	right:auto;
+}
+
+.rtl .projects-block_two-arrow{
+	left:auto;
+	right:35px;
+}
+
+.rtl .main-header.fixed-header .header-lower .logo-box .logo{
+	padding-right:0px;
+}
+
+.rtl .trust-one_list li{
+	padding-left:0px;
+	padding-right:50px;
+}
+
+.rtl .trust-one_list li i{
+	right:0px;
+	left:auto;
+}
+
+.rtl .projects-three .projects-three_arrows{
+	left:0px;
+	right:auto;
+}
+
+.rtl .faq-one_icon{
+	left:0px;
+	right:auto;
+}
+
+.rtl .accordion-box.style-two .block .icon-outer{
+	left:15px;
+	right:auto;
+}
+
+.rtl .project-detail_info li i{
+	left:25px;
+	right:0px;
+	text-align:left;
+}
+
+.rtl .accordion-box .block .acc-btn{
+	padding-right:35px;
+}
+
+.rtl .post-widget .post{
+	padding-left:0px;
+	padding-right:90px;
+}
+
+.rtl .post-widget .post .thumb{
+	left:auto;
+	right:0px;
+}
+
+.rtl .comment-box .comment{
+	padding-left:0px;
+	text-align: right;
+	padding-right:130px;
+}
+
+.rtl .comment-box .author-thumb{
+	left:auto;
+	right:0px;
+}
+
+.rtl .blog-detail_list li{
+	padding-left:0px;
+	padding-right:20px;
+}
+
+.rtl .blog-detail_list li:before{
+	left:auto;
+	right:0px;
+}
+
+.rtl .error-search_box .form-group input[type="text"],
+.rtl .error-search_box .form-group input[type="search"]{
+	text-align:right;
+	padding-right:15px;
+}
+
+.rtl .error-search_box .form-group button{
+	left:0px;
+	right:auto;
+}
+
+.rtl .shop-detail_content-column .inner-column{
+	padding-left:0px;
+	text-align:right;
+}
+
+.rtl .shop-detail_content-column .button-box{
+	margin-left:20px;
+	margin-right:20px;
+}
+
+.rtl .shipping-form .check-box{
+	display:inline-block;
+}
+
+.rtl .map-one_info li{
+	padding-left:0px;
+	padding-right:105px;
+}
+
+.rtl .map-one_info li .icon{
+	left:auto;
+	right:0px;
+}
+
+.rtl .mobile-menu .navigation{
+	text-align: right;
+}
+
+.rtl .mobile-menu .navigation li.dropdown .dropdown-btn{
+	left:-1px;
+	right:auto;
+	text-align: right;
+}
+
+.rtl .about-three_image,
+.rtl .trust-one_image,
+.rtl .about-two_image-outer{
+	margin-left:0px;
+}
+
+.rtl .services-three_tiles{
+	right: 0px;
+    left: 20px;
+}
+
+/* RTL Responsive Style */
+
+@media only screen and (max-width: 2770px){
+	
+	
+	
+}
+
+@media only screen and (max-width: 1600px){
+
+	
+	
+}
+
+@media only screen and (max-width: 1500px){
+	
+	
+	
+}
+
+@media only screen and (max-width: 1450px){
+
+	
+	
+}
+
+@media only screen and (max-width: 1350px){
+
+	
+	
+}
+
+@media only screen and (max-width: 1500px){
+
+	
+
+}
+
+@media only screen and (max-width: 1400px){
+	
+	.services-four_ball-two{
+		display:none;
+	}
+
+}
+
+@media only screen and (max-width: 1340px){
+
+	.rtl .services-three_content-outer{
+		margin-right:0px;
+	}
+
+}
+
+@media only screen and (max-width: 1240px){
+	
+	.rtl .slider-one_image{
+		margin-left:40px;
+	}
+	
+}
+
+@media only screen and (max-width: 1140px){
+
+	.rtl .main-header.header-style-three .header-lower .logo-box .logo{
+		padding-right:0px;
+	}
+	
+}
+
+@media only screen and (min-width: 768px){
+	
+	
+	
+}
+
+@media only screen and (max-width: 990px){
+	
+	.rtl .about-two_content-outer,
+	.rtl .main-footer .links-widget{
+		padding-right:0px;
+	}
+	
+	.rtl .testimonial-block_two-rating{
+		opacity:0;
+	}
+	
+	.rtl .sidebar-page-container .sidebar-side{
+		order:2;
+	}
+	
+	.rtl .sidebar-page-container .content-side{
+		order:1;
+	}
+	
+	.rtl .service-list li a{
+		padding-right:80px;
+		font-size:18px;
+	}
+
+}
+	
+@media only screen and (max-width: 1023px){
+	
+	
+	
+}
+
+@media only screen and (max-width: 991px){
+	
+	
+
+}
+
+@media only screen and (max-width: 890px){
+
+	
+
+}
+
+@media only screen and (max-width: 767px){
+	
+	.rtl .service-block_one-upper{
+		padding-right:0px;
+	}
+	
+	.rtl .cta-one_content-outer{
+		text-align:center;
+		padding-right:0px;
+	}
+	
+}
+
+@media only screen and (max-width: 599px){
+	
+	.rtl .comment-box .comment{
+		padding-right:0px;
+	}
+	
+}
+
+@media only screen and (max-width: 479px) {
+	
+	.rtl .team-block_one-content{
+		padding-right:25px;
+	}
+	
+	.rtl .testimonial-block_one-quote {
+		right: 10%;
+	}
+	
+	.rtl .shop-detail_content-column .button-box {
+		margin-left: 0px;
+		margin-right: 5px;
+	}
+	
+	.rtl .shop-detail_content-column .like-btn{
+		margin-top:10px;
+		margin-left:0px;
+	}
+	
+}
+
+/*Boxed Layout Style*/
+
+.box-layout{
+	position: relative;
+	box-shadow: 0px 0px 15px rgba(0,0,0,0.20);
+}
+
+.box-layout:before{
+	position:fixed;
+	content: '';
+	left:0px;
+	top: 0px;
+	width: 100%;
+	height:100%;
+	display: block;
+	background-color:rgba(0,0,0,0.10);
+}
+
+.box-layout .page-wrapper{
+	max-width:1560px;
+	width: 100%;
+	margin: 0 auto;
+	padding:15px;
+	overflow:hidden;
+	background-color: #ffffff;
+}
+
+.want-sticky-header .main-header.fixed-header{
+	position:relative;
+	display:none;
+}
+
+.box-layout .about-two_image-outer{
+	margin-left:0px;
+}
+
+.box-layout .contact-one_image{
+	display:none;
+}
+
+.box-layout .services-three_tiles{
+	right: 10px;
+    left: 10px;
+}

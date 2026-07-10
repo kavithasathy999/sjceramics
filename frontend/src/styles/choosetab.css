@@ -1,0 +1,389 @@
+/* ==========================================================================
+   Tabbed Selection Section - Scoped Styles
+   ========================================================================== */
+
+.choose-tab-section {
+  padding: 80px 0;
+  background-color: #fcfcfc;
+}
+
+.choose-tab-section .section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.choose-tab-section .section-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #231f1c;
+  text-transform: uppercase;
+}
+
+.choose-tab-section .section-subtitle {
+  font-size: 16px;
+  color: #777777;
+  margin-top: 10px;
+}
+
+/* Base Tab Layout Grid */
+.choose-tab-container {
+  display: flex;
+  gap: 30px;
+  position: relative;
+  align-items: flex-start;
+}
+
+/* Left Sidebar Tab Buttons Container */
+.choose-tabs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 22%;
+}
+
+.choose-tab-btn {
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 16px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #888888;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.choose-tab-btn:hover {
+  color: #dd2328;
+  background-color: rgba(228, 75, 78, 0.05);
+}
+
+.choose-tab-btn.active-tab {
+  color: #dd2328;
+  border-color: rgba(221, 35, 40, 0.15);
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(221, 35, 40, 0.08);
+}
+
+/* Right Content Card Container */
+.choose-tab-content-card {
+  width: 78%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  padding: 40px;
+  min-height: 400px;
+  position: relative;
+  border: 1px solid #f0f0f0;
+}
+
+/* Left Pointer Indicator Triangle on Desktop */
+@media (min-width: 1025px) {
+  .choose-tab-content-card::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: var(--pointer-top, 30px);
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-right: 12px solid #ffffff;
+    filter: drop-shadow(-3px 2px 3px rgba(0, 0, 0, 0.02));
+    transition: top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Colors Tab Panel
+   -------------------------------------------------------------------------- */
+.colors-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 30px;
+  padding: 10px 0;
+}
+
+.color-swatch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.color-swatch-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.color-swatch-item:hover .color-swatch-circle {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.color-swatch-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555555;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Rooms Tab Panel
+   -------------------------------------------------------------------------- */
+.rooms-panel-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  width: 65%;
+}
+
+.room-card-item {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 24px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.room-card-item:hover {
+  border-color: rgba(221, 35, 40, 0.2);
+  box-shadow: 0 6px 20px rgba(221, 35, 40, 0.05);
+  transform: translateY(-3px);
+}
+
+.room-card-icon-wrap {
+  width: 54px;
+  height: 54px;
+  background-color: rgba(221, 35, 40, 0.03);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dd2328;
+  transition: all 0.3s ease;
+}
+
+.room-card-icon-wrap svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.room-card-item:hover .room-card-icon-wrap {
+  background-color: #dd2328;
+  color: #ffffff;
+}
+
+.room-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.rooms-model-image-wrap {
+  width: 32%;
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  text-align: right;
+  pointer-events: none;
+}
+
+.rooms-model-image-wrap img {
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  vertical-align: bottom;
+}
+
+/* --------------------------------------------------------------------------
+   Sizes & Thickness Panels
+   -------------------------------------------------------------------------- */
+.sizes-grid,
+.thickness-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.size-pill-btn,
+.thickness-pill-btn {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 14px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444444;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.size-pill-btn:hover,
+.thickness-pill-btn:hover {
+  border-color: #dd2328;
+  color: #dd2328;
+  background-color: rgba(221, 35, 40, 0.02);
+  box-shadow: 0 4px 10px rgba(221, 35, 40, 0.04);
+}
+
+
+/* ==========================================================================
+   Isolated Responsiveness Styling
+   ========================================================================== */
+
+/* 1. Mobile Only Breakpoint (max-width: 767px) */
+@media (max-width: 767px) {
+  .choose-tab-section {
+    padding: 40px 0;
+  }
+  .choose-tab-section .section-title {
+    font-size: 24px;
+  }
+  .choose-tab-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .choose-tabs-list {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    gap: 10px;
+    /* Custom scrollbar for horizontal tabs */
+    scrollbar-width: thin;
+  }
+  .choose-tabs-list::-webkit-scrollbar {
+    height: 4px;
+  }
+  .choose-tabs-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  .choose-tab-btn {
+    white-space: nowrap;
+    padding: 10px 18px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+  }
+  .choose-tab-content-card {
+    width: 100%;
+    padding: 24px;
+    min-height: auto;
+  }
+  .colors-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .rooms-panel-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .rooms-grid {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .rooms-model-image-wrap {
+    position: static;
+    width: 80%;
+    max-width: 250px;
+    margin: 20px auto 0;
+    text-align: center;
+  }
+  .rooms-model-image-wrap img {
+    max-height: 240px;
+  }
+  .sizes-grid,
+  .thickness-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* 2. Tablet Only Breakpoint (min-width: 768px and max-width: 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .choose-tab-section {
+    padding: 60px 0;
+  }
+  .choose-tab-container {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .choose-tabs-list {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  .choose-tab-btn {
+    padding: 12px 15px;
+    font-size: 15px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  .choose-tab-content-card {
+    width: 100%;
+    padding: 30px;
+    min-height: 350px;
+  }
+  .colors-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .rooms-panel-container {
+    align-items: flex-end;
+  }
+  .rooms-grid {
+    width: 60%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .rooms-model-image-wrap {
+    width: 38%;
+    right: 10px;
+  }
+  .rooms-model-image-wrap img {
+    max-height: 300px;
+  }
+  .sizes-grid,
+  .thickness-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+/* 3. Laptop/Desktop Only Breakpoint (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .choose-tab-section .auto-container {
+    max-width: 1440px;
+    width: 100%;
+    padding: 0 24px;
+  }
+}

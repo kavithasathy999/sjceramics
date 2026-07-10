@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Pre-Footer SEO Quick Links Section Scoped Styles
+   ========================================================================== */
+
+.footer-quick-links-section {
+  background-color: #f2f8ff; /* Soft baby blue */
+  padding: 55px 0 50px;
+  border-top: 1px solid rgba(0, 123, 255, 0.08);
+}
+
+.quick-links-grid {
+  display: grid;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.quick-links-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.quick-links-column-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #dd2328; /* Theme Brand Red */
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.quick-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quick-links-list li {
+  margin: 0;
+}
+
+.quick-links-list li a {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #231f1c; /* Theme Brand Charcoal */
+  text-decoration: none;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  display: inline-block;
+  opacity: 0.85;
+}
+
+.quick-links-list li a:hover {
+  color: #dd2328; /* Theme Brand Red */
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+
+/* ==========================================================================
+   Isolated Responsiveness Styling
+   ========================================================================== */
+
+/* 1. Mobile view only (max-width: 767px) */
+@media screen and (max-width: 767px) {
+  .footer-quick-links-section {
+    padding: 35px 0 30px;
+  }
+  .quick-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .quick-links-column-title {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .quick-links-list {
+    gap: 8px;
+  }
+  .quick-links-list li a {
+    font-size: 12.5px;
+  }
+  
+  /* Extremely small mobile screens */
+  @media screen and (max-width: 480px) {
+    .quick-links-grid {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+  }
+}
+
+/* 2. Tablet view only (min-width: 768px and max-width: 1024px) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .footer-quick-links-section {
+    padding: 45px 0 40px;
+  }
+  .quick-links-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+  .quick-links-column-title {
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+  .quick-links-list {
+    gap: 9px;
+  }
+  .quick-links-list li a {
+    font-size: 13px;
+  }
+}
+
+/* 3. Laptop/Desktop view only (min-width: 1025px) */
+@media screen and (min-width: 1025px) {
+  .quick-links-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
