@@ -3,8 +3,8 @@ import pattern1 from '../assets/images/background/pattern-1.png';
 
 const services = [
   {
-    icon: 'flaticon-paint-roll',
-    title: 'Paint And Flooring',
+    icon: 'flaticon-floor',
+    title: 'Tiles And Flooring',
     text: 'Whether you’re looking for new carpet in your family home, commercial building or investment property',
   },
   {

@@ -40,7 +40,7 @@ export default function ContactSection() {
                   <li>
                     <span className="flaticon-pin" />
                     <strong>Address</strong>
-                    107/2A, Medvakkam - Mambakkam Main Road, Mambakkam, Chennai, Tamil Nadu, India - 600127
+                    107/2A, Medavakkam - Mambakkam Main Road, Mambakkam, Chennai, Tamil Nadu, India - 600127
                   </li>
                 </ul>
                 <div className="contact-one_phone">

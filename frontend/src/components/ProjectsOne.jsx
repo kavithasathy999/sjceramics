@@ -7,8 +7,8 @@ import gallery4 from '../assets/images/bgimages/last.jpeg';
 
 const projects = [
   { image: gallery1, label: 'Wallpapers', title: 'Room Wallpapers' },
-  { image: gallery2, label: 'Flooring', title: 'Tile From Paint' },
-  { image: gallery3, label: 'Painting', title: 'Wall Painting' },
+  { image: gallery2, label: 'Flooring', title: 'Elevation Tiles' },
+  { image: gallery3, label: 'Staircase', title: 'Staircase Tiling' },
   { image: gallery4, label: 'Field Tile', title: 'Kendal Slate' },
 ];
 

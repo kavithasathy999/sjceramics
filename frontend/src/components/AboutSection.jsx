@@ -27,7 +27,7 @@ export default function AboutSection({ showButton = true }) {
             <div className="about-one_content-outer">
               <div className="sec-title">
                 <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
-                <h2 className="sec-title_heading">Best Flooring &amp; Painting Agency</h2>
+                <h2 className="sec-title_heading">Best Flooring &amp; Tiling Agency</h2>
                 <div className="sec-title_text">
                   This esteemed level of status is only possible by the consistent implementation of the highest possible standards of service
                 </div>

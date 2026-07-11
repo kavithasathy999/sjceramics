@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function MapLocation() {
-  const addressQuery = "107/2A, Medvakkam - Mambakkam Main Road, Mambakkam, Chennai, Tamil Nadu, India - 600127";
+  const addressQuery = "107/2A, Medavakkam - Mambakkam Main Road, Mambakkam, Chennai, Tamil Nadu, India - 600127";
   const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(addressQuery)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
 
   return (

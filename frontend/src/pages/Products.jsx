@@ -15,6 +15,7 @@ export default function Products() {
   const location = useLocation();
 
   // --- Filter & Sort States ---
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [selectedApplications, setSelectedApplications] = useState([]);
@@ -24,6 +25,7 @@ export default function Products() {
   const [selectedColor, setSelectedColor] = useState('');
   const [maxPrice, setMaxPrice] = useState(1000);
   const [sortBy, setSortBy] = useState('default');
+  const [searchQuery, setSearchQuery] = useState('');
   
   // --- UI States ---
   const [visibleCount, setVisibleCount] = useState(12);
@@ -31,6 +33,7 @@ export default function Products() {
 
   // --- Filter Options Extraction ---
   const filterOptions = {
+    categories: [...new Set(products.map(p => p.category || 'Tiles'))].sort(),
     sizes: [...new Set(products.map(p => p.size))].sort(),
     types: [...new Set(products.map(p => p.type))].sort(),
     applications: [...new Set(products.map(p => p.application))].sort(),
@@ -41,6 +44,7 @@ export default function Products() {
 
   // --- Filtering Logic ---
   const filteredProducts = products.filter(product => {
+    const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category || 'Tiles');
     const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(product.size);
     const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(product.type);
     const appMatch = selectedApplications.length === 0 || selectedApplications.includes(product.application);
@@ -48,6 +52,14 @@ export default function Products() {
     const finishMatch = selectedFinishes.length === 0 || selectedFinishes.includes(product.finish);
     const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
     const priceMatch = product.price <= maxPrice;
+
+    // Fuzzy text search match across multiple database attributes
+    const searchMatch = searchQuery === '' || 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.material.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.application.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.size.toLowerCase().includes(searchQuery.toLowerCase());
 
     // Color match checks color keywords in product name
     let colorMatch = true;
@@ -75,7 +87,7 @@ export default function Products() {
       colorMatch = keywords.some(kw => product.name.toLowerCase().includes(kw));
     }
 
-    return sizeMatch && typeMatch && appMatch && matMatch && finishMatch && brandMatch && priceMatch && colorMatch;
+    return categoryMatch && sizeMatch && typeMatch && appMatch && matMatch && finishMatch && brandMatch && priceMatch && colorMatch && searchMatch;
   });
 
   // --- Sorting Logic ---
@@ -89,9 +101,10 @@ export default function Products() {
   // --- Reset visible count when filters change ---
   useEffect(() => {
     setVisibleCount(12);
-  }, [selectedSizes, selectedTypes, selectedApplications, selectedMaterials, selectedFinishes, selectedBrands, selectedColor, maxPrice]);
+  }, [selectedCategories, selectedSizes, selectedTypes, selectedApplications, selectedMaterials, selectedFinishes, selectedBrands, selectedColor, maxPrice, searchQuery]);
 
   const clearAllFilters = () => {
+    setSelectedCategories([]);
     setSelectedSizes([]);
     setSelectedTypes([]);
     setSelectedApplications([]);
@@ -101,6 +114,7 @@ export default function Products() {
     setSelectedColor('');
     setMaxPrice(1000);
     setSortBy('default');
+    setSearchQuery('');
   };
 
   const handleCheckboxChange = (value, list, setList) => {
@@ -111,15 +125,19 @@ export default function Products() {
     }
   };
 
-  // --- Parse incoming state filters from About page tabs and pre-footer links ---
+  // --- Parse incoming state filters from About page tabs, pre-footer links, and search popup ---
   useEffect(() => {
     if (location.state) {
-      const { filterCategory, filterValue } = location.state;
+      const { filterCategory, filterValue, searchQuery: incomingSearch } = location.state;
       
       // Clear previous filters first to apply the quick-selection cleanly
       clearAllFilters();
 
-      if (filterCategory === 'room') {
+      if (incomingSearch !== undefined) {
+        setSearchQuery(incomingSearch);
+      } else if (filterCategory === 'category') {
+        setSelectedCategories([filterValue]);
+      } else if (filterCategory === 'room') {
         let mappedApp = filterValue;
         if (filterValue === 'Bathroom' || filterValue === 'Bathroom Tiles') mappedApp = 'Bathroom/Toilet/Kitchen';
         else if (filterValue === 'Living room' || filterValue === 'Living Room') mappedApp = 'Living Room/Bedroom';
@@ -250,7 +268,8 @@ export default function Products() {
             <aside className={`products-sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
               <div className="sidebar-header">
                 <h3>Filters</h3>
-                {(selectedSizes.length > 0 || 
+                {(selectedCategories.length > 0 ||
+                  selectedSizes.length > 0 || 
                   selectedTypes.length > 0 || 
                   selectedApplications.length > 0 || 
                   selectedMaterials.length > 0 || 
@@ -279,6 +298,23 @@ export default function Products() {
                     <span>₹10</span>
                     <span>Max: ₹{maxPrice}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Category Filters */}
+              <div className="filter-group">
+                <div className="filter-group-title">Category</div>
+                <div className="filter-options-list">
+                  {filterOptions.categories.map(cat => (
+                    <label key={cat} className="filter-checkbox-label">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedCategories.includes(cat)}
+                        onChange={() => handleCheckboxChange(cat, selectedCategories, setSelectedCategories)}
+                      />
+                      {cat}
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -405,6 +441,12 @@ export default function Products() {
 
               {/* Active Filter Tags */}
               <div className="active-tags-list">
+                {selectedCategories.map(cat => (
+                  <span key={cat} className="active-tag-badge">
+                    Category: {cat}
+                    <button className="active-tag-remove" onClick={() => handleCheckboxChange(cat, selectedCategories, setSelectedCategories)}>×</button>
+                  </span>
+                ))}
                 {selectedSizes.map(size => (
                   <span key={size} className="active-tag-badge">
                     Size: {size}
@@ -445,6 +487,12 @@ export default function Products() {
                   <span className="active-tag-badge">
                     Color: {selectedColor}
                     <button className="active-tag-remove" onClick={() => setSelectedColor('')}>×</button>
+                  </span>
+                )}
+                {searchQuery && (
+                  <span className="active-tag-badge">
+                    Search: {searchQuery}
+                    <button className="active-tag-remove" onClick={() => setSearchQuery('')}>×</button>
                   </span>
                 )}
                 {maxPrice < 1000 && (

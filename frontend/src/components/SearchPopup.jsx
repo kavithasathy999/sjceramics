@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchPopup({ onClose }) {
   const [term, setTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // In the original template this posted to blog.html; here we just
-    // close the popup since there's no search backend wired up yet.
+    if (term.trim()) {
+      // Navigate to products catalog page with search query parameter in location state
+      navigate('/products', { state: { searchQuery: term.trim() } });
+    }
     onClose();
   };
 

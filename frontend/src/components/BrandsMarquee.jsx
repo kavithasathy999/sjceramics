@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -16,19 +17,24 @@ import ptmtTaps from '../assets/images/brands/ptmt_taps.png';
 import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
 
 const brandCategories = [
-  { name: 'All Tiles', image: allTiles },
-  { name: 'Wall Tiles', image: wallTiles },
-  { name: 'Floor Tiles', image: floorTiles },
-  { name: 'Athangudi Tiles', image: athangudiTiles },
-  { name: 'Aqua Faucet', image: aquaFaucet },
-  { name: 'Sanitaryware', image: sanitaryware },
-  { name: 'Kitchen Sink', image: kitchenSink },
-  { name: 'Flush Tank', image: flushTank },
-  { name: 'PTMT Taps', image: ptmtTaps },
-  { name: 'Adhesive and Grout', image: adhesiveGrout },
+  { name: 'All Tiles', image: allTiles, filterCategory: 'category', filterValue: 'Tiles' },
+  { name: 'Wall Tiles', image: wallTiles, filterCategory: 'category', filterValue: 'Tiles' },
+  { name: 'Floor Tiles', image: floorTiles, filterCategory: 'category', filterValue: 'Tiles' },
+  { name: 'Athangudi Tiles', image: athangudiTiles, filterCategory: 'category', filterValue: 'Tiles' },
+  { name: 'Aqua Faucet', image: aquaFaucet, filterCategory: 'category', filterValue: 'Bath Fittings' },
+  { name: 'Sanitaryware', image: sanitaryware, filterCategory: 'category', filterValue: 'Sanitary Wares' },
+  { name: 'Kitchen Sink', image: kitchenSink, filterCategory: 'category', filterValue: 'Bath Fittings' },
+  { name: 'Flush Tank', image: flushTank, filterCategory: 'category', filterValue: 'Sanitary Wares' },
+  { name: 'PTMT Taps', image: ptmtTaps, filterCategory: 'category', filterValue: 'Bath Fittings' },
+  { name: 'Adhesive and Grout', image: adhesiveGrout, filterCategory: 'category', filterValue: 'Others' },
 ];
 
 export default function BrandsMarquee() {
+  const navigate = useNavigate();
+
+  const handleClick = (cat, val) => {
+    navigate('/products', { state: { filterCategory: cat, filterValue: val } });
+  };
   return (
     <section className="brands-marquee-section">
       <div className="auto-container">
@@ -74,7 +80,11 @@ export default function BrandsMarquee() {
           >
             {brandCategories.map((brand, idx) => (
               <SwiperSlide key={idx}>
-                <div className="brand-category-card">
+                <div 
+                  className="brand-category-card" 
+                  onClick={() => handleClick(brand.filterCategory, brand.filterValue)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="brand-category-image-wrap">
                     <img src={brand.image} alt={brand.name} />
                   </div>

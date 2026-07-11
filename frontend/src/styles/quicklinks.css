@@ -116,7 +116,14 @@
 
 /* 3. Laptop/Desktop view only (min-width: 1025px) */
 @media screen and (min-width: 1025px) {
+  .footer-quick-links-section .auto-container {
+    max-width: 1800px;
+    width: 95%;
+    padding: 0 40px;
+  }
   .quick-links-grid {
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
   }
 }

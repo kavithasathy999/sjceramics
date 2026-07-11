@@ -19,14 +19,14 @@ export default function CtaOne() {
                 <img src={tile1} alt="Flooring installation" />
               </div>
               <div className="cta-one_image-two">
-                <img src={tile2} alt="Interior painting" />
+                <img src={tile2} alt="Interior tiling" />
               </div>
             </div>
           </div>
 
           <div className="cta-one_content-column col-lg-8 col-md-8 col-sm-12">
             <div className="cta-one_content-outer">
-              <h2 className="cta-one_title" style={{color: "#ffffff"}}>Best Internal Painting &amp; Flooring Solution</h2>
+              <h2 className="cta-one_title" style={{color: "#ffffff"}}>Best Internal Tiling &amp; Flooring Solution</h2>
               <div className="cta-one_button">
                 <Link to="/contact" className="theme-btn btn-style-three">
                   <span className="btn-wrap">

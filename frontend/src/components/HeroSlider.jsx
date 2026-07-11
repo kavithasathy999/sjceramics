@@ -1,101 +1,59 @@
+import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import './HeroSlider.css';
 
-import slide1 from '../assets/images/main-slider/slide-1.png';
-import slide2 from '../assets/images/main-slider/slide-2.png';
-import slide3 from '../assets/images/main-slider/slide-3.png';
-import sliderImage from '../assets/images/main-slider/image-1.png';
+import tilesImage from '../assets/images/main-slider/sjc-tiles-hero.png';
+import sanitaryImage from '../assets/images/main-slider/sjc-sanitary-hero.png';
+import bathImage from '../assets/images/main-slider/sjc-bath-hero.png';
 
 const slides = [
-  { 
-    id: 1, 
-    bg: slide1, 
-    title: 'Modern Living', 
-    heading: 'Premium Sanitary Wares for Elegant Spaces' 
-  },
-  { 
-    id: 2, 
-    bg: slide2, 
-    title: 'Luxury Defined', 
-    heading: 'Discover the Finest Bath Fittings' 
-  },
-  { 
-    id: 3, 
-    bg: slide3, 
-    title: 'Flawless Designs', 
-    heading: 'Exclusive Collection of High-Quality Tiles' 
-  },
+  { category: 'Tiles', image: tilesImage, title: 'TILES', copy: 'Elevate every room with beautiful surfaces, timeless textures and designs made to last.', state: { filterCategory: 'category', filterValue: 'Tiles' } },
+  { category: 'Sanitary Wares', image: sanitaryImage, title: 'SANITARY WARES', copy: 'Thoughtfully selected fixtures that bring comfort, function and quiet refinement to daily life.', state: { filterCategory: 'category', filterValue: 'Sanitary Wares' } },
+  { category: 'Bath Fittings', image: bathImage, title: 'BATH FITTINGS', copy: 'Sophisticated fittings and details that make every bathing space feel considered.', state: { filterCategory: 'category', filterValue: 'Bath Fittings' } },
 ];
 
 export default function HeroSlider() {
+  const [prevEl, setPrevEl] = useState(null);
+  const [nextEl, setNextEl] = useState(null);
+
   return (
-    <section className="slider-one">
-      <div className="slider-one_phone" style={{ textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)' }}>
-        <a href="tel:+044-465-60926">
-          <i className="flaticon-call" />
-          (044) 465-60926
-        </a>
-      </div>
-
-      <div className="main-slider swiper-container">
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          loop
-          speed={1000}
-          autoplay={{ delay: 6000, disableOnInteraction: false }}
-          navigation={{ nextEl: '.main-slider-next', prevEl: '.main-slider-prev' }}
-          pagination={{ el: '.slider-one_pagination', clickable: true }}
-        >
-          {slides.map((slide) => (
-            <SwiperSlide key={slide.id}>
-              <div className="swiper-slide" style={{ 
-                backgroundImage: `url(${slide.bg})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                height: '88vh'
-              }}>
-                <div className="auto-container">
-                  <div className="row clearfix">
-                    <div className="slider-one_content col-xl-9 col-lg-7 col-md-12 col-sm-12">
-                      <div className="slider-one_content-inner">
-                        <div className="slider-one_title" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9)' }}>{slide.title}</div>
-                        <h1 className="slider-one_heading" style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.9)' }}>{slide.heading}</h1>
-                        <div className="slider-one_button">
-                          <Link to="/products" className="theme-btn btn-style-two">
-                            <span className="btn-wrap">
-                              <span className="text-one font-bold">View Our Products</span>
-                              <span className="text-two">View Our Products</span>
-                            </span>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="slider-one_image-column col-xl-3 col-lg-5 col-md-12 col-sm-12">
-                      <div className="slider-one_image">
-                        <div className="title-one">Top Quality</div>
-                        <div className="title-two">Premium Collection</div>
-                        <img src={`http://themazine.com/html/fllopi/assets/images/main-slider/image-1.png`} alt="Marble floor tile" />
-                      </div>
-                    </div>
+    <section className="premium-hero" aria-label="SJ Ceramics collections">
+      <Swiper
+        className="premium-hero-swiper"
+        modules={[Autoplay, Navigation, Pagination]}
+        loop
+        speed={850}
+        autoplay={{ delay: 6500, disableOnInteraction: false }}
+        navigation={{ prevEl, nextEl }}
+        pagination={{ el: '.premium-hero-pagination', clickable: true }}
+      >
+        {slides.map((slide) => (
+          <SwiperSlide key={slide.category}>
+            <article className="premium-hero-slide" style={{ backgroundImage: `url(${slide.image})` }}>
+              <div className="premium-hero-shade" />
+              <div className="premium-hero-container">
+                <div className="premium-hero-content">
+                  <p className="premium-hero-category">{slide.category}</p>
+                  <h1>{slide.title}</h1>
+                  <p className="premium-hero-copy">{slide.copy}</p>
+                  <div className="premium-hero-actions">
+                    <Link to="/products" state={slide.state} className="premium-hero-primary">View Products<span aria-hidden="true">→</span></Link>
                   </div>
                 </div>
               </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        <div className="slider-one_arrows">
-          <div className="main-slider-prev"><i className="flaticon-left-arrow" /></div>
-          <div className="main-slider-next"><i className="flaticon-next-1" /></div>
-        </div>
-
-        <div className="slider-one_pagination" />
+            </article>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <div className="premium-hero-controls" aria-label="Hero carousel controls">
+        <button ref={setPrevEl} type="button" className="premium-hero-prev" aria-label="Previous collection">←</button>
+        <div className="premium-hero-pagination" />
+        <button ref={setNextEl} type="button" className="premium-hero-next" aria-label="Next collection">→</button>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-/* Fllopi Flooring & Painting Solutions HTML-5 Template */
+/* Fllopi Flooring & Tiling Solutions HTML-5 Template */
 
 /*** 
 
@@ -1469,7 +1469,7 @@
 	font-size:26px;
 	font-weight:600;
 	margin-bottom:14px;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .contact-one_list li span{
@@ -2013,7 +2013,7 @@
 	padding:15px 25px 17px;
 	display:inline-block;
 	color:rgba(var(--color-two-rgb), 1);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 	border:1px solid rgba(var(--main-color-rgb), 0.20);
 }
 
@@ -2551,7 +2551,7 @@
 	margin-bottom:30px;
 	padding-left:80px;
 	color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .about-two_rating i{
@@ -3190,7 +3190,7 @@
 	margin-bottom:20px;
 	padding-left:45px;
 	color:var(--color-two);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .trust-one_list li i{
@@ -3216,7 +3216,7 @@
 	font-weight:700;
 	font-size:43px;
 	color:var(--white-color);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .trust-one_partners i{
@@ -3225,7 +3225,7 @@
 	font-weight:500;
 	margin-top:5px;
 	color:var(--white-color);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .trust-one .default-skills{
@@ -3410,7 +3410,7 @@
 	padding:15px 25px 17px;
 	display:inline-block;
 	color:rgba(var(--color-two-rgb), 1);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 	border:1px solid rgba(var(--main-color-rgb), 0.20);
 }
 
@@ -4149,7 +4149,7 @@
 	color:var(--white-color);
 	text-transform:capitalize;
 	background-color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .shop-block_one-cart i{
@@ -4187,7 +4187,7 @@
 	font-size:18px;
 	margin-top:25px;
 	color:var(--main-color);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .shop-block_one-price span{
@@ -4644,7 +4644,7 @@
 	font-size:20px;
 	font-weight:600;
 	color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .contact-widget .phone{
@@ -4654,7 +4654,7 @@
 	margin-top:12px;
 	display:block;
 	color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .contact-widget .icon{
@@ -4778,7 +4778,7 @@
 	font-size:20px;
 	font-weight:600;
 	color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .accordion-box .block .number:before{
@@ -4811,7 +4811,7 @@
 	-o-transition:all 500ms ease;
 	-moz-transition:all 500ms ease;
 	-webkit-transition:all 500ms ease;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .accordion-box p{
@@ -5039,7 +5039,7 @@
 	font-size:20px;
 	line-height:30px;
 	color:var(--color-nine);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 /* Project Widget */
@@ -5062,7 +5062,7 @@
 	margin-bottom:10px;
 	padding:24px 20px;
 	background-color:var(--color-fourtyfive);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .project-detail_info li span{
@@ -5285,7 +5285,7 @@
 	font-weight:700;
 	padding:20px 0px;
 	color:var(--color-two);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .price-block_price span{
@@ -5303,7 +5303,7 @@
 	padding:12px 0px;
 	color:var(--color-two);
 	background-color:#f1debf;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .price-block_text{
@@ -6069,7 +6069,7 @@
 	font-weight:600;
 	margin-bottom:8px;
 	color:var(--color-two);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .map-one_info li:last-child{
@@ -6170,7 +6170,7 @@
 	font-weight:600;
 	margin-bottom:10px;
 	color:var(--color-fiftytwo);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .contact-form .form-group:last-child{
@@ -7172,13 +7172,13 @@
 	margin-bottom:10px;
 	color:var(--color-two);
 	background-color:#f0f0f0;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .shoping-cart-section .total-column .title-box h6{
 	position:relative;
 	font-weight:600;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 /* Coupon Box */
@@ -7288,7 +7288,7 @@
 	font-weight:600;
 	margin-bottom:5px;
 	color:var(--black-color);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 	border-bottom:1px solid rgba(var(--black-color-rgb), 0.06);
 }
 
@@ -7613,14 +7613,14 @@
 	margin-bottom:10px;
 	color:var(--color-two);
 	background-color:#f5e4d7;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 .order-total-outer .title-box h6{
 	position:relative;
 	font-weight:600;
 	font-size:20px;
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 }
 
 /* Order Totals */
@@ -7636,7 +7636,7 @@
 	font-weight:600;
 	margin-bottom:5px;
 	color:var(--black-color);
-	font-family: "Work Sans", sans-serif;
+	font-family: "Inter", sans-serif;
 	border-bottom:1px solid rgba(var(--black-color-rgb), 0.06);
 }
 

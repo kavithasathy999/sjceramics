@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { navigation } from '../utils/navigation';
 import mobileLogo from '../assets/images/mobile-logo.png';
 
-export default function MobileMenu({ open, onClose }) {
+export default function MobileMenu({ open, onClose, onOpenContactModal }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
@@ -51,12 +51,9 @@ export default function MobileMenu({ open, onClose }) {
                 ) : (
                   <Link
                     to={item.path}
+                    state={item.state}
                     onClick={() => {
-                      if (item.children) {
-                        // Normally this doesn't happen if item has children and path is '#', but just in case
-                      } else {
-                        onClose();
-                      }
+                      onClose();
                     }}
                   >
                     {item.label}
@@ -80,7 +77,7 @@ export default function MobileMenu({ open, onClose }) {
                               {child.label}
                             </a>
                           ) : (
-                            <Link to={child.path} onClick={onClose}>
+                            <Link to={child.path} state={child.state} onClick={onClose}>
                               {child.label}
                             </Link>
                           )}

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import bg from '../assets/images/background/6.jpg';
-import footerLogo from '../assets/images/logo.png';
+import footerLogo from '../assets/images/Logo-Png.png';
 import postThumb4 from '../assets/images/bgimages/footerimg1.jpeg';
 import postThumb5 from '../assets/images/bgimages/footerimg2.jpeg';
 import '../styles/quicklinks.css';
@@ -154,7 +154,7 @@ export default function Footer() {
                   <ul className="footer-list text-white">
                     <li className="mb-1" style={{ color: '#ffffff', fontWeight: 'bold' }}>SJ Ceramics</li>
                     <li className="mb-3" style={{ fontSize: '0.9em' }}>Authorized Channel Partner - KAG Tiles</li>
-                    <li style={{ lineHeight: '1.8' }}>107/2A, Medvakkam - Mambakkam Main Road, <br/>Mambakkam, Chennai, <br/>Tamil Nadu, India - 600127</li>
+                    <li style={{ lineHeight: '1.8' }}>107/2A, Medavakkam - Mambakkam Main Road, <br/>Mambakkam, Chennai, <br/>Tamil Nadu, India - 600127</li>
                   </ul>
                 </div>
               </div>

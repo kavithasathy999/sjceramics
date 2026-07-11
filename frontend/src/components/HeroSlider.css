@@ -1,0 +1,49 @@
+/* Desktop base: editorial, full-bleed premium collection banner. */
+.premium-hero { position: relative; isolation: isolate; overflow: hidden; background: #231f1c; color: #fff; }
+.premium-hero-swiper, .premium-hero-slide { min-height: clamp(630px, 78vh, 800px); }
+.premium-hero-slide { position: relative; display: flex; align-items: center; overflow: hidden; background-position: center; background-size: cover; }
+.premium-hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(35,31,28,.65) 0%, rgba(35,31,28,.42) 37%, rgba(35,31,28,.07) 66%, rgba(35,31,28,.10) 100%); }
+.premium-hero-container { position: relative; display: flex; align-items: center; width: min(100% - 96px, 1360px); min-height: inherit; margin: 0 auto; }
+.premium-hero-content { width: min(740px, 56%); margin-left: 6.5%; padding-bottom: 4px; }
+.premium-hero-category { display: none; }
+.premium-hero h1 { margin: 0; color: #fff; font-size: clamp(58px, 7vw, 108px); font-weight: 600; line-height: .92; letter-spacing: .015em; text-shadow: 0 3px 18px rgba(35,31,28,.2); }
+.premium-hero-copy { max-width: 650px; margin: 34px 0 0; color: #fff; font-size: clamp(16px, 1.3vw, 20px); font-weight: 400; line-height: 2; text-shadow: 0 2px 10px rgba(35,31,28,.35); }
+.premium-hero-actions { margin-top: 48px; }
+.premium-hero-primary {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 15px;
+	min-width: 212px;
+	padding: 18px 21px;
+	border: 0;
+	border-radius: 10px;
+	background: #d9232e;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-decoration: none;
+	text-transform: uppercase;
+	box-shadow: 0 8px 16px rgba(217, 35, 46, 0.22);
+	transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+.premium-hero-primary span {
+	font-size: 16px;
+	line-height: 0;
+	margin-left: 2px;
+}
+.premium-hero-primary:hover {
+	border-color: transparent;
+	background: #bd1721;
+	color: #ffffff;
+	transform: translateY(-2px);
+	box-shadow: 0 11px 20px rgba(217, 35, 46, 0.28);
+}
+.premium-hero-controls { position: absolute; z-index: 4; right: 28px; bottom: 32px; display: flex; flex-direction: column; gap: 4px; }.premium-hero-controls button { display: grid; place-items: center; width: 64px; height: 64px; padding: 0; border: 1px solid rgba(255,255,255,.38); background: rgba(35,31,28,.14); color: #fff; font-size: 30px; font-weight: 300; line-height: 1; cursor: pointer; transition: background .2s ease, border-color .2s ease; }.premium-hero-controls button:hover { border-color: #dd2328; background: #dd2328; }.premium-hero-pagination { display: none; }
+
+/* Tablet only: 768px–1024px. */
+@media (min-width: 768px) and (max-width: 1024px) { .premium-hero-swiper, .premium-hero-slide { min-height: 650px; }.premium-hero-container { width: calc(100% - 56px); }.premium-hero-content { width: 66%; margin-left: 4%; }.premium-hero h1 { font-size: clamp(56px, 8vw, 77px); }.premium-hero-copy { max-width: 535px; font-size: 17px; line-height: 1.8; }.premium-hero-primary { padding: 18px 22px; }.premium-hero-controls { right: 20px; bottom: 24px; }.premium-hero-controls button { width: 52px; height: 52px; } }
+
+/* Mobile only: below 768px. */
+@media (max-width: 767.98px) { .premium-hero-swiper, .premium-hero-slide { min-height: 650px; }.premium-hero-slide { align-items: flex-start; background-position: 63% center; }.premium-hero-shade { background: linear-gradient(90deg, rgba(35,31,28,.88) 0%, rgba(35,31,28,.66) 72%, rgba(35,31,28,.25) 100%), linear-gradient(0deg, rgba(35,31,28,.5), transparent 58%); }.premium-hero-container { align-items: flex-start; width: calc(100% - 40px); }.premium-hero-content { width: 100%; margin: 0; padding-top: 130px; }.premium-hero h1 { max-width: 340px; font-size: clamp(46px, 14vw, 65px); line-height: .95; }.premium-hero-copy { max-width: 330px; margin-top: 25px; font-size: 15px; line-height: 1.75; }.premium-hero-actions { margin-top: 34px; }.premium-hero-primary { min-width: 194px; padding: 18px 19px; font-size: 11px; }.premium-hero-controls { right: 16px; bottom: 20px; flex-direction: row; gap: 5px; }.premium-hero-controls button { width: 48px; height: 48px; font-size: 25px; } }

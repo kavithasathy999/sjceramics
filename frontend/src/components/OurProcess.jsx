@@ -3,13 +3,13 @@ import bg from '../assets/images/background/2.jpg';
 import lineOne from '../assets/images/background/pattern-2.png';
 import lineTwo from '../assets/images/background/pattern-3.png';
 import service1 from '../assets/images/bgimages/tiling.jpg';
-import service2 from '../assets/images/bgimages/painting.jpg';
+import service2 from '../assets/images/bgimages/bathroom.jpeg';
 import service3 from '../assets/images/bgimages/flooring.jpg';
 import service4 from '../assets/images/bgimages/tileinstall.jpg';
 
 const services = [
   { number: 1, title: 'Tiling & Concrete', image: service1, delay: 0 },
-  { number: 2, title: 'Wall Painting', image: service2, delay: 150 },
+  { number: 2, title: 'Bathroom Tiling', image: service2, delay: 150 },
   { number: 3, title: 'Industrial Flooring', image: service3, delay: 300 },
   { number: 4, title: 'Tile Installation', image: service4, delay: 450 },
 ];

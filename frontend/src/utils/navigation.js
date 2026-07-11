@@ -24,11 +24,12 @@ export const navigation = [
   {
     label: 'Products',
     path: '/products',
-    // children: [
-    //   { label: 'Portfolio', path: '#' },
-    //   { label: 'Portfolio 02', path: '#' },
-    //   { label: 'Project Detail', path: '#' },
-    // ],
+    children: [
+      { label: 'Tiles', path: '/products', state: { filterCategory: 'category', filterValue: 'Tiles' } },
+      { label: 'Sanitary Wares', path: '/products', state: { filterCategory: 'category', filterValue: 'Sanitary Wares' } },
+      { label: 'Bath Fittings', path: '/products', state: { filterCategory: 'category', filterValue: 'Bath Fittings' } },
+      { label: 'Others', path: '/products', state: { filterCategory: 'category', filterValue: 'Others' } },
+    ],
   },
   {
     label: 'Blogs',

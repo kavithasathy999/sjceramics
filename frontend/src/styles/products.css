@@ -5,7 +5,7 @@
 
 /* Scoped wrapper to isolate styles from bleeding into other pages */
 .products-page-container {
-  font-family: 'Work Sans', 'Inter', sans-serif;
+  font-family: 'Inter', 'Inter', sans-serif;
   color: #333;
   background-color: #fcfcfc;
   padding-bottom: 60px;
@@ -718,4 +718,39 @@
     align-self: auto;
     margin-top: 10px;
   }
+}
+
+/* Active Search Indicator Badge styling */
+.active-search-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f2f8ff;
+  border: 1px solid rgba(0, 123, 255, 0.1);
+  padding: 10px 18px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+.active-search-text {
+  font-size: 15px;
+  color: #231f1c;
+  font-weight: 600;
+}
+.active-search-text strong {
+  color: #dd2328;
+}
+.active-search-clear-btn {
+  background: rgba(221, 35, 40, 0.08);
+  color: #dd2328;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.active-search-clear-btn:hover {
+  background: #dd2328;
+  color: #ffffff;
 }

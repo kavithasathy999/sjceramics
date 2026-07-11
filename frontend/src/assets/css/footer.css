@@ -301,3 +301,12 @@
 	color:var(--color-four);
 	background-color:var(--white-color);
 }
+
+/* Decrease side gaps on desktop / laptop screens to align with pre-footer quick links */
+@media (min-width: 1025px) {
+  .main-footer .auto-container {
+    max-width: 1800px !important;
+    width: 95% !important;
+    padding: 0 40px;
+  }
+}

@@ -333,5 +333,83 @@ export const products = [
     brand: 'Others',
     price: 390,
     image: p7
+  },
+  {
+    id: 28,
+    name: 'KAG RIMLESS ONE PIECE CLOSET',
+    size: 'Standard',
+    type: 'Water Closet',
+    application: 'Bathroom',
+    material: 'Vitreous China',
+    finish: 'Glossy White',
+    brand: 'KAG',
+    price: 8500,
+    category: 'Sanitary Wares',
+    image: p2
+  },
+  {
+    id: 29,
+    name: 'KAG TABLE TOP WASH BASIN',
+    size: 'Standard',
+    type: 'Wash Basin',
+    application: 'Bathroom/Dining',
+    material: 'Ceramic',
+    finish: 'Glossy White',
+    brand: 'KAG',
+    price: 3200,
+    category: 'Sanitary Wares',
+    image: p3
+  },
+  {
+    id: 30,
+    name: 'AQUA LUXURY BASIN MIXER',
+    size: 'Standard',
+    type: 'Faucet/Tap',
+    application: 'Bathroom/Kitchen',
+    material: 'Brass/Chrome',
+    finish: 'Mirror Finish',
+    brand: 'Aqua',
+    price: 2100,
+    category: 'Bath Fittings',
+    image: p4
+  },
+  {
+    id: 31,
+    name: 'KAG PREMIUM SHOWER HEAD',
+    size: 'Standard',
+    type: 'Shower',
+    application: 'Bathroom',
+    material: 'Stainless Steel',
+    finish: 'Chrome',
+    brand: 'KAG',
+    price: 1800,
+    category: 'Bath Fittings',
+    image: p5
+  },
+  {
+    id: 32,
+    name: 'KAG PREMIUM TILE ADHESIVE',
+    size: '20 kg',
+    type: 'Adhesive',
+    application: 'Tiling Installation',
+    material: 'Cement-based',
+    finish: 'Grey Powder',
+    brand: 'KAG',
+    price: 450,
+    category: 'Others',
+    image: p6
+  },
+  {
+    id: 33,
+    name: 'PTMT LEAK-PROOF TAP',
+    size: 'Standard',
+    type: 'Tap',
+    application: 'Outdoor/Bathroom',
+    material: 'PTMT',
+    finish: 'White/Ivory',
+    brand: 'Others',
+    price: 150,
+    category: 'Others',
+    image: p7
   }
 ];

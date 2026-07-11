@@ -13,7 +13,7 @@ import service19 from '../assets/images/resource/service-19.jpg';
 // `/service-detail` page too - no invented per-service content.
 export const services = [
   { icon: 'flaticon-tiles-1', title: 'Tiling & Concrete', image: service12, delay: 0 },
-  { icon: 'flaticon-paint-roller', title: 'Wall Painting', image: service13, delay: 150 },
+  { icon: 'flaticon-tiles-1', title: 'Epoxy Flooring', image: service13, delay: 150 },
   { icon: 'flaticon-stone', title: 'Flooring & Wallpaper', image: service14, delay: 300 },
   { icon: 'flaticon-carpet', title: 'Carpets & Rugs', image: service15, delay: 450 },
   { icon: 'flaticon-wood', title: 'Residential Flooring', image: service16, delay: 0 },
