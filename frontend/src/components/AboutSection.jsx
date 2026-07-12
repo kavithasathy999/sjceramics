@@ -49,7 +49,7 @@ export default function AboutSection({ showButton = true }) {
               </div>
 
               <div className="about-one_text">
-                We are a premier startup showroom in Chennai and a proud authorized channel partner of KAG, a brand renowned for over 25 years of industry-leading excellence. We specialize in supplying high-quality floor and wall tiles as our primary offering, along with premium sanitary wares, elegant bath fittings, and other building ceramics directly from KAG's trusted catalog.
+                As a premier showroom and authorized KAG channel partner in Chennai, we supply premium floor and wall tiles, sanitaryware, elegant bath fittings, and building ceramics directly from KAG's trusted 25-year industry-leading catalog.
               </div>
 
               <div className="row clearfix">
@@ -71,8 +71,8 @@ export default function AboutSection({ showButton = true }) {
                 <div className="about-one_button">
                   <Link to="/about" className="theme-btn btn-style-one" style={{ borderRadius: '4px', padding: '16px 22px' }}>
                     <span className="btn-wrap">
-                      <span className="text-one">More About us</span>
-                      <span className="text-two">More About us</span>
+                      <span className="text-one">Read More</span>
+                      <span className="text-two">Read More</span>
                     </span>
                   </Link>
                 </div>

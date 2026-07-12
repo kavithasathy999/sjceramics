@@ -1,40 +1,69 @@
-import bg from '../assets/images/background/3.jpg';
-import pattern5 from '../assets/images/background/pattern-5.png';
-import gallery1 from '../assets/images/bgimages/bathroom.jpeg';
-import gallery2 from '../assets/images/bgimages/elevation1.jpeg';
-import gallery3 from '../assets/images/bgimages/staircase.jpeg';
-import gallery4 from '../assets/images/bgimages/last.jpeg';
+import { Link } from 'react-router-dom';
+import tileTexture from '../assets/images/background/projects-tile-texture.png';
+import allTiles from '../assets/images/brands/all_tiles.png';
+import sanitaryware from '../assets/images/brands/sanitaryware.png';
+import aquaFaucet from '../assets/images/brands/aqua_faucet.png';
+import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
+import './ProjectsOne.css';
 
 const projects = [
-  { image: gallery1, label: 'Wallpapers', title: 'Room Wallpapers' },
-  { image: gallery2, label: 'Flooring', title: 'Elevation Tiles' },
-  { image: gallery3, label: 'Staircase', title: 'Staircase Tiling' },
-  { image: gallery4, label: 'Field Tile', title: 'Kendal Slate' },
+  {
+    image: allTiles,
+    title: 'Tiles',
+    filterValue: 'Tiles',
+  },
+  {
+    image: sanitaryware,
+    title: 'Sanitary Wares',
+    filterValue: 'Sanitary Wares',
+  },
+  {
+    image: aquaFaucet,
+    title: 'Bath Fittings',
+    filterValue: 'Bath Fittings',
+  },
+  {
+    image: adhesiveGrout,
+    title: 'Others',
+    filterValue: 'Others',
+  },
 ];
+
+const filterState = (filterValue) => ({ filterCategory: 'category', filterValue });
 
 export default function ProjectsOne() {
   return (
-    <section className="projects-one">
-      <div className="projects-one_bg" style={{ backgroundImage: `url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8y7hFHK_5FKWpHdXlTt80r4sk2oW-RCY2DSfMBwc9QqfoMZoW2oIBScs&s=10")` }} />
-      <div className="auto-container">
-        <div className="sec-title light centered">
-          <div className="sec-title_title"><i className="flaticon-wood-1" /> Services</div>
-          <h2 className="sec-title_heading">Best Interior Services <br /> That We Provide</h2>
+    <section
+      className="project-showcase"
+      style={{ '--project-tile-texture': `url(${tileTexture})` }}
+      aria-labelledby="project-showcase-title"
+    >
+      <div className="project-showcase__container">
+        <div className="sec-title centered project-showcase__heading">
+          <div className="sec-title_title">
+            <i className="flaticon-wood-1" /> Our Collections
+          </div>
+          <h2 className="sec-title_heading" id="project-showcase-title">
+            Designed for Every Space
+          </h2>
+          <p>
+            Discover surfaces and bath essentials curated for considered, lasting interiors.
+          </p>
         </div>
-        <div className="row clearfix">
+
+        <div className="project-showcase__grid">
           {projects.map((project) => (
-            <div className="projects-block_one col-lg-3 col-md-6 col-sm-6" key={project.title}>
-              <div className="projects-block_one-inner">
-                <div className="projects-block_one-image">
-                  <a href="#"><img src={project.image} alt={project.title} /></a>
-                </div>
-                <a className="projects-block_one-arrow" href="#"><i className="flaticon-up-right-arrow-1" /></a>
-                <div className="projects-block_one-content" style={{ backgroundImage: `url(${pattern5})` }}>
-                  <div className="projects-block_one-title">{project.label}</div>
-                  <h4 className="projects-block_one-heading"><a href="#">{project.title}</a></h4>
-                </div>
-              </div>
-            </div>
+            <article className="project-showcase__card" key={project.title}>
+              <Link
+                className="project-showcase__link"
+                to="/products"
+                state={filterState(project.filterValue)}
+                aria-label={`Explore ${project.title}`}
+              >
+                <img src={project.image} alt={`${project.title} collection`} />
+                <span className="project-showcase__category">{project.title}</span>
+              </Link>
+            </article>
           ))}
         </div>
       </div>

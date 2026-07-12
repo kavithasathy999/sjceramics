@@ -468,6 +468,10 @@
 	margin-top:28px;
 }
 
+.about-one_button .btn-style-one:before {
+	background-color: #bd1721;
+}
+
 /*** 
 
 ====================================================================

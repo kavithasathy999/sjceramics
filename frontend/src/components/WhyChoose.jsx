@@ -18,30 +18,30 @@ export default function ServicesThree() {
             <div className="services-three_content-outer">
               <div className="sec-title">
                 <div className="sec-title_title"><i className="flaticon-wood-1" /> Why Choose Us</div>
-                <h2 className="sec-title_heading">We Offer Dependable Sanitary Wares, Bath Fittings &amp; Tiles</h2>
+                <h2 className="sec-title_heading">We Offer Premium Tiles, Sanitary Wares &amp; Bath Fittings</h2>
                 <div className="sec-title_text">
-                  We are a trusted provider of high-quality sanitary wares, elegant bath fittings, and premium tiles. With a wide range of designs and uncompromised durability, we bring luxury, style, and comfort to your everyday spaces.
+                  We specialize in supplying high-quality floor and wall tiles as our primary offering, along with premium sanitary wares, elegant bath fittings, and other building ceramics directly from KAG's trusted catalog.
                 </div>
               </div>
 
               <div className="default-skills">
                 <div className="row clearfix">
-                  <SkillBar title="Sanitary & Bath Fittings" percent={90} />
                   <SkillBar title="Premium Tiles Collection" percent={95} />
+                  <SkillBar title="Sanitary &amp; Bath Fittings" percent={90} />
                 </div>
               </div>
 
               <div className="row clearfix">
                 <div className="services-three_feature col-lg-6 col-md-6 col-sm-12">
                   <div className="services-three_feature-inner">
-                    <div className="services-three_feature-icon flaticon-paving" />
-                    Modern &amp; Elegant <br /> Bath Fittings
+                    <div className="services-three_feature-icon flaticon-tile" />
+                    Luxurious &amp; Durable <br /> Tiles Collection
                   </div>
                 </div>
                 <div className="services-three_feature col-lg-6 col-md-6 col-sm-12">
                   <div className="services-three_feature-inner">
-                    <div className="services-three_feature-icon flaticon-tile" />
-                    Luxurious &amp; Durable <br /> Tiles Collection
+                    <div className="services-three_feature-icon flaticon-paving" />
+                    Premium Sanitary &amp; <br /> Bath Fittings
                   </div>
                 </div>
               </div>

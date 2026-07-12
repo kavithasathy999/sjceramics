@@ -2,35 +2,30 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import './TestimonialSlider.css';
 
 import patternBg from '../assets/images/background/pattern-6.png';
 import tilesIcon from '../assets/images/icons/tiles.png';
 import designIcon from '../assets/images/icons/design.png';
 import patternColor from '../assets/images/background/pattern-7.png';
-import patternAuthor from '../assets/images/background/pattern-8.png';
-import author1 from '../assets/images/bgimages/review1.jpeg';
-import author2 from '../assets/images/bgimages/review2.jpeg';
 
 const testimonials = [
   {
     id: 1,
     author: 'Anan Hanona',
     role: 'Interior Expert And Customer',
-    avatar: author1,
     text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
   },
   {
     id: 2,
     author: 'Mahfuz Riad',
     role: 'Interior Expert And Customer',
-    avatar: author2,
     text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
   },
   {
     id: 3,
     author: 'Anan Hanona',
     role: 'Interior Expert And Customer',
-    avatar: author1,
     text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
   },
 ];
@@ -62,12 +57,14 @@ export default function TestimonialSlider() {
               <SwiperSlide key={item.id}>
                 <div className="testimonial-block_one">
                   <div className="testimonial-block_one-inner">
-                    <div className="testimonial-block_one-color" style={{ backgroundImage: `url(${patternColor})` }} />
-                    <div className="testimonial-block_one-upper">
-                      <div className="testimonial-block_one-author_outer" style={{ backgroundImage: `url(${patternAuthor})`}}>
-                        <div className="testimonial-block_one-author">
-                          <img src={item.avatar} alt={item.author} style={{borderRadius:"40px"}}/>
-                        </div>
+                    <div className="testimonial-block_one-upper testimonial-block_one-upper--with-icon">
+                      <div className="testimonial-customer-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none">
+                          <circle cx="24" cy="18" r="7" />
+                          <path d="M11.5 38c1.7-7.1 6.2-10.7 12.5-10.7S34.8 30.9 36.5 38" />
+                          <path d="M37.5 11.5h4v4" />
+                          <path d="M41.5 11.5 35 18" />
+                        </svg>
                       </div>
                       <div className="testimonial-block_one-author_content">
                         <h4>{item.author}</h4>

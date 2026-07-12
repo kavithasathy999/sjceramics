@@ -51,9 +51,9 @@ export default function HeroSlider() {
         ))}
       </Swiper>
       <div className="premium-hero-controls" aria-label="Hero carousel controls">
-        <button ref={setPrevEl} type="button" className="premium-hero-prev" aria-label="Previous collection">←</button>
+        <button ref={setPrevEl} type="button" className="premium-hero-prev" aria-label="Previous collection" />
         <div className="premium-hero-pagination" />
-        <button ref={setNextEl} type="button" className="premium-hero-next" aria-label="Next collection">→</button>
+        <button ref={setNextEl} type="button" className="premium-hero-next" aria-label="Next collection" />
       </div>
     </section>
   );
