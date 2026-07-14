@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { A11y, Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -25,12 +25,16 @@ export default function HeroSlider() {
     <section className="premium-hero" aria-label="SJ Ceramics collections">
       <Swiper
         className="premium-hero-swiper"
-        modules={[Autoplay, Navigation, Pagination]}
+        modules={[A11y, Autoplay, Navigation, Pagination]}
         loop
         speed={850}
         autoplay={{ delay: 6500, disableOnInteraction: false }}
         navigation={{ prevEl, nextEl }}
-        pagination={{ el: '.premium-hero-pagination', clickable: true }}
+        pagination={{
+          bulletElement: 'button',
+          clickable: true,
+        }}
+        a11y={{ paginationBulletMessage: 'Go to collection slide {{index}}' }}
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.category}>
@@ -52,7 +56,6 @@ export default function HeroSlider() {
       </Swiper>
       <div className="premium-hero-controls" aria-label="Hero carousel controls">
         <button ref={setPrevEl} type="button" className="premium-hero-prev" aria-label="Previous collection" />
-        <div className="premium-hero-pagination" />
         <button ref={setNextEl} type="button" className="premium-hero-next" aria-label="Next collection" />
       </div>
     </section>

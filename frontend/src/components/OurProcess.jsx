@@ -1,11 +1,12 @@
 import useInView from '../hooks/useInView';
-import bg from '../assets/images/background/2.jpg';
+import bg from '../assets/images/background/our-process-light-tiles.png';
 import lineOne from '../assets/images/background/pattern-2.png';
 import lineTwo from '../assets/images/background/pattern-3.png';
 import service1 from '../assets/images/bgimages/tiling.jpg';
 import service2 from '../assets/images/bgimages/bathroom.jpeg';
 import service3 from '../assets/images/bgimages/flooring.jpg';
 import service4 from '../assets/images/bgimages/tileinstall.jpg';
+import './OurProcess.css';
 
 const services = [
   { number: 1, title: 'Tiling & Concrete', image: service1, delay: 0 },
@@ -29,12 +30,11 @@ function ServiceBlock({ service }) {
         }}
       >
         <div className="service-block_two-image">
-          <a href="#"><img src={service.image} alt={service.title} /></a>
+          <img src={service.image} alt={service.title} />
         </div>
         <div className="service-block_two-content">
           <div className="service-block_two-number">{service.number}</div>
-          <h4 className="service-block_two-title"><a href="#">{service.title}</a></h4>
-          <a className="service-block_two-arrow" href="#"><i className="flaticon-up-right-arrow-1" /></a>
+          <h4 className="service-block_two-title">{service.title}</h4>
         </div>
       </div>
     </div>
@@ -44,15 +44,15 @@ function ServiceBlock({ service }) {
 export default function ServicesTwo() {
   return (
     <section className="services-two">
-      <div className="services-two_bg" style={{ backgroundImage: `url("https://themazine.com/html/fllopi/assets/images/background/2.jpg")` }} />
+      <div className="services-two_bg" style={{ backgroundImage: `url(${bg})` }} />
       <div className="services-two_line-one" style={{ backgroundImage: `url(${lineOne})` }} />
       <div className="services-two_line-two" style={{ backgroundImage: `url(${lineTwo})` }} />
       <div className="auto-container">
-        <div className="sec-title light centered">
+        <div className="sec-title centered">
           <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Process</div>
           <h2 className="sec-title_heading">A Seamless Journey <br /> To Your Dream Space</h2>
         </div>
-        <div className="row clearfix">
+        <div className="row clearfix services-two-grid">
           {services.map((service) => (
             <ServiceBlock service={service} key={service.number} />
           ))}

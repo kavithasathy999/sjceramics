@@ -1,8 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import bg from '../assets/images/background/6.jpg';
 import footerLogo from '../assets/images/Logo-Png.png';
-import postThumb4 from '../assets/images/bgimages/footerimg1.jpeg';
-import postThumb5 from '../assets/images/bgimages/footerimg2.jpeg';
 import '../styles/quicklinks.css';
 
 const quickLinks = [
@@ -15,38 +12,144 @@ const quickLinks = [
 
 const seoColumns = [
   {
-    title: 'Popular Tiles By Size',
-    type: 'size',
-    links: ['12X12 Tiles', '24X24 Tiles', '18X12 Tiles', '15x10 Tiles', '16x16 Tiles', '24x12 Tiles']
+    sections: [
+      {
+        title: 'Tiles By Space',
+        type: 'search',
+        links: ['Floor Tiles', 'Wall Tiles'],
+      },
+      {
+        title: 'Tiles By Area',
+        type: 'search',
+        links: [
+          'Bathroom Tiles', 'Kitchen Tiles', 'Living Room Tiles', 'Outdoor Tiles',
+          'Parking Tiles', 'Bedroom Tiles', 'Elevation Tiles', 'Balcony Tiles',
+          'Pooja Room Tiles', 'Stair Tiles', 'Terrace Tiles', 'Drawing Room Tiles',
+          'Wash Basin Tiles', 'Hallway Tiles', 'Garden Tiles', 'Paving Tiles',
+          'TV Unit Tiles', 'Foyer Tiles', 'Stout Passage Tiles', 'Porch Tiles',
+          'Pathway Tiles', 'Dining Room Tiles', 'Commercial Tiles',
+          'Swimming Pool Tiles', 'Hospital Tiles', 'School Tiles', 'Bar Tiles',
+          'Restaurant Tiles',
+        ],
+      },
+      {
+        title: 'Natural Stone and Brick Cladding',
+        type: 'search',
+        links: [
+          'Natural Stone Cladding', 'Brick Cladding', 'Red Brick Cladding',
+          'White Brick Cladding', 'Stone Murals', 'God Picture Tiles and Stones',
+          'Buddha Tiles and Stones', 'Krishna Tiles and Stones',
+          'Ganesha Tiles and Stones', 'Venkateshwara Tiles and Stones',
+        ],
+      },
+    ],
   },
   {
-    title: 'Tiles By Size',
-    type: 'size',
-    links: [
-      '12x22 Tiles', '12X8 Tiles', '20X20 Tiles', '40x8 Tiles', '48x24 Tiles',
-      '64x32 Tiles', '72x48 Tiles', '96x32 Tiles', '12X12 Tiles', '24X24 Tiles',
-      '18X12 Tiles', '15x10 Tiles', '16x16 Tiles', '24x12 Tiles'
-    ]
+    sections: [
+      {
+        title: 'Tiles By Size',
+        type: 'size',
+        links: [
+          '1x1 Tiles', '2x2 Tiles', '2x4 Tiles', '4x4 Tiles', '4x8 Tiles',
+          '300x450 mm Tiles', '300x600 mm Tiles', '1200x1800 mm Tiles',
+          '800x1600 mm Tiles', '300x900 mm Tiles', '300x1200 mm Tiles',
+          '400x400 mm Tiles', '400x1200 mm Tiles', '500x500 mm Tiles',
+          '800x3000 mm Tiles', '800x2400 mm Tiles', '100x300 mm Tiles',
+          '100x200 mm Tiles', '150x900 mm Tiles', '200x1200 mm Tiles',
+          '200x200 mm Tiles',
+        ],
+      },
+      {
+        title: 'Tiles By Finish',
+        type: 'finish',
+        links: [
+          'Anti Skid Tiles', 'Glossy Tiles', 'Polished Tiles', 'Matt Tiles',
+          'Carving Tiles', 'Metallic Tiles', 'Rustic Tiles', 'Lappato Tiles',
+          'Satin Tiles', 'Hi-Gloss Tiles',
+        ],
+      },
+      {
+        title: 'Wall Panels',
+        type: 'search',
+        links: ['Louver Panels', 'PVC Wall Panels', 'Charcoal Panels', 'Fluted Panels'],
+      },
+    ],
   },
   {
-    title: 'Tiles By Finish',
-    type: 'finish',
-    links: [
-      'Dark Light Highlighter Concept', 'Digital Vitrified Parking',
-      'High Depth Elevation', 'Satin Interior', 'Glossy', 'Matt',
-      'Glossy Floor', 'Dark Wooden Glossy', 'Punch'
-    ]
+    sections: [
+      {
+        title: 'Tiles By Design',
+        type: 'search',
+        links: [
+          '3D Tiles', 'Wooden Tiles', 'Marble Tiles', 'Texture Tiles',
+          'Mosaic Tiles', 'Granite Tiles', 'Stone Tiles', 'Pattern Tiles',
+          'Geometric Tiles', 'Cement Tiles', 'Flower Tiles', 'Travertine Tiles',
+          'Slate Tiles', 'Statuario Tiles', 'Plain Tiles', 'Onyx Tiles',
+          'End Match Tiles', 'Book Match Tiles', 'Carrara Tiles', 'Abstract Tiles',
+          'Monochrome Tiles', 'Stylized Tiles', 'Brick Tiles', 'Hexagonal Tiles',
+          'Limestone Tiles', 'Wooden Plank Tiles', 'Athangudi Tiles',
+          'Moroccan Tiles', 'Subway Tiles', 'Kitkat Tiles', 'Chevron Tiles',
+          'Octagon Tiles', 'Border Tiles', 'Fluted Tiles', 'Terrazzo Tiles',
+          'Tropical Tiles', 'Carpet Tiles', 'Poster Tiles', 'Herringbone Tiles',
+          'Kota Tiles', 'Blue Pottery Tiles', 'Terracotta Clay Jali',
+        ],
+      },
+    ],
   },
   {
-    title: 'Tiles By Material',
-    type: 'material',
-    links: ['Vitrified', 'Ceramic', 'Porcelain', 'Wooden', 'GVT']
+    sections: [
+      {
+        title: 'Tiles By Type',
+        type: 'search',
+        links: [
+          'Vitrified Tiles', 'Ceramic Tiles', 'Porcelain Tiles', 'Designer Tiles',
+          'Digital Tiles', 'Double Charge Vitrified Tiles', 'Glazed Tiles',
+          'Cool Tiles', 'Glass Highlighter Tiles', 'Full Body Vitrified Tiles',
+          'Printed Tiles', 'Nano Tiles',
+        ],
+      },
+      {
+        title: 'Tiles Accessories',
+        type: 'search',
+        links: [
+          'Tile Grout', 'Epoxy Grout', 'Cementitious Grout', 'Tile Beading',
+          'Metal Beading', 'Tile Adhesives', 'Tile Spacers', 'Stone Care',
+          'T Profile Patti', 'U Profile Patti',
+        ],
+      },
+      {
+        title: 'Decorative Stones',
+        type: 'search',
+        links: ['Pebble Stones', 'Black Pebble Stones', 'White Pebble Stones'],
+      },
+      {
+        title: 'Imported Tiles Collection',
+        type: 'search',
+        links: ['Imported Tiles', 'Italian Tiles', 'Spanish Tiles', 'Chinese Tiles'],
+      },
+      {
+        title: 'Home Utility Products',
+        type: 'search',
+        links: ['Wash Basin', 'Kitchen Sink', 'Glass Blocks'],
+      },
+    ],
   },
   {
-    title: 'Where To Use',
-    type: 'room',
-    links: ['Elevation Tiles', 'Living Room Tiles', 'Staircase Tiles', 'Roof Tiles', 'Bathroom Tiles']
-  }
+    sections: [
+      {
+        title: 'Tiles By Color',
+        type: 'color',
+        links: [
+          'White Tiles', 'Black Tiles', 'Brown Tiles', 'Beige Tiles', 'Ivory Tiles',
+          'Cream Tiles', 'Yellow Tiles', 'Blue Tiles', 'Green Tiles', 'Grey Tiles',
+          'Pink Tiles', 'Red Tiles', 'Aqua Tiles', 'Orange Tiles', 'Sky Blue Tiles',
+          'Gold Tiles', 'Purple Tiles', 'Terracotta Tiles', 'Black and White Tiles',
+          'Blue and White Tiles', 'Grey and White Tiles', 'Black and Gold Tiles',
+          'White and Gold Tiles',
+        ],
+      },
+    ],
+  },
 ];
 
 export default function Footer() {
@@ -54,6 +157,12 @@ export default function Footer() {
 
   const handleQuickLinkClick = (type, rawValue) => {
     let value = rawValue.replace(/ Tiles$/i, '').trim();
+
+    if (type === 'search') {
+      navigate('/products', { state: { searchQuery: value } });
+      return;
+    }
+
     navigate('/products', { state: { filterCategory: type, filterValue: value } });
   };
 
@@ -63,18 +172,25 @@ export default function Footer() {
       <section className="footer-quick-links-section">
         <div className="auto-container">
           <div className="quick-links-grid">
-            {seoColumns.map((col, idx) => (
-              <div className="quick-links-column" key={idx}>
-                <h6 className="quick-links-column-title">{col.title}</h6>
-                <ul className="quick-links-list">
-                  {col.links.map((linkText, linkIdx) => (
-                    <li key={linkIdx}>
-                      <a onClick={() => handleQuickLinkClick(col.type, linkText)}>
-                        {linkText}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+            {seoColumns.map((column, columnIdx) => (
+              <div className="quick-links-column" key={columnIdx}>
+                {column.sections.map((section) => (
+                  <div className="quick-links-group" key={section.title}>
+                    <h6 className="quick-links-column-title">{section.title}</h6>
+                    <ul className="quick-links-list">
+                      {section.links.map((linkText) => (
+                        <li key={linkText}>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickLinkClick(section.type, linkText)}
+                          >
+                            {linkText}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

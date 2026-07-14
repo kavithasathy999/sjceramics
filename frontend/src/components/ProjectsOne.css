@@ -2,7 +2,7 @@
   position: relative;
   padding: 108px 0 104px;
   overflow: hidden;
-  background-color: #f7f5f1;
+  background-color: #f4f1ec;
   isolation: isolate;
 }
 
@@ -14,6 +14,7 @@
   background-image: var(--project-tile-texture);
   background-position: center;
   background-size: cover;
+  opacity: 0.48;
 }
 
 .project-showcase::after {
@@ -21,107 +22,294 @@
   z-index: -1;
   content: '';
   inset: 0;
-  background: rgba(255, 255, 255, .34);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.92), transparent 32%),
+    linear-gradient(135deg, rgba(250, 248, 244, 0.9), rgba(239, 234, 227, 0.72));
 }
 
 .project-showcase__container {
-  width: min(calc(100% - 64px), 1450px);
+  width: min(calc(100% - 64px), 1480px);
   margin: 0 auto;
 }
 
 .project-showcase__heading {
-  max-width: 860px;
-  margin: 0 auto 48px;
+  max-width: 900px;
+  margin: 0 auto 36px;
 }
 
-.project-showcase__heading .sec-title_title { justify-content: center; }
-.project-showcase__heading .sec-title_heading { margin: 0; color: #231f1c; white-space: nowrap; }
+.project-showcase__heading .sec-title_title {
+  justify-content: center;
+}
+
+.project-showcase__heading .sec-title_heading {
+  margin: 0;
+  color: #231f1c;
+}
 
 .project-showcase__heading > p {
-  max-width: 620px;
+  max-width: 680px;
   margin: 17px auto 0;
   color: #756f69;
   font-size: 15px;
   line-height: 1.7;
 }
 
-.project-showcase__grid {
+.project-showcase__category-nav {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-items: start;
-  gap: 28px;
-}
-
-.project-showcase__card {
-  min-width: 0;
-  height: 520px;
+  max-width: 980px;
+  margin: 0 auto 34px;
   overflow: hidden;
-  border: 5px solid #fff;
-  border-radius: 0;
-  background: #ded9d2;
-  box-shadow: 0 12px 30px rgba(42, 36, 31, .1);
+  border: 1px solid rgba(35, 31, 28, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(42, 36, 31, 0.08);
 }
 
-.project-showcase__card:nth-child(even) { margin-top: 60px; }
+.project-showcase__category-nav a {
+  position: relative;
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 18px;
+  color: #231f1c;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: color 300ms ease, background-color 300ms ease;
+}
 
-.project-showcase__link {
+.project-showcase__category-nav a + a {
+  border-left: 1px solid rgba(35, 31, 28, 0.1);
+}
+
+.project-showcase__category-nav a span {
+  color: #d9232e;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  transition: color 300ms ease;
+}
+
+.project-showcase__category-nav a:hover,
+.project-showcase__category-nav a:focus-visible {
+  color: #fff;
+  background: #d9232e;
+}
+
+.project-showcase__category-nav a:hover span,
+.project-showcase__category-nav a:focus-visible span {
+  color: #fff;
+}
+
+.project-showcase__category-nav a:focus-visible {
+  z-index: 1;
+  outline: 3px solid rgba(217, 35, 46, 0.32);
+  outline-offset: -3px;
+}
+
+.project-showcase__gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    'floor floor wall designer'
+    'floor floor wall heritage'
+    'sanitary sanitary suite heritage'
+    'sanitary sanitary flush bath'
+    'mixer tap tap grout'
+    'sink sink install install';
+  grid-template-rows: repeat(6, clamp(142px, 11vw, 176px));
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(35, 31, 28, 0.09);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 28px 75px rgba(42, 36, 31, 0.14);
+}
+
+.project-showcase__gallery-item {
+  grid-area: var(--gallery-area);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #d9d5ce;
+}
+
+.project-showcase__image {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  color: #fff;
-  text-decoration: none;
   isolation: isolate;
 }
 
-.project-showcase__link > img {
+.project-showcase__gallery-item img {
   position: absolute;
   z-index: -2;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .7s cubic-bezier(.2, .7, .2, 1);
+  object-position: var(--gallery-object-position, center);
+  transition: transform 750ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 450ms ease;
 }
 
-.project-showcase__category {
+.project-showcase__image-shade {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 14, 12, 0.04) 24%, rgba(16, 14, 12, 0.78) 100%);
+  transition: background 400ms ease;
+}
+
+.project-showcase__product-copy {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
-  display: flex;
-  align-items: center;
-  min-height: 82px;
-  padding: 18px 24px;
-  background: #d9232e;
+  padding: 24px;
+}
+
+.project-showcase__product-category {
+  display: block;
+  margin-bottom: 7px;
   color: #fff;
-  font-size: clamp(19px, 1.7vw, 27px);
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -.02em;
+  letter-spacing: 0.15em;
+  opacity: 0.78;
+  text-transform: uppercase;
 }
 
-.project-showcase__link:hover { color: #fff; }
-.project-showcase__link:hover > img { transform: scale(1.05); }
-.project-showcase__link:focus-visible { outline: 3px solid #d9232e; outline-offset: -3px; }
-
-@media (max-width: 1100px) {
-  .project-showcase { padding: 84px 0 80px; }
-  .project-showcase__container { width: min(calc(100% - 40px), 920px); }
-  .project-showcase__grid { grid-template-columns: repeat(2, 1fr); }
-  .project-showcase__card { height: 420px; }
-  .project-showcase__card:nth-child(even) { margin-top: 40px; }
+.project-showcase__product-copy h3 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(18px, 1.5vw, 25px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.32);
 }
 
-@media (max-width: 640px) {
-  .project-showcase { padding: 60px 0 58px; }
-  .project-showcase__container { width: calc(100% - 30px); }
-  .project-showcase__heading { margin-bottom: 30px; }
-  .project-showcase__heading .sec-title_heading { white-space: normal; }
-  .project-showcase__heading > p { font-size: 14px; }
-  .project-showcase__grid { display: flex; flex-direction: column; gap: 14px; }
-  .project-showcase__card { width: 100%; height: 430px; }
-  .project-showcase__card:nth-child(even) { margin-top: 0; }
-  .project-showcase__category { min-height: 72px; padding: 16px 20px; font-size: 22px; }
+.project-showcase__gallery-item:hover img {
+  filter: saturate(1.06) contrast(1.03);
+  transform: scale(1.055);
+}
+
+.project-showcase__gallery-item:hover .project-showcase__image-shade {
+  background: linear-gradient(180deg, rgba(16, 14, 12, 0.02) 20%, rgba(129, 12, 19, 0.82) 100%);
+}
+
+@media screen and (min-width: 641px) and (max-width: 1100px) {
+  .project-showcase {
+    padding: 82px 0 78px;
+  }
+
+  .project-showcase__container {
+    width: min(calc(100% - 40px), 920px);
+  }
+
+  .project-showcase__category-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .project-showcase__category-nav a:nth-child(3) {
+    border-left: 0;
+  }
+
+  .project-showcase__category-nav a:nth-child(n + 3) {
+    border-top: 1px solid rgba(35, 31, 28, 0.1);
+  }
+
+  .project-showcase__gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'floor floor'
+      'wall designer'
+      'wall heritage'
+      'sanitary sanitary'
+      'suite flush'
+      'bath mixer'
+      'tap tap'
+      'grout sink'
+      'install install';
+    grid-template-rows: repeat(9, clamp(150px, 17vw, 190px));
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .project-showcase {
+    padding: 60px 0 58px;
+  }
+
+  .project-showcase__container {
+    width: calc(100% - 28px);
+  }
+
+  .project-showcase__heading {
+    margin-bottom: 28px;
+  }
+
+  .project-showcase__heading > p {
+    font-size: 14px;
+  }
+
+  .project-showcase__category-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 24px;
+  }
+
+  .project-showcase__category-nav a {
+    min-height: 58px;
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .project-showcase__category-nav a:nth-child(3) {
+    border-left: 0;
+  }
+
+  .project-showcase__category-nav a:nth-child(n + 3) {
+    border-top: 1px solid rgba(35, 31, 28, 0.1);
+  }
+
+  .project-showcase__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 9px;
+  }
+
+  .project-showcase__gallery-item {
+    width: 100%;
+    height: 300px;
+  }
+
+  .project-showcase__gallery-item:nth-child(4n + 1),
+  .project-showcase__gallery-item:nth-child(4n + 4) {
+    height: 360px;
+  }
+
+  .project-showcase__product-copy {
+    padding: 22px 20px 20px;
+  }
+
+  .project-showcase__product-copy h3 {
+    font-size: 20px;
+  }
+
+}
+
+@media screen and (max-width: 380px) {
+  .project-showcase__gallery-item {
+    height: 270px;
+  }
+
+  .project-showcase__gallery-item:nth-child(4n + 1),
+  .project-showcase__gallery-item:nth-child(4n + 4) {
+    height: 320px;
+  }
 }

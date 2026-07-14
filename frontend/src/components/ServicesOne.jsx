@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import ball from '../assets/images/icons/ball.png';
 import pattern1 from '../assets/images/background/pattern-1.png';
+import ServiceEnquiryModal from './ServiceEnquiryModal';
 
 const services = [
   {
     icon: 'flaticon-floor',
     title: 'Tiles And Flooring',
+    enquiryLabel: 'Tiles And Flooring',
     text: 'Whether you’re looking for new carpet in your family home, commercial building or investment property',
   },
   {
     icon: 'flaticon-tiles',
     title: 'On Time & On Budget…',
+    enquiryLabel: 'On Time & On Budget',
     text: 'Whether you’re looking for new carpet in your family home, commercial building or investment property',
   },
   {
@@ -19,29 +23,55 @@ const services = [
         Free <br /> Estimate
       </>
     ),
+    enquiryLabel: 'Free Estimate',
     text: 'Whether you’re looking for new carpet in your family home, commercial building or investment property',
   },
 ];
 
 export default function ServicesOne() {
+  const [selectedService, setSelectedService] = useState('');
+
+  const openEnquiryForm = (serviceName) => setSelectedService(serviceName);
+  const closeEnquiryForm = () => setSelectedService('');
+
   return (
-    <section className="services-one">
-      <div className="services-one_bg" style={{ backgroundImage: `url(${ball})` }} />
-      <div className="auto-container">
-        <div className="row clearfix">
-          {services.map((service) => (
-            <div className="service-block_one col-lg-4 col-md-6 col-sm-6" key={service.icon}>
-              <div className="service-block_one-inner" style={{ backgroundImage: `url(${pattern1})` }}>
-                <div className="service-block_one-upper">
-                  <div className={`service-block_one-icon ${service.icon}`} />
-                  <h4 className="service-block_one-heading"><a href="#">{service.title}</a></h4>
+    <>
+      <section className="services-one">
+        <div className="services-one_bg" style={{ backgroundImage: `url(${ball})` }} />
+        <div className="auto-container">
+          <div className="row clearfix">
+            {services.map((service) => (
+              <div className="service-block_one col-lg-4 col-md-6 col-sm-6" key={service.icon}>
+                <div className="service-block_one-inner" style={{ backgroundImage: `url(${pattern1})` }}>
+                  <div className="service-block_one-upper">
+                    <button
+                      type="button"
+                      className={`service-block_one-icon service-enquiry-trigger ${service.icon}`}
+                      onClick={() => openEnquiryForm(service.enquiryLabel)}
+                      aria-label={`Open enquiry form for ${service.enquiryLabel}`}
+                    />
+                    <h4 className="service-block_one-heading">
+                      <button
+                        type="button"
+                        className="service-block_one-heading-trigger"
+                        onClick={() => openEnquiryForm(service.enquiryLabel)}
+                      >
+                        {service.title}
+                      </button>
+                    </h4>
+                  </div>
+                  <div className="service-block_one-text">{service.text}</div>
                 </div>
-                <div className="service-block_one-text">{service.text}</div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <ServiceEnquiryModal
+        isOpen={Boolean(selectedService)}
+        onClose={closeEnquiryForm}
+        sourceService={selectedService}
+      />
+    </>
   );
 }

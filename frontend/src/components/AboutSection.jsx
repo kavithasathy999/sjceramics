@@ -1,83 +1,73 @@
 import { Link } from 'react-router-dom';
-import ball from '../assets/images/icons/ball.png';
-import lamp from '../assets/images/icons/lamp.png';
-import aboutImg from '../assets/images/resource/about1.png';
-import experienceIcon from '../assets/images/icons/experiance.png';
+import './AboutSection.css';
+
+const companyDetails = [
+  { label: 'Starting Year', value: '1990' },
+  { label: 'Founder', value: 'G. Muralidharan' },
+  { label: 'CEO / Managing Director', value: 'G. Muralidharan' },
+];
 
 export default function AboutSection({ showButton = true }) {
   return (
-    <section className="about-one">
-      <div className="about-one_ball" style={{ backgroundImage: `url(${ball})` }} />
-      <div className="about-one_lamp" style={{ backgroundImage: `url(${lamp})` }} />
+    <section className="about-one about-company-section">
       <div className="auto-container">
-        <div className="row clearfix">
-          <div className="about-one_image-column col-lg-6 col-md-12 col-sm-12">
-            <div className="about-one_image-outer">
-              <div className="about-one_image">
-                <img src={aboutImg} alt="Premium tiles &amp; sanitary ware showcase" />
-              </div>
-              <div className="about-one_experiance">
-                {/* <div className="about-one_circle" style={{ backgroundImage: `url(${experienceIcon})` }} /> */}
-                {/* <span style={{color: "#ffffff"}}>KAG</span> */}
+        <div className="about-company-grid">
+          <div className="about-company-video-column">
+            <div className="about-company-video-shell">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/DPS_YX-YR8E?rel=0"
+                title="KAG Tiles brand video"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+            <div className="about-company-video-caption">
+              <span className="about-company-video-icon" aria-hidden="true">
+                <i className="fa-solid fa-play" />
+              </span>
+              <div>
+                <strong>Experience the KAG story</strong>
+                <span>Quality, innovation and inspired spaces</span>
               </div>
             </div>
           </div>
 
-          <div className="about-one_content-column col-lg-6 col-md-12 col-sm-12">
-            <div className="about-one_content-outer">
-              <div className="sec-title">
-                <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
-                <h2 className="sec-title_heading">Premium Tiles, Sanitarywares &amp; Bath Fittings</h2>
-                <div className="sec-title_text">
-                  We are your one-stop destination for premium tiles, sanitary wares, and luxurious bath fittings, offering high-quality products directly from KAG's exclusive collections.
-                </div>
+          <div className="about-company-content-column">
+            <div className="sec-title about-company-title">
+              <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
+              <h2 className="sec-title_heading">A Trusted Association with KAG Tiles</h2>
+              <div className="sec-title_text">
+                SJ Ceramics is an authorized KAG channel partner, bringing premium tiles,
+                sanitaryware and bath fittings to customers with dependable guidance and service.
               </div>
-
-              <div className="row clearfix">
-                <div className="about-one_feature col-lg-6 col-md-6 col-sm-12">
-                  <div className="about-one_feature-inner">
-                    <div className="about-one_feature-icon flaticon-paving" />
-                    Genuine Tiles Collections
-                  </div>
-                </div>
-                <div className="about-one_feature col-lg-6 col-md-6 col-sm-12">
-                  <div className="about-one_feature-inner">
-                    <div className="about-one_feature-icon flaticon-tile" />
-                    Premium Sanitaryware &amp; <br /> Bath Fittings
-                  </div>
-                </div>
-              </div>
-
-              <div className="about-one_text">
-                As a premier showroom and authorized KAG channel partner in Chennai, we supply premium floor and wall tiles, sanitaryware, elegant bath fittings, and building ceramics directly from KAG's trusted 25-year industry-leading catalog.
-              </div>
-
-              <div className="row clearfix">
-                <div className="column col-lg-6 col-md-6 col-sm-12">
-                  <ul className="about-one_list">
-                    <li><i className="flaticon-checked-1" />Wide Range of KAG Designs</li>
-                    <li><i className="flaticon-checked-1" />Premium Sanitary &amp; Fittings</li>
-                  </ul>
-                </div>
-                <div className="column col-lg-6 col-md-6 col-sm-12">
-                  <ul className="about-one_list">
-                    <li><i className="flaticon-checked-1" />Direct Channel Pricing</li>
-                    <li><i className="flaticon-checked-1" />Expert Product Guidance</li>
-                  </ul>
-                </div>
-              </div>
-
-              {showButton && (
-                <div className="about-one_button">
-                  <Link to="/about" className="theme-btn btn-style-one" style={{ borderRadius: '4px', padding: '16px 22px' }}>
-                    <span className="btn-wrap">
-                      <span className="text-one">Read More</span>
-                      <span className="text-two">Read More</span>
-                    </span>
-                  </Link>
-                </div>
-              )}
             </div>
+
+            <div className="about-company-details" aria-label="KAG company details">
+              {companyDetails.map((detail) => (
+                <article className="about-company-detail-card" key={detail.label}>
+                  <span className="about-company-detail-label">{detail.label}</span>
+                  <strong className="about-company-detail-value">{detail.value}</strong>
+                </article>
+              ))}
+            </div>
+
+            {showButton && (
+              <div className="about-one_button">
+                <Link
+                  to="/about"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="theme-btn btn-style-one"
+                  style={{ borderRadius: '4px', padding: '16px 22px' }}
+                >
+                  <span className="btn-wrap">
+                    <span className="text-one">Read More</span>
+                    <span className="text-two">Read More</span>
+                  </span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

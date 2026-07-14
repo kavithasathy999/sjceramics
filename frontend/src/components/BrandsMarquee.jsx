@@ -95,10 +95,10 @@ export default function BrandsMarquee() {
               Find the right category
             </h2>
           </div>
-          <div className="category-marquee__controls">
+          {/* <div className="category-marquee__controls">
             <button className="category-marquee__prev" type="button" aria-label="Previous categories">←</button>
             <button className="category-marquee__next" type="button" aria-label="Next categories">→</button>
-          </div>
+          </div> */}
         </div>
 
         <Swiper

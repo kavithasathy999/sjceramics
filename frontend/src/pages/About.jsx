@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
-import AboutSection from '../components/AboutSection';
+import AboutPageOverview from '../components/AboutPageOverview';
 import PurposeValue from '../components/PurposeValue';
 import MapLocation from '../components/MapLocation';
 import ChooseTabSection from '../components/ChooseTabSection';
@@ -63,7 +63,7 @@ export default function About() {
       
       {/* About Section */}
       <div className="reveal-on-scroll">
-        <AboutSection showButton={false} />
+        <AboutPageOverview />
       </div>
       
       {/* Purpose & Value Section */}

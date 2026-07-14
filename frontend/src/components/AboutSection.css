@@ -1,0 +1,212 @@
+.about-company-section {
+  overflow: hidden;
+}
+
+.about-company-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(42px, 5vw, 78px);
+  align-items: center;
+}
+
+.about-company-video-column,
+.about-company-content-column {
+  min-width: 0;
+}
+
+.about-company-video-shell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(35, 31, 28, 0.1);
+  border-radius: 18px;
+  background: #171512;
+  box-shadow: 0 24px 55px rgba(35, 31, 28, 0.16);
+}
+
+.about-company-video-shell iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.about-company-video-caption {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 0 0 18px;
+  color: var(--color-two);
+}
+
+.about-company-video-caption > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-company-video-caption strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.about-company-video-caption span:not(.about-company-video-icon) {
+  color: var(--color-seven);
+  font-size: 13px;
+}
+
+.about-company-video-icon {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--white-color);
+  background: var(--main-color);
+  box-shadow: 0 8px 20px rgba(221, 35, 40, 0.22);
+}
+
+.about-company-video-icon i {
+  font-size: 12px;
+  transform: translateX(1px);
+}
+
+.about-company-title {
+  margin-bottom: 26px;
+}
+
+.about-company-title .sec-title_heading {
+  margin-bottom: 16px;
+}
+
+.about-company-title .sec-title_text {
+  max-width: 640px;
+}
+
+.about-company-details {
+  display: grid;
+  gap: 13px;
+}
+
+.about-company-detail-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(125px, 0.38fr) minmax(0, 0.62fr);
+  align-items: center;
+  min-height: 82px;
+  overflow: hidden;
+  border: 1px solid rgba(35, 31, 28, 0.09);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 9px 28px rgba(35, 31, 28, 0.06);
+}
+
+.about-company-detail-card::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  content: '';
+  background: var(--main-color);
+}
+
+.about-company-detail-label,
+.about-company-detail-value {
+  padding: 19px 22px;
+}
+
+.about-company-detail-label {
+  color: var(--color-seven);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  text-transform: uppercase;
+}
+
+.about-company-detail-value {
+  border-left: 1px solid rgba(35, 31, 28, 0.08);
+  color: var(--main-color);
+  font-size: clamp(19px, 1.65vw, 25px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .about-company-section {
+    padding: 75px 0 65px;
+  }
+
+  .about-company-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .about-company-detail-card {
+    grid-template-columns: 1fr;
+  }
+
+  .about-company-detail-label {
+    padding: 15px 18px 4px;
+  }
+
+  .about-company-detail-value {
+    padding: 4px 18px 15px;
+    border-left: 0;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .about-company-section {
+    padding: 55px 0 45px;
+  }
+
+  .about-company-grid {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .about-company-video-shell {
+    border-radius: 12px;
+    box-shadow: 0 16px 34px rgba(35, 31, 28, 0.14);
+  }
+
+  .about-company-video-caption {
+    margin: 16px 0 0 4px;
+  }
+
+  .about-company-title {
+    margin-bottom: 22px;
+  }
+
+  .about-company-detail-card {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .about-company-detail-label {
+    padding: 15px 18px 4px;
+  }
+
+  .about-company-detail-value {
+    padding: 4px 18px 16px;
+    border-left: 0;
+    font-size: 20px;
+  }
+
+  .about-company-content-column .about-one_button .theme-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .about-company-video-caption span:not(.about-company-video-icon) {
+    display: none;
+  }
+}
