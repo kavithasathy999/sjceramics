@@ -1,17 +1,18 @@
-import React from 'react';
+import { FaBullseye, FaEye } from 'react-icons/fa';
+import './PurposeValue.css';
 
 export default function PurposeValue() {
   return (
     <section className="purpose-value-section">
-      <div className="purpose-value-decor-left" />
-      <div className="purpose-value-decor-right" />
+      <div className="purpose-value-decor-left" aria-hidden="true" />
+      <div className="purpose-value-decor-right" aria-hidden="true" />
       
       <div className="auto-container">
         <div className="sec-title centered">
           <div className="sec-title_title">
             <i className="flaticon-wood-1" /> Core Foundation
           </div>
-          <h2 className="sec-title_heading">Our Purpose &amp; Values</h2>
+          <h2 className="sec-title_heading">Our Mission &amp; Vision</h2>
           <div className="sec-title_text">
             Guiding our commitment to quality, trust, and craftsmanship in every tile and sanitary ware we deliver.
           </div>
@@ -19,16 +20,16 @@ export default function PurposeValue() {
 
         <div className="row clearfix">
           {/* Purpose Block */}
-          <div className="purpose-block col-lg-6 col-md-6 col-sm-12">
+          <div className="purpose-block purpose-block--mission col-lg-6 col-md-6 col-sm-12">
             <div className="purpose-block_inner">
               <div className="purpose-card-border-glow" />
               <span className="purpose-tag">VISIONARY DESIGN</span>
               <div className="purpose-block_icon">
-                <i className="flaticon-paving" />
+                <FaBullseye aria-hidden="true" />
               </div>
               <h3 className="purpose-block_title">Our Purpose</h3>
               <p className="purpose-block_text">
-                To shape inspiring environments by delivering the finest sanitary wares, premium bath fittings, and top-tier tiles that seamlessly integrate beauty, longevity, and everyday luxury.
+                To shape inspiring environments by delivering the finest top-tier tiles sanitary wares, and premium bath fitting that seamlessly integrate beauty, longevity, and everyday luxury.
               </p>
               <div className="purpose-badges-container">
                 <span className="purpose-badge-pill">Luxury Living</span>
@@ -39,16 +40,16 @@ export default function PurposeValue() {
           </div>
 
           {/* Value Block */}
-          <div className="purpose-block col-lg-6 col-md-6 col-sm-12">
+          <div className="purpose-block purpose-block--vision col-lg-6 col-md-6 col-sm-12">
             <div className="purpose-block_inner">
               <div className="purpose-card-border-glow" />
               <span className="purpose-tag">CLIENT CENTRICITY</span>
               <div className="purpose-block_icon">
-                <i className="flaticon-tile" />
+                <FaEye aria-hidden="true" />
               </div>
               <h3 className="purpose-block_title">Our Values</h3>
               <p className="purpose-block_text">
-                We are committed to absolute integrity, customer delight, and design innovation. Partnered with KAG Tiles, we promise authentic products and personalized support to build lifetime trust.
+                SJ Ceramics' vision of becoming a trusted destination for premium building materials while complementing KAG's focus on quality, innovation, ethical values, and customer satisfaction.
               </p>
               <div className="purpose-badges-container">
                 <span className="purpose-badge-pill">KAG Partnership</span>

@@ -6,6 +6,7 @@ import service1 from '../assets/images/bgimages/tiling.jpg';
 import service2 from '../assets/images/bgimages/bathroom.jpeg';
 import service3 from '../assets/images/bgimages/flooring.jpg';
 import service4 from '../assets/images/bgimages/tileinstall.jpg';
+import service5 from '../assets/images/bgimages/sanitary-wares-v2.webp';
 import './OurProcess.css';
 
 const services = [
@@ -13,6 +14,7 @@ const services = [
   { number: 2, title: 'Bathroom Tiling', image: service2, delay: 150 },
   { number: 3, title: 'Industrial Flooring', image: service3, delay: 300 },
   { number: 4, title: 'Tile Installation', image: service4, delay: 450 },
+  { number: 5, title: 'Sanitary Wares', image: service5, delay: 600 },
 ];
 
 function ServiceBlock({ service }) {
@@ -50,7 +52,7 @@ export default function ServicesTwo() {
       <div className="auto-container">
         <div className="sec-title centered">
           <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Process</div>
-          <h2 className="sec-title_heading">A Seamless Journey <br /> To Your Dream Space</h2>
+          <h2 className="sec-title_heading services-two-heading">A Seamless Journey To Your Dream Space</h2>
         </div>
         <div className="row clearfix services-two-grid">
           {services.map((service) => (

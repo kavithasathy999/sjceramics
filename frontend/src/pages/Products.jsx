@@ -1,57 +1,206 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import PageTitle from '../components/PageTitle';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import NewArrivalsSlider from '../components/NewArrivalsSlider';
+import ProductEnquiryModal from '../components/ProductEnquiryModal';
+import ProductImageModal from '../components/ProductImageModal';
 import { products } from '../utils/ProductData';
-import pageTitleBg from '../assets/images/background/35.webp';
+import { PRODUCT_FILTER_OPTIONS as FILTER_OPTIONS } from '../utils/productCatalogOptions';
 import headerBg from '../assets/images/background/14.jpg';
+import productsMarbleHero from '../assets/images/background/products-marble-hero.png';
+import sjCeramicsLogo from '../assets/images/Logo-Png.png';
+import kagLogo from '../assets/images/kaglogo.svg';
 
 // Import our custom Products CSS
 import '../styles/products.css';
+
+const PRODUCT_CATEGORIES = [
+  { name: 'Tiles', icon: 'fa-border-all' },
+  { name: 'Sanitary Wares', icon: 'fa-toilet' },
+  { name: 'Bath Fittings', icon: 'fa-shower' },
+  { name: 'Others', icon: 'fa-shapes' },
+];
+
+const SIZE_ALIASES = {
+  '300x300 mm': ['12x12'],
+  '300x600 mm': ['24X12'],
+  '600x600 mm': ['24X24'],
+  '600x1200 mm': ['48X24'],
+  '200x1200 mm': ['40X8'],
+};
+
+const FINISH_ALIASES = {
+  'Glossy/High Glossy': ['Glossy', 'Crystal_high_glossy'],
+  'Satin/Matt': ['Matt'],
+  Structured: ['Engrave'],
+  'Rustic/Carving': ['Carving'],
+  Wood: ['Varnis'],
+  'Glossy White': ['Glossy'],
+  Chrome: ['Glossy'],
+  'Mirror Finish': ['Hg_polished_finish'],
+  'Grey Powder': ['Glue'],
+  'White/Ivory': ['Matt'],
+};
+
+const USAGE_ALIASES = {
+  'Bathroom/Toilet/Kitchen': ['Bath_bedroom_living-Kit', 'Kitchen_bathroom'],
+  'Living Room/Bedroom': ['Living_room', 'Bedroom_livingroom_kit'],
+  'Elevation/Exterior': ['Elevation / Exterior Tiles', 'Elevation_exterior'],
+  'Parking/Driveway/Garage': ['Parking'],
+  Bathroom: ['Bathroom_tiles'],
+  'Bathroom/Dining': ['Bath_bedroom_living'],
+  'Bathroom/Kitchen': ['Kitchen_bathroom'],
+  'Office/Commercial/Shop': ['Commercial_spaces'],
+  'Outdoor/Bathroom': ['Outdoor', 'Bathroom_tiles'],
+  'Tiling Installation': ['Outdoor'],
+};
+
+const MATERIAL_ALIASES = {
+  'Double Charge Vitrified': ['Double_charge', 'Vitrified'],
+  'Full Body Vitrified': ['Full_body_vitrified', 'Vitrified'],
+  'Glazed Vitrified (GVT)': ['Vitrified'],
+  'Polished Glazed Vitrified (PGVT)': ['Pgvt', 'Vitrified'],
+  Ceramic: ['Porcelain'],
+  'Ceramic/Glazed Ceramic': ['Porcelain'],
+  'Cement-based': ['Floor_tiles_material'],
+};
+
+const NET_QUANTITY_BY_SIZE = {
+  '300x300 mm': '10',
+  '300x600 mm': '6',
+  '600x600 mm': '4',
+  '600x1200 mm': '2',
+  '800x800 mm': '3',
+  '200x1200 mm': '6',
+  Standard: '1',
+  '20 kg': '1',
+};
+
+const COLOR_KEYWORDS = {
+  Brown: ['brown', 'wood'],
+  Blue: ['blue', 'aqua'],
+  Black: ['black'],
+  Cream: ['beige'],
+  Gold: ['gold'],
+  Green: ['green'],
+  Ivory: ['ivory'],
+  Orange: ['orange'],
+  Pearl: ['pearl'],
+  Pink: ['pink', 'rose'],
+  Red: ['red'],
+  Teal: ['teal'],
+  White: ['white', 'bianco'],
+  Gray: ['grey', 'gray', 'slate'],
+  Yellow: ['yellow'],
+  Multicolor: ['decor', 'multi'],
+};
+
+const getProductColors = (product) => {
+  const searchableName = product.name.toLowerCase();
+  const colors = Object.entries(COLOR_KEYWORDS)
+    .filter(([, keywords]) => keywords.some((keyword) => searchableName.includes(keyword)))
+    .map(([color]) => color);
+  const darkKeywords = ['black', 'brown', 'blue', 'slate'];
+  const tone = darkKeywords.some((keyword) => searchableName.includes(keyword)) ? 'Dark' : 'Light';
+  return [...new Set([tone, ...colors])];
+};
+
+const catalogProducts = products.map((product) => ({
+  ...product,
+  filterMeta: {
+    sizes: SIZE_ALIASES[product.size] || [],
+    finishes: FINISH_ALIASES[product.finish] || [],
+    usage: USAGE_ALIASES[product.application] || [],
+    materials: MATERIAL_ALIASES[product.material] || [],
+    colors: getProductColors(product),
+    netQuantities: NET_QUANTITY_BY_SIZE[product.size] ? [NET_QUANTITY_BY_SIZE[product.size]] : [],
+  },
+}));
+const newArrivalProducts = catalogProducts.filter(product => product.isNewArrival);
+const MAX_PRICE = Math.max(...catalogProducts.map(product => product.offerPrice));
+const PRODUCTS_PER_PAGE = 12;
+const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
+
+const getPaginationItems = (currentPage, totalPages) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 4) return [1, 2, 3, 4, 5, 'end-ellipsis', totalPages];
+  if (currentPage >= totalPages - 3) {
+    return [1, 'start-ellipsis', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [1, 'start-ellipsis', currentPage - 1, currentPage, currentPage + 1, 'end-ellipsis', totalPages];
+};
+
+const matchesSelectedOptions = (selectedOptions, productOptions) => (
+  selectedOptions.length === 0 || selectedOptions.some((option) => productOptions.includes(option))
+);
+
+const findCanonicalOption = (options, value) => options.find(
+  (option) => option.toLowerCase() === String(value).toLowerCase()
+);
+
+const ROOM_USAGE_ALIASES = {
+  Bathroom: 'Bathroom_tiles',
+  'Bathroom Tiles': 'Bathroom_tiles',
+  'Living room': 'Living_room',
+  'Living Room': 'Living_room',
+  Elevation: 'Elevation / Exterior Tiles',
+  'Elevation Tiles': 'Elevation / Exterior Tiles',
+  'Stair case': 'Staircase',
+  Staircase: 'Staircase',
+  Roof: 'Roof',
+  'Roof Tiles': 'Roof',
+  Kitchen: 'Kitchen',
+  Parking: 'Parking',
+  'Swimming pool': 'Swimming_pool',
+};
+
+const getCanonicalUsage = (value) => {
+  const directMatch = findCanonicalOption(FILTER_OPTIONS.usage, value);
+  if (directMatch) return directMatch;
+  if (ROOM_USAGE_ALIASES[value]) return ROOM_USAGE_ALIASES[value];
+  return USAGE_ALIASES[value]?.[0] || '';
+};
 
 export default function Products() {
   const location = useLocation();
 
   // --- Filter & Sort States ---
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(['Tiles']);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [selectedApplications, setSelectedApplications] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [selectedFinishes, setSelectedFinishes] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [selectedColor, setSelectedColor] = useState('');
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedNetQuantities, setSelectedNetQuantities] = useState([]);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [sortBy, setSortBy] = useState('default');
   const [searchQuery, setSearchQuery] = useState('');
   
   // --- UI States ---
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-
-  // --- Filter Options Extraction ---
-  const filterOptions = {
-    categories: [...new Set(products.map(p => p.category || 'Tiles'))].sort(),
-    sizes: [...new Set(products.map(p => p.size))].sort(),
-    types: [...new Set(products.map(p => p.type))].sort(),
-    applications: [...new Set(products.map(p => p.application))].sort(),
-    materials: [...new Set(products.map(p => p.material))].sort(),
-    finishes: [...new Set(products.map(p => p.finish))].sort(),
-    brands: [...new Set(products.map(p => p.brand))].sort(),
-  };
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [previewProduct, setPreviewProduct] = useState(null);
 
   // --- Filtering Logic ---
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = catalogProducts.filter(product => {
     const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category || 'Tiles');
-    const sizeMatch = selectedSizes.length === 0 || selectedSizes.includes(product.size);
+    const sizeMatch = matchesSelectedOptions(selectedSizes, product.filterMeta.sizes);
     const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(product.type);
-    const appMatch = selectedApplications.length === 0 || selectedApplications.includes(product.application);
-    const matMatch = selectedMaterials.length === 0 || selectedMaterials.includes(product.material);
-    const finishMatch = selectedFinishes.length === 0 || selectedFinishes.includes(product.finish);
-    const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(product.brand);
-    const priceMatch = product.price <= maxPrice;
+    const appMatch = matchesSelectedOptions(selectedApplications, product.filterMeta.usage);
+    const matMatch = matchesSelectedOptions(selectedMaterials, product.filterMeta.materials);
+    const finishMatch = matchesSelectedOptions(selectedFinishes, product.filterMeta.finishes);
+    const colorMatch = matchesSelectedOptions(selectedColors, product.filterMeta.colors);
+    const netQuantityMatch = matchesSelectedOptions(selectedNetQuantities, product.filterMeta.netQuantities);
+    const priceMatch = product.offerPrice <= maxPrice;
 
     // Fuzzy text search match across multiple database attributes
     const searchMatch = searchQuery === '' || 
@@ -61,47 +210,28 @@ export default function Products() {
       product.application.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.size.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // Color match checks color keywords in product name
-    let colorMatch = true;
-    if (selectedColor) {
-      const normColor = selectedColor.toLowerCase();
-      const colorKeywordsMap = {
-        brown: ['brown', 'coffee', 'wood', 'chocolate', 'catalina'],
-        black: ['black', 'nero', 'dark', 'charcoal', 'domino'],
-        blue: ['blue', 'azure', 'aqua', 'onyx'],
-        cream: ['cream', 'beige', 'ivory', 'almond'],
-        gold: ['gold', 'golden', 'yellow', 'royal'],
-        green: ['green', 'emerald', 'mint'],
-        ivory: ['ivory', 'cream', 'beige', 'bianco', 'white'],
-        orange: ['orange', 'peach', 'terracotta'],
-        pearl: ['pearl', 'grey', 'silver'],
-        pink: ['pink', 'rose'],
-        red: ['red', 'terracotta', 'ruby'],
-        teal: ['teal', 'cyan', 'turquoise'],
-        white: ['white', 'bianco', 'snow', 'macasar'],
-        gray: ['grey', 'gray', 'silver', 'slate', 'fossil'],
-        yellow: ['yellow', 'gold', 'mustard'],
-        multicolor: ['decor', 'patchwork', 'multi', 'multicolor']
-      };
-      const keywords = colorKeywordsMap[normColor] || [normColor];
-      colorMatch = keywords.some(kw => product.name.toLowerCase().includes(kw));
-    }
-
-    return categoryMatch && sizeMatch && typeMatch && appMatch && matMatch && finishMatch && brandMatch && priceMatch && colorMatch && searchMatch;
+    return categoryMatch && sizeMatch && typeMatch && appMatch && matMatch && finishMatch &&
+      colorMatch && netQuantityMatch && priceMatch && searchMatch;
   });
 
   // --- Sorting Logic ---
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortBy === 'price-low') return a.price - b.price;
-    if (sortBy === 'price-high') return b.price - a.price;
+    if (sortBy === 'price-low') return a.offerPrice - b.offerPrice;
+    if (sortBy === 'price-high') return b.offerPrice - a.offerPrice;
     if (sortBy === 'name') return a.name.localeCompare(b.name);
     return 0; // Default sorting (no-op)
   });
 
-  // --- Reset visible count when filters change ---
+  const totalPages = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE);
+  const activePage = Math.min(currentPage, Math.max(totalPages, 1));
+  const pageStartIndex = (activePage - 1) * PRODUCTS_PER_PAGE;
+  const paginatedProducts = sortedProducts.slice(pageStartIndex, pageStartIndex + PRODUCTS_PER_PAGE);
+  const paginationItems = getPaginationItems(activePage, totalPages);
+
+  // --- Reset pagination when the catalogue result set changes ---
   useEffect(() => {
-    setVisibleCount(12);
-  }, [selectedCategories, selectedSizes, selectedTypes, selectedApplications, selectedMaterials, selectedFinishes, selectedBrands, selectedColor, maxPrice, searchQuery]);
+    setCurrentPage(1);
+  }, [selectedCategories, selectedSizes, selectedTypes, selectedApplications, selectedMaterials, selectedFinishes, selectedColors, selectedNetQuantities, maxPrice, searchQuery, sortBy]);
 
   const clearAllFilters = () => {
     setSelectedCategories([]);
@@ -110,9 +240,9 @@ export default function Products() {
     setSelectedApplications([]);
     setSelectedMaterials([]);
     setSelectedFinishes([]);
-    setSelectedBrands([]);
-    setSelectedColor('');
-    setMaxPrice(1000);
+    setSelectedColors([]);
+    setSelectedNetQuantities([]);
+    setMaxPrice(MAX_PRICE);
     setSortBy('default');
     setSearchQuery('');
   };
@@ -125,10 +255,35 @@ export default function Products() {
     }
   };
 
+  const handleCategorySelect = (category) => {
+    clearAllFilters();
+    setSelectedCategories(category ? [category] : []);
+    setMobileFiltersOpen(false);
+  };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages || page === activePage) return;
+
+    setCurrentPage(page);
+    window.requestAnimationFrame(() => {
+      document.getElementById('products-catalog-section')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+  };
+
   // --- Parse incoming state filters from About page tabs, pre-footer links, and search popup ---
   useEffect(() => {
     if (location.state) {
-      const { filterCategory, filterValue, searchQuery: incomingSearch } = location.state;
+      const {
+        filterCategory,
+        filterValue,
+        filterValues,
+        parentCategory,
+        parentType,
+        searchQuery: incomingSearch,
+      } = location.state;
       
       // Clear previous filters first to apply the quick-selection cleanly
       clearAllFilters();
@@ -136,77 +291,53 @@ export default function Products() {
       if (incomingSearch !== undefined) {
         setSearchQuery(incomingSearch);
       } else if (filterCategory === 'category') {
-        setSelectedCategories([filterValue]);
+        const incomingCategories = Array.isArray(filterValues)
+          ? filterValues.filter(value => categories.some(category => category.name === value))
+          : [filterValue];
+        setSelectedCategories(incomingCategories);
+      } else if (filterCategory === 'type') {
+        if (parentCategory) setSelectedCategories([parentCategory]);
+        setSelectedTypes([filterValue]);
+      } else if (filterCategory === 'product') {
+        if (parentCategory) setSelectedCategories([parentCategory]);
+        if (parentType) setSelectedTypes([parentType]);
+        setSearchQuery(filterValue);
+      } else if (filterCategory === 'applications' && Array.isArray(filterValues)) {
+        const validApplications = [...new Set(filterValues.map(getCanonicalUsage).filter(Boolean))];
+        setSelectedApplications(validApplications);
       } else if (filterCategory === 'room') {
-        let mappedApp = filterValue;
-        if (filterValue === 'Bathroom' || filterValue === 'Bathroom Tiles') mappedApp = 'Bathroom/Toilet/Kitchen';
-        else if (filterValue === 'Living room' || filterValue === 'Living Room') mappedApp = 'Living Room/Bedroom';
-        else if (filterValue === 'Wall') mappedApp = 'Wall';
-        else if (filterValue === 'Elevation' || filterValue === 'Elevation Tiles') mappedApp = 'Elevation/Exterior';
-        else if (filterValue === 'Stair case' || filterValue === 'Staircase') mappedApp = 'Staircase';
-        else if (filterValue === 'Roof' || filterValue === 'Roof Tiles') mappedApp = 'Roofing/Terrace';
-        
-        setSelectedApplications([mappedApp]);
+        const mappedUsage = getCanonicalUsage(filterValue);
+        if (mappedUsage) setSelectedApplications([mappedUsage]);
       } else if (filterCategory === 'size') {
-        // Map size terms to database format
-        const cleanSize = filterValue.toLowerCase().replace(/\s/g, '').replace('tiles', '');
-        let matchedSize = '';
-        if (cleanSize === '12x12') matchedSize = '300x300 mm';
-        else if (cleanSize === '24x24') matchedSize = '600x600 mm';
-        else if (cleanSize === '24x12') matchedSize = '300x600 mm';
-        else if (cleanSize === '48x24') matchedSize = '600x1200 mm';
-        
-        if (matchedSize) {
-          setSelectedSizes([matchedSize]);
-        } else {
-          // Attempt fuzzy match in sizes (e.g. "800x800" or raw numbers)
-          const searchVal = cleanSize.replace('mm', '').trim();
-          const found = filterOptions.sizes.find(s => s.toLowerCase().replace(/\s/g, '').includes(searchVal));
-          if (found) {
-            setSelectedSizes([found]);
-          } else {
-            // Check if parts match (e.g. 12x22 -> 300x550 mm)
-            const parts = searchVal.split('x');
-            if (parts.length === 2) {
-              const num1 = parseInt(parts[0]);
-              const num2 = parseInt(parts[1]);
-              // Map inches to mm (approximate: 12" -> 300mm, 24" -> 600mm)
-              const approxW = Math.round(num1 * 25);
-              const approxH = Math.round(num2 * 25);
-              const foundApprox = filterOptions.sizes.find(s => {
-                const sClean = s.toLowerCase().replace('mm','').replace(/\s/g, '');
-                return sClean.includes(approxW.toString()) || sClean.includes(approxH.toString());
-              });
-              if (foundApprox) setSelectedSizes([foundApprox]);
-            }
-          }
-        }
+        const matchedSize = findCanonicalOption(FILTER_OPTIONS.sizes, filterValue);
+        if (matchedSize) setSelectedSizes([matchedSize]);
       } else if (filterCategory === 'color') {
-        setSelectedColor(filterValue);
+        const matchedColor = findCanonicalOption(FILTER_OPTIONS.colors, filterValue);
+        if (matchedColor) setSelectedColors([matchedColor]);
       } else if (filterCategory === 'finish') {
         const normFinish = filterValue.toLowerCase();
         if (normFinish.includes('glossy')) {
-          setSelectedFinishes(['Glossy/High Glossy']);
+          setSelectedFinishes(['Glossy']);
         } else if (normFinish.includes('matt') || normFinish.includes('satin') || normFinish.includes('punch')) {
-          setSelectedFinishes(['Matt/Satin/Punch']);
+          setSelectedFinishes(['Matt']);
         } else if (normFinish.includes('elevation')) {
-          setSelectedApplications(['Elevation/Exterior']);
-          setSelectedFinishes(['Matt/Satin/Punch']);
+          setSelectedApplications(['Elevation / Exterior Tiles']);
+          setSelectedFinishes(['Matt']);
         } else if (normFinish.includes('parking')) {
-          setSelectedApplications(['Parking/Outdoor']);
+          setSelectedApplications(['Parking']);
         }
       } else if (filterCategory === 'material') {
         const normMat = filterValue.toLowerCase();
         if (normMat === 'vitrified') {
-          setSelectedTypes(['Vitrified']);
+          setSelectedMaterials(['Vitrified']);
         } else if (normMat === 'ceramic') {
-          setSelectedTypes(['Ceramic']);
+          setSelectedMaterials(['Porcelain']);
         } else if (normMat === 'porcelain') {
           setSelectedMaterials(['Porcelain']);
         } else if (normMat === 'wooden') {
-          setSelectedColor('wood');
+          setSelectedFinishes(['Varnis']);
         } else if (normMat === 'gvt') {
-          setSelectedMaterials(['GVT/PGVT']);
+          setSelectedMaterials(['Vitrified']);
         }
       }
       
@@ -223,36 +354,101 @@ export default function Products() {
     }
   }, [location.state]);
 
-  // --- Direct WhatsApp Enquiry ---
-  const handleViewDetails = (productName) => {
-    const message = `Hi, I am interested in the ${productName} tile. Please share pricing and availability details.`;
-    const whatsappUrl = `https://wa.me/919944242685?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
-
   return (
     <div className="page-wrapper">
       {/* 1. Header (Standard Website Header) */}
       <Header variant="inner" bgImage={headerBg} />
 
       {/* 2. Breadcrumbs Page Title */}
-      <PageTitle title="Tiles" bgImage={pageTitleBg} />
+      <PageTitle
+        title="Products"
+        bgImage={productsMarbleHero}
+        className="products-page-title"
+      />
 
       <main className="products-page-container">
+        <svg className="products-watermark-filter" width="0" height="0" aria-hidden="true" focusable="false">
+          <filter id="products-elephant-filter" colorInterpolationFilters="sRGB">
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.42  0 0 0 0 0.42  0 0 0 0 0.42  2 -1 -1 0 0"
+            />
+          </filter>
+        </svg>
+        <div className="products-elephant-watermarks" aria-hidden="true">
+          <img className="products-elephant-watermark watermark-one" src={sjCeramicsLogo} alt="" />
+          <img className="products-elephant-watermark watermark-two" src={sjCeramicsLogo} alt="" />
+          <img className="products-elephant-watermark watermark-three" src={sjCeramicsLogo} alt="" />
+        </div>
+
+        {/* <section
+          className="products-brand-hero"
+          style={{ '--products-hero-image': `url(${productsMarbleHero})` }}
+          aria-label="SJ Ceramics and KAG Tiles"
+        >
+          <div className="auto-container products-brand-hero_inner">
+            <div className="products-brand-hero_brands">
+              <div className="products-brand-hero_sj">
+                <img src={sjCeramicsLogo} alt="SJ Ceramics — Elegance, Quality, Trust" />
+              </div>
+
+              <span className="products-brand-hero_divider" aria-hidden="true" />
+
+              <div className="products-brand-hero_kag">
+                <img src={kagLogo} alt="KAG Tiles — Touch to feel" />
+                <strong>Wholesale and Retail</strong>
+                <p>Authorized channel partner for premium KAG tiles and fittings.</p>
+              </div>
+            </div>
+
+            <div className="products-brand-hero_links" aria-label="Brand websites">
+              <span><i className="fa-solid fa-globe" aria-hidden="true" />www.sjceramics.in</span>
+              <span><i className="fa-solid fa-globe" aria-hidden="true" />www.kagindia.com</span>
+            </div>
+          </div>
+        </section> */}
         
         {/* Catalog Description Intro - stretches full width */}
         <section className="products-intro-section">
           <div className="auto-container">
-            <h1 className="products-intro-title">Premium Tiles Catalog</h1>
+            <h1 className="products-intro-title">Premium Product Catalog</h1>
             <p className="products-intro-desc">
-              Discover our extensive range of high-quality tiles crafted to perfection. From luxury vitrified tiling 
-              and glazed floor tiles to durable elevation stones, we offer a wide variety of dimensions, applications, 
-              and finishes. Browse our designs, apply filters to find your perfect match, and enquire directly.
+              Explore a refined selection of tiles, sanitary wares, bath fittings, and essential installation
+              products chosen for lasting quality, thoughtful design, and dependable performance.
             </p>
           </div>
         </section>
 
         <div className="auto-container">
+          <NewArrivalsSlider products={newArrivalProducts} onProductSelect={setSelectedProduct} />
+
+          <section className="product-categories" aria-labelledby="product-categories-title">
+            <div className="product-categories_heading">
+              <span>Shop by category</span>
+              <h2 id="product-categories-title">Find the right collection</h2>
+              <p style={{color: "var(--color-seven)"}}>Choose a category to view products curated for your space.</p>
+            </div>
+            <div className="product-category-buttons" aria-label="Product categories">
+              {PRODUCT_CATEGORIES.map(({ name, icon }) => {
+                const isSelected = selectedCategories.includes(name);
+                return (
+                  <button
+                    type="button"
+                    className={`product-category-button${isSelected ? ' is-selected' : ''}`}
+                    onClick={() => handleCategorySelect(name)}
+                    aria-pressed={isSelected}
+                    key={name}
+                  >
+                    <span className="product-category-button_icon" aria-hidden="true">
+                      <i className={`fa-solid ${icon}`} />
+                    </span>
+                    <span>{name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
           {/* Main Content Layout */}
           <div className="products-main-layout" id="products-catalog-section">
             
@@ -273,9 +469,10 @@ export default function Products() {
                   selectedTypes.length > 0 || 
                   selectedApplications.length > 0 || 
                   selectedMaterials.length > 0 || 
-                  selectedFinishes.length > 0 || 
-                  selectedBrands.length > 0 || 
-                  maxPrice < 1000) && (
+                  selectedFinishes.length > 0 ||
+                  selectedColors.length > 0 ||
+                  selectedNetQuantities.length > 0 ||
+                  maxPrice < MAX_PRICE) && (
                   <button className="clear-filters-btn" onClick={clearAllFilters}>
                     Clear All
                   </button>
@@ -283,38 +480,23 @@ export default function Products() {
               </div>
 
               {/* Price range filter */}
-              <div className="filter-group">
-                <div className="filter-group-title">Price Range (₹/sqft)</div>
+              <div className="filter-group price-filter-card">
+                <div className="filter-group-title">Price ({formatPrice(maxPrice)})</div>
                 <div className="price-slider-wrap">
                   <input 
                     type="range" 
-                    min="10" 
-                    max="1000" 
+                    min="0" 
+                    max={MAX_PRICE}
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(parseInt(e.target.value))}
                     className="price-range-input"
+                    aria-label="Maximum product price"
+                    style={{ '--price-progress': `${(maxPrice / MAX_PRICE) * 100}%` }}
                   />
                   <div className="price-values">
-                    <span>₹10</span>
-                    <span>Max: ₹{maxPrice}</span>
+                    <span>₹0</span>
+                    <span>₹{formatPrice(MAX_PRICE)}</span>
                   </div>
-                </div>
-              </div>
-
-              {/* Category Filters */}
-              <div className="filter-group">
-                <div className="filter-group-title">Category</div>
-                <div className="filter-options-list">
-                  {filterOptions.categories.map(cat => (
-                    <label key={cat} className="filter-checkbox-label">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedCategories.includes(cat)}
-                        onChange={() => handleCheckboxChange(cat, selectedCategories, setSelectedCategories)}
-                      />
-                      {cat}
-                    </label>
-                  ))}
                 </div>
               </div>
 
@@ -322,7 +504,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Size</div>
                 <div className="filter-options-list">
-                  {filterOptions.sizes.map(size => (
+                  {FILTER_OPTIONS.sizes.map(size => (
                     <label key={size} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -335,28 +517,28 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Type Filters */}
+              {/* Finish Filters */}
               <div className="filter-group">
-                <div className="filter-group-title">Type</div>
+                <div className="filter-group-title">Finish</div>
                 <div className="filter-options-list">
-                  {filterOptions.types.map(type => (
-                    <label key={type} className="filter-checkbox-label">
+                  {FILTER_OPTIONS.finishes.map(finish => (
+                    <label key={finish} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
-                        checked={selectedTypes.includes(type)}
-                        onChange={() => handleCheckboxChange(type, selectedTypes, setSelectedTypes)}
+                        checked={selectedFinishes.includes(finish)}
+                        onChange={() => handleCheckboxChange(finish, selectedFinishes, setSelectedFinishes)}
                       />
-                      {type}
+                      {finish}
                     </label>
                   ))}
                 </div>
               </div>
 
-              {/* Application Filters */}
+              {/* Where To Use Filters */}
               <div className="filter-group">
-                <div className="filter-group-title">Application</div>
+                <div className="filter-group-title">Where To Use</div>
                 <div className="filter-options-list">
-                  {filterOptions.applications.map(app => (
+                  {FILTER_OPTIONS.usage.map(app => (
                     <label key={app} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -373,7 +555,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Material</div>
                 <div className="filter-options-list">
-                  {filterOptions.materials.map(mat => (
+                  {FILTER_OPTIONS.materials.map(mat => (
                     <label key={mat} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -386,39 +568,44 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Finish Filters */}
+              {/* Color Filters */}
               <div className="filter-group">
-                <div className="filter-group-title">Finish</div>
+                <div className="filter-group-title">Color</div>
                 <div className="filter-options-list">
-                  {filterOptions.finishes.map(finish => (
-                    <label key={finish} className="filter-checkbox-label">
+                  {FILTER_OPTIONS.colors.map(color => (
+                    <label key={color} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
-                        checked={selectedFinishes.includes(finish)}
-                        onChange={() => handleCheckboxChange(finish, selectedFinishes, setSelectedFinishes)}
+                        checked={selectedColors.includes(color)}
+                        onChange={() => handleCheckboxChange(color, selectedColors, setSelectedColors)}
                       />
-                      {finish}
+                      {color}
                     </label>
                   ))}
                 </div>
               </div>
 
-              {/* Brand Filters */}
+              {/* Net Quantity Filters */}
               <div className="filter-group">
-                <div className="filter-group-title">Brand</div>
+                <div className="filter-group-title">Net quantity (tiles per box)</div>
                 <div className="filter-options-list">
-                  {filterOptions.brands.map(brand => (
-                    <label key={brand} className="filter-checkbox-label">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedBrands.includes(brand)}
-                        onChange={() => handleCheckboxChange(brand, selectedBrands, setSelectedBrands)}
+                  {FILTER_OPTIONS.netQuantities.map(quantity => (
+                    <label key={quantity} className="filter-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={selectedNetQuantities.includes(quantity)}
+                        onChange={() => handleCheckboxChange(
+                          quantity,
+                          selectedNetQuantities,
+                          setSelectedNetQuantities,
+                        )}
                       />
-                      {brand}
+                      {quantity}
                     </label>
                   ))}
                 </div>
               </div>
+
             </aside>
 
             {/* --- Products Catalog Content --- */}
@@ -426,7 +613,9 @@ export default function Products() {
               
               <div className="catalog-top-bar">
                 <div className="product-count-label">
-                  Showing {Math.min(visibleCount, sortedProducts.length)} of {sortedProducts.length} Products
+                  {sortedProducts.length > 0
+                    ? `Showing ${pageStartIndex + 1}–${Math.min(pageStartIndex + PRODUCTS_PER_PAGE, sortedProducts.length)} of ${sortedProducts.length} Products`
+                    : 'Showing 0 Products'}
                 </div>
                 
                 <div className="sorting-dropdown-wrap">
@@ -461,7 +650,7 @@ export default function Products() {
                 ))}
                 {selectedApplications.map(app => (
                   <span key={app} className="active-tag-badge">
-                    App: {app}
+                    {app}
                     <button className="active-tag-remove" onClick={() => handleCheckboxChange(app, selectedApplications, setSelectedApplications)}>×</button>
                   </span>
                 ))}
@@ -477,28 +666,28 @@ export default function Products() {
                     <button className="active-tag-remove" onClick={() => handleCheckboxChange(finish, selectedFinishes, setSelectedFinishes)}>×</button>
                   </span>
                 ))}
-                {selectedBrands.map(brand => (
-                  <span key={brand} className="active-tag-badge">
-                    Brand: {brand}
-                    <button className="active-tag-remove" onClick={() => handleCheckboxChange(brand, selectedBrands, setSelectedBrands)}>×</button>
+                {selectedColors.map(color => (
+                  <span key={color} className="active-tag-badge">
+                    Color: {color}
+                    <button className="active-tag-remove" onClick={() => handleCheckboxChange(color, selectedColors, setSelectedColors)}>×</button>
                   </span>
                 ))}
-                {selectedColor && (
-                  <span className="active-tag-badge">
-                    Color: {selectedColor}
-                    <button className="active-tag-remove" onClick={() => setSelectedColor('')}>×</button>
+                {selectedNetQuantities.map(quantity => (
+                  <span key={quantity} className="active-tag-badge">
+                    Net quantity: {quantity}
+                    <button className="active-tag-remove" onClick={() => handleCheckboxChange(quantity, selectedNetQuantities, setSelectedNetQuantities)}>×</button>
                   </span>
-                )}
+                ))}
                 {searchQuery && (
                   <span className="active-tag-badge">
                     Search: {searchQuery}
                     <button className="active-tag-remove" onClick={() => setSearchQuery('')}>×</button>
                   </span>
                 )}
-                {maxPrice < 1000 && (
+                {maxPrice < MAX_PRICE && (
                   <span className="active-tag-badge">
-                    Price: ≤ ₹{maxPrice}
-                    <button className="active-tag-remove" onClick={() => setMaxPrice(1000)}>×</button>
+                    Price: ≤ ₹{formatPrice(maxPrice)}
+                    <button className="active-tag-remove" onClick={() => setMaxPrice(MAX_PRICE)}>×</button>
                   </span>
                 )}
               </div>
@@ -507,17 +696,20 @@ export default function Products() {
               {sortedProducts.length > 0 ? (
                 <>
                   <div className="products-grid">
-                    {sortedProducts.slice(0, visibleCount).map((product) => (
-                      <article className="product-card" key={product.id}>
+                    {paginatedProducts.map((product) => (
+                      <article
+                        className="product-card"
+                        key={product.id}
+                      >
                         <div className="product-card-img-wrap">
-                          <img src={product.image} alt={product.name} loading="lazy" />
-                          <div className="product-360-badge" title="360° View Available">
-                            <span className="text-360">360°</span>
-                            <svg className="arrow-360" viewBox="0 0 20 6" fill="none">
-                              <path d="M2 2C6 4.5 14 4.5 18 2" stroke="#0b5ed7" strokeWidth="2.2" strokeLinecap="round"/>
-                              <path d="M15 4.5L18 2L15 -0.5" stroke="#0b5ed7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
+                          <button
+                            type="button"
+                            className="product-card-image-button"
+                            onClick={() => setPreviewProduct(product)}
+                            aria-label={`View larger image of ${product.name}`}
+                          >
+                            <img src={product.image} alt={product.name} loading="lazy" />
+                          </button>
                         </div>
                         
                         <div className="product-card-info">
@@ -538,36 +730,79 @@ export default function Products() {
                             <span className="product-card-spec-value">{product.type}</span>
                           </div>
 
-                          <div className="product-card-price">
-                            ₹{product.price} <span style={{ fontSize: '11px', color: '#888', fontWeight: 'normal' }}>/ sqft</span>
+                          <div className="product-card-pricing">
+                            <div className="product-card-mrp">
+                              <span>MRP</span>
+                              <del>₹{formatPrice(product.mrp)}</del>
+                              {product.category === 'Tiles' && <small>/ sqft</small>}
+                            </div>
+                            <div className="product-card-offer">
+                              <span>Offer Price</span>
+                              <strong>₹{formatPrice(product.offerPrice)}</strong>
+                              {product.category === 'Tiles' && <small>/ sqft</small>}
+                            </div>
                           </div>
                           
-                          <button 
+                          <button
+                            type="button"
                             className="product-card-btn"
-                            onClick={() => handleViewDetails(product.name)}
+                            onClick={() => setSelectedProduct(product)}
                           >
-                            View Details
+                            Proceed To Checkout
                           </button>
                         </div>
                       </article>
                     ))}
                   </div>
 
-                  {/* Load More pagination button */}
-                  {sortedProducts.length > visibleCount && (
-                    <div className="load-more-wrap">
-                      <button 
-                        className="load-more-btn"
-                        onClick={() => setVisibleCount(prev => prev + 12)}
+                  {totalPages > 1 && (
+                    <nav className="products-pagination" aria-label="Product catalogue pagination">
+                      <button
+                        type="button"
+                        className="products-pagination_nav"
+                        onClick={() => handlePageChange(activePage - 1)}
+                        disabled={activePage === 1}
+                        aria-label="Go to previous page"
                       >
-                        View More
+                        <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                        <span>Previous</span>
                       </button>
-                    </div>
+
+                      <div className="products-pagination_pages">
+                        {paginationItems.map(item => (
+                          typeof item === 'number' ? (
+                            <button
+                              type="button"
+                              className={`products-pagination_page ${item === activePage ? 'is-active' : ''}`}
+                              onClick={() => handlePageChange(item)}
+                              aria-label={`Go to page ${item}`}
+                              aria-current={item === activePage ? 'page' : undefined}
+                              key={item}
+                            >
+                              {item}
+                            </button>
+                          ) : (
+                            <span className="products-pagination_ellipsis" aria-hidden="true" key={item}>…</span>
+                          )
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        className="products-pagination_nav"
+                        onClick={() => handlePageChange(activePage + 1)}
+                        disabled={activePage === totalPages}
+                        aria-label="Go to next page"
+                      >
+                        <span>Next</span>
+                        <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+                      </button>
+                    </nav>
                   )}
                 </>
               ) : (
                 <div className="no-products-found">
-                  <h3>No Products Found</h3>
+                  <h3>Out Of Stock</h3>
                   <p>Try adjusting or resetting your filter criteria to search again.</p>
                   <button className="theme-btn btn-style-one mt-3" onClick={clearAllFilters}>
                     <span className="btn-wrap">
@@ -591,6 +826,20 @@ export default function Products() {
         <span className="flaticon-filter" style={{ marginRight: '5px' }} />
         Filter Products
       </button>
+
+      {selectedProduct && (
+        <ProductEnquiryModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+
+      {previewProduct && (
+        <ProductImageModal
+          product={previewProduct}
+          onClose={() => setPreviewProduct(null)}
+        />
+      )}
 
       {/* 4. Footer & Navigation Helper */}
       <Footer />

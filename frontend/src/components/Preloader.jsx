@@ -20,7 +20,30 @@ export default function Preloader() {
         opacity: hidden ? 0 : 1,
         visibility: hidden ? 'hidden' : 'visible',
         transition: 'opacity 0.5s ease, visibility 0.5s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        backgroundImage: 'none',
       }}
-    />
+    >
+      <img
+        src="/Logo_Png.png"
+        alt="SJ Ceramics Logo"
+        style={{
+          maxWidth: '200px',
+          maxHeight: '150px',
+          objectFit: 'contain',
+          animation: 'logo-pulse 1.6s infinite ease-in-out',
+        }}
+      />
+      <style>{`
+        @keyframes logo-pulse {
+          0% { transform: scale(0.95); opacity: 0.85; }
+          50% { transform: scale(1.05); opacity: 1; }
+          100% { transform: scale(0.95); opacity: 0.85; }
+        }
+      `}</style>
+    </div>
   );
 }

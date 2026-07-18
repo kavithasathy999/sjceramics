@@ -1,6 +1,6 @@
 import useScrollProgress from '../hooks/useScrollProgress';
 
-export default function BackToTop() {
+export default function BackToTop({ hideWhatsApp = false }) {
   const { progress, visible, scrollToTop } = useScrollProgress(300);
 
   // Same stroke-dash trick the original backtotop.js used, driven by React state.
@@ -9,15 +9,17 @@ export default function BackToTop() {
 
   return (
     <>
-      <a
-        href="https://wa.me/919944242685"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="whatsapp-float"
-        aria-label="Contact us on WhatsApp"
-      >
-        <i className="fa-brands fa-whatsapp" />
-      </a>
+      {!hideWhatsApp && (
+        <a
+          href="https://wa.me/919384105222"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whatsapp-float"
+          aria-label="Contact us on WhatsApp"
+        >
+          <i className="fa-brands fa-whatsapp" />
+        </a>
+      )}
       <div
         className={`progress-wrap${visible ? ' active-progress' : ''}`}
         onClick={scrollToTop}

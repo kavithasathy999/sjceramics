@@ -1,15 +1,38 @@
-import p1 from '../assets/images/resource/products/1.jpg';
-import p2 from '../assets/images/resource/products/2.jpg';
-import p3 from '../assets/images/resource/products/3.jpg';
-import p4 from '../assets/images/resource/products/4.jpg';
-import p5 from '../assets/images/resource/products/5.jpg';
-import p6 from '../assets/images/resource/products/6.jpg';
-import p7 from '../assets/images/resource/products/7.jpg';
-import p8 from '../assets/images/resource/products/8.jpg';
-import p9 from '../assets/images/resource/products/9.jpg';
-import p10 from '../assets/images/resource/products/10.jpg';
+import imgMacasarWhite from '../assets/images/resource/products/kag-tiles/macasar-white.png';
+import imgCatalinaBianco from '../assets/images/resource/products/kag-tiles/catalina-bianco.png';
+import imgCatalinaDecor from '../assets/images/resource/products/kag-tiles/catalina-decor.png';
+import imgCatalinaBeige from '../assets/images/resource/products/kag-tiles/catalina-beige.png';
+import imgDominoBeige from '../assets/images/resource/products/kag-tiles/domino-beige.png';
+import imgDominoGrey from '../assets/images/resource/products/kag-tiles/domino-grey.png';
+import imgDominoDecor from '../assets/images/resource/products/kag-tiles/domino-decor.png';
+import imgDominoBlue from '../assets/images/resource/products/kag-tiles/domino-blue.png';
+import imgFossilGrey from '../assets/images/resource/products/kag-tiles/fossil-grey.png';
+import imgFossilBeige from '../assets/images/resource/products/kag-tiles/fossil-beige.png';
+import imgFossilBrown from '../assets/images/resource/products/kag-tiles/fossil-brown.png';
+import imgFossilBlue from '../assets/images/resource/products/kag-tiles/fossil-blue.png';
+import imgGalaxyGrey from '../assets/images/resource/products/kag-tiles/galaxy-grey.png';
+import imgGalaxyBlack from '../assets/images/resource/products/kag-tiles/galaxy-black.png';
+import imgGalaxyDecor from '../assets/images/resource/products/kag-tiles/galaxy-decor.png';
+import imgGalaxyBlue from '../assets/images/resource/products/kag-tiles/galaxy-blue.png';
+import imgOnyxWhite from '../assets/images/resource/products/kag-tiles/onyx-white.png';
+import imgOnyxBeige from '../assets/images/resource/products/kag-tiles/onyx-beige.png';
+import imgOnyxGrey from '../assets/images/resource/products/kag-tiles/onyx-grey.png';
+import imgOnyxBlack from '../assets/images/resource/products/kag-tiles/onyx-black.png';
+import imgRoyalWhite from '../assets/images/resource/products/kag-tiles/royal-white.png';
+import imgRoyalBeige from '../assets/images/resource/products/kag-tiles/royal-beige.png';
+import imgRoyalGrey from '../assets/images/resource/products/kag-tiles/royal-grey.png';
+import imgRoyalBlack from '../assets/images/resource/products/kag-tiles/royal-black.png';
+import imgElevationSlate from '../assets/images/resource/products/kag-tiles/elevation-slate.png';
+import imgParkingCobble from '../assets/images/resource/products/kag-tiles/parking-cobble.png';
+import imgWoodenStripMaple from '../assets/images/resource/products/kag-tiles/wooden-strip-maple.png';
+import imgWaterClosetRimless from '../assets/images/resource/products/kag-tiles/water-closet-rimless.png';
+import imgWashBasinTabletop from '../assets/images/resource/products/kag-tiles/wash-basin-tabletop.png';
+import imgFaucetLuxuryMixer from '../assets/images/resource/products/kag-tiles/faucet-luxury-mixer.png';
+import imgShowerheadPremium from '../assets/images/resource/products/kag-tiles/showerhead-premium.png';
+import imgTileAdhesiveBag from '../assets/images/resource/products/kag-tiles/tile-adhesive-bag.png';
+import imgPtmtTap from '../assets/images/resource/products/kag-tiles/ptmt-tap.png';
 
-export const products = [
+const rawProducts = [
   {
     id: 1,
     name: 'MACASAR WHITE',
@@ -20,7 +43,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 320,
-    image: p1
+    image: imgMacasarWhite
   },
   {
     id: 2,
@@ -32,7 +55,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 280,
-    image: p2
+    image: imgCatalinaBianco
   },
   {
     id: 3,
@@ -44,7 +67,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 350,
-    image: p3
+    image: imgCatalinaDecor
   },
   {
     id: 4,
@@ -56,7 +79,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 290,
-    image: p4
+    image: imgCatalinaBeige
   },
   {
     id: 5,
@@ -68,7 +91,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 310,
-    image: p5
+    image: imgDominoBeige
   },
   {
     id: 6,
@@ -80,7 +103,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 310,
-    image: p6
+    image: imgDominoGrey
   },
   {
     id: 7,
@@ -92,7 +115,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 360,
-    image: p7
+    image: imgDominoDecor
   },
   {
     id: 8,
@@ -104,7 +127,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 340,
-    image: p8
+    image: imgDominoBlue
   },
   {
     id: 9,
@@ -116,7 +139,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 450,
-    image: p9
+    image: imgFossilGrey
   },
   {
     id: 10,
@@ -128,7 +151,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 450,
-    image: p10
+    image: imgFossilBeige
   },
   {
     id: 11,
@@ -140,7 +163,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 460,
-    image: p1
+    image: imgFossilBrown
   },
   {
     id: 12,
@@ -152,7 +175,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 480,
-    image: p2
+    image: imgFossilBlue
   },
   {
     id: 13,
@@ -164,7 +187,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 520,
-    image: p3
+    image: imgGalaxyGrey
   },
   {
     id: 14,
@@ -176,7 +199,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 550,
-    image: p4
+    image: imgGalaxyBlack
   },
   {
     id: 15,
@@ -188,7 +211,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 580,
-    image: p5
+    image: imgGalaxyDecor
   },
   {
     id: 16,
@@ -200,7 +223,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 590,
-    image: p6
+    image: imgGalaxyBlue
   },
   {
     id: 17,
@@ -212,7 +235,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 340,
-    image: p7
+    image: imgOnyxWhite
   },
   {
     id: 18,
@@ -224,7 +247,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 340,
-    image: p8
+    image: imgOnyxBeige
   },
   {
     id: 19,
@@ -236,7 +259,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 340,
-    image: p9
+    image: imgOnyxGrey
   },
   {
     id: 20,
@@ -248,7 +271,7 @@ export const products = [
     finish: 'Glossy/High Glossy',
     brand: 'KAG',
     price: 360,
-    image: p10
+    image: imgOnyxBlack
   },
   {
     id: 21,
@@ -260,7 +283,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 250,
-    image: p1
+    image: imgRoyalWhite
   },
   {
     id: 22,
@@ -272,7 +295,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 250,
-    image: p2
+    image: imgRoyalBeige
   },
   {
     id: 23,
@@ -284,7 +307,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 250,
-    image: p3
+    image: imgRoyalGrey
   },
   {
     id: 24,
@@ -296,7 +319,7 @@ export const products = [
     finish: 'Satin/Matt',
     brand: 'KAG',
     price: 270,
-    image: p4
+    image: imgRoyalBlack
   },
   {
     id: 25,
@@ -308,7 +331,7 @@ export const products = [
     finish: 'Structured',
     brand: 'KAG',
     price: 180,
-    image: p5
+    image: imgElevationSlate
   },
   {
     id: 26,
@@ -320,7 +343,7 @@ export const products = [
     finish: 'Rustic/Carving',
     brand: 'KAG',
     price: 210,
-    image: p6
+    image: imgParkingCobble
   },
   {
     id: 27,
@@ -332,7 +355,7 @@ export const products = [
     finish: 'Wood',
     brand: 'Others',
     price: 390,
-    image: p7
+    image: imgWoodenStripMaple
   },
   {
     id: 28,
@@ -345,7 +368,7 @@ export const products = [
     brand: 'KAG',
     price: 8500,
     category: 'Sanitary Wares',
-    image: p2
+    image: imgWaterClosetRimless
   },
   {
     id: 29,
@@ -358,7 +381,7 @@ export const products = [
     brand: 'KAG',
     price: 3200,
     category: 'Sanitary Wares',
-    image: p3
+    image: imgWashBasinTabletop
   },
   {
     id: 30,
@@ -371,7 +394,7 @@ export const products = [
     brand: 'Aqua',
     price: 2100,
     category: 'Bath Fittings',
-    image: p4
+    image: imgFaucetLuxuryMixer
   },
   {
     id: 31,
@@ -384,7 +407,7 @@ export const products = [
     brand: 'KAG',
     price: 1800,
     category: 'Bath Fittings',
-    image: p5
+    image: imgShowerheadPremium
   },
   {
     id: 32,
@@ -397,7 +420,7 @@ export const products = [
     brand: 'KAG',
     price: 450,
     category: 'Others',
-    image: p6
+    image: imgTileAdhesiveBag
   },
   {
     id: 33,
@@ -410,6 +433,23 @@ export const products = [
     brand: 'Others',
     price: 150,
     category: 'Others',
-    image: p7
+    image: imgPtmtTap
   }
 ];
+
+// Temporary storefront pricing configuration. This object can be replaced by
+// dashboard/API values later without changing the product card components.
+const newArrivalIds = new Set([4, 8, 25, 28, 29, 31, 32]);
+
+export const products = rawProducts.map((product) => {
+  const offerPrice = product.price;
+  const mrp = Math.ceil((offerPrice * 1.18) / 10) * 10;
+
+  return {
+    ...product,
+    category: product.category || 'Tiles',
+    mrp,
+    offerPrice,
+    isNewArrival: newArrivalIds.has(product.id),
+  };
+});

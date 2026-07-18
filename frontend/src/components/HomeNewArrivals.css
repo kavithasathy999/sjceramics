@@ -1,0 +1,127 @@
+.home-arrivals {
+  padding: 100px 0 104px;
+  overflow: hidden;
+  background: #ffffff;
+  color: #231f1c;
+}
+
+.home-arrivals__container {
+  width: min(calc(100% - 32px), 1680px);
+  margin: 0 auto;
+}
+
+.home-arrivals__header {
+  max-width: 1240px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.home-arrivals__title {
+  margin-bottom: 0;
+}
+
+.home-arrivals__title .sec-title_title {
+  justify-content: center;
+}
+
+.home-arrivals__title .sec-title_heading {
+  margin: 0;
+  color: #231f1c;
+}
+
+.home-arrivals__header > p {
+  max-width: 1120px;
+  margin: 18px auto 0;
+  color: #756f69;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+@media (min-width: 900px) {
+  .home-arrivals__title .sec-title_title,
+  .home-arrivals__title .sec-title_heading,
+  .home-arrivals__header > p {
+    white-space: nowrap;
+  }
+}
+
+.home-arrivals__posts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  gap: 18px;
+}
+
+.home-arrivals__new-badge strong {
+  font-size: clamp(38px, 3.2vw, 50px);
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1024px) {
+  .home-arrivals__title .sec-title_heading {
+    font-size: clamp(44px, 4vw, 62px);
+    line-height: 1.08;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .home-arrivals {
+    padding: 78px 0 82px;
+  }
+
+  .home-arrivals__container {
+    width: min(calc(100% - 40px), 920px);
+  }
+
+  .home-arrivals__posts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media (max-width: 640px) {
+  .home-arrivals {
+    padding: 60px 0 64px;
+  }
+
+  .home-arrivals__container {
+    width: calc(100% - 30px);
+  }
+
+  .home-arrivals__header {
+    margin-bottom: 28px;
+  }
+
+  .home-arrivals__header > p {
+    font-size: 13px;
+  }
+
+  .home-arrivals__posts {
+    display: flex;
+    max-width: none;
+    gap: 13px;
+    margin: 0 -15px 0 0;
+    padding-right: 15px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .home-arrivals__posts::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-arrivals__posts > .story-post {
+    width: auto;
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+  }
+
+  .home-arrivals__new-badge strong {
+    font-size: 32px;
+  }
+}

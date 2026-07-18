@@ -1,19 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '../components/Header';
 import HeroSlider from '../components/HeroSlider';
 import AboutSection from '../components/AboutSection';
 import ServicesOne from '../components/ServicesOne';
 import CtaOne from '../components/CtaOne';
 import OurProcess from '../components/OurProcess';
+import HelpYouChoose from '../components/HelpYouChoose';
 import WhyChoose from '../components/WhyChoose';
 import ProjectsOne from '../components/ProjectsOne';
 import BrandsMarquee from '../components/BrandsMarquee';
+import HomeNewArrivals from '../components/HomeNewArrivals';
 import TestimonialSlider from '../components/TestimonialSlider';
 import BlogSection from '../components/BlogSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import './Home.css';
 
 export default function Home() {
+  const heroRef = useRef(null);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+
+    if (!hero) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsHeroVisible(entry.isIntersecting);
+    });
+
+    observer.observe(hero);
+
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -39,16 +59,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper home-page">
       <Header />
-      <HeroSlider />
+      <HeroSlider ref={heroRef} isActive={isHeroVisible} />
       
-      <div className="reveal-on-scroll">
-        <AboutSection />
-      </div>
+      <AboutSection />
       
       <ProjectsOne />
       <BrandsMarquee />
+      <HomeNewArrivals />
       <ServicesOne />
       <CtaOne />
       
@@ -59,6 +78,10 @@ export default function Home() {
       <div className="reveal-on-scroll">
         <OurProcess />
       </div>
+
+      <div className="reveal-on-scroll">
+        <HelpYouChoose />
+      </div>
       
       <div className="reveal-on-scroll">
         <BlogSection />
@@ -66,7 +89,7 @@ export default function Home() {
       
       <TestimonialSlider />
       <Footer />
-      <BackToTop />
+      <BackToTop hideWhatsApp={isHeroVisible} />
     </div>
   );
 }

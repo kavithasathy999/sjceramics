@@ -3,15 +3,68 @@ import { Link } from 'react-router-dom';
 import { navigation } from '../utils/navigation';
 import mobileLogo from '../assets/images/mobile-logo.png';
 
+function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem, onClose }) {
+  return items.map((item, index) => {
+    const itemKey = `${parentKey}-${index}`;
+    const isOpen = Boolean(openItems[itemKey]);
+
+    return (
+      <li
+        key={`${itemKey}-${item.label}`}
+        className={`${item.children ? 'dropdown' : ''}${isOpen ? ' open' : ''}`}
+      >
+        {item.path.startsWith('#') ? (
+          <a href={item.path} onClick={item.children ? undefined : onClose}>
+            {item.label}
+          </a>
+        ) : (
+          <Link to={item.path} state={item.state} onClick={onClose}>
+            {item.label}
+          </Link>
+        )}
+        {item.children && (
+          <>
+            <button
+              type="button"
+              className="dropdown-btn"
+              aria-label={`Toggle ${item.label} submenu`}
+              aria-expanded={isOpen}
+              onClick={() => toggleItem(itemKey)}
+            >
+              <span className={`fa fa-angle-${isOpen ? 'up' : 'down'}`} />
+            </button>
+            <ul
+              className={`mobile-menu-level mobile-menu-level-${level + 1}`}
+              style={{ display: isOpen ? 'block' : 'none' }}
+            >
+              <MobileNavigationItems
+                items={item.children}
+                level={level + 1}
+                parentKey={itemKey}
+                openItems={openItems}
+                toggleItem={toggleItem}
+                onClose={onClose}
+              />
+            </ul>
+          </>
+        )}
+      </li>
+    );
+  });
+}
+
 export default function MobileMenu({ open, onClose, onOpenContactModal }) {
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openItems, setOpenItems] = useState({});
 
   useEffect(() => {
-    if (!open) setOpenIndex(null);
+    if (!open) setOpenItems({});
   }, [open]);
 
-  const toggleItem = (index) => {
-    setOpenIndex((current) => (current === index ? null : index));
+  const toggleItem = (itemKey) => {
+    setOpenItems((current) => ({
+      ...current,
+      [itemKey]: !current[itemKey],
+    }));
   };
 
   return (
@@ -29,65 +82,14 @@ export default function MobileMenu({ open, onClose, onOpenContactModal }) {
         </div>
         <div className="menu-outer">
           <ul className="navigation">
-            {navigation.map((item, index) => (
-              <li
-                key={item.label}
-                className={`${item.children ? 'dropdown' : ''}${openIndex === index ? ' open' : ''}`}
-              >
-                {item.path.startsWith('#') ? (
-                  <a
-                    href={item.path}
-                    onClick={(event) => {
-                      if (item.children) {
-                        event.preventDefault();
-                        toggleItem(index);
-                      } else {
-                        onClose();
-                      }
-                    }}
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link
-                    to={item.path}
-                    state={item.state}
-                    onClick={() => {
-                      onClose();
-                    }}
-                  >
-                    {item.label}
-                  </Link>
-                )}
-                {item.children && (
-                  <>
-                    <button
-                      type="button"
-                      className="dropdown-btn"
-                      aria-label={`Toggle ${item.label} submenu`}
-                      onClick={() => toggleItem(index)}
-                    >
-                      <span className="fa fa-angle-down" />
-                    </button>
-                    <ul style={{ display: openIndex === index ? 'block' : 'none' }}>
-                      {item.children.map((child) => (
-                        <li key={child.label}>
-                          {child.path.startsWith('#') ? (
-                            <a href={child.path} onClick={onClose}>
-                              {child.label}
-                            </a>
-                          ) : (
-                            <Link to={child.path} state={child.state} onClick={onClose}>
-                              {child.label}
-                            </Link>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </li>
-            ))}
+            <MobileNavigationItems
+              items={navigation}
+              level={0}
+              parentKey="root"
+              openItems={openItems}
+              toggleItem={toggleItem}
+              onClose={onClose}
+            />
           </ul>
         </div>
       </nav>

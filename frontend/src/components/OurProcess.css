@@ -1,9 +1,19 @@
 .services-two-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
   align-items: stretch;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .services-two-grid .service-block_two {
   display: flex;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .services-two-grid .service-block_two-inner {
@@ -39,6 +49,24 @@
   min-height: 58px;
   margin: 0;
   color: var(--white-color);
+}
+
+@media (min-width: 576px) {
+  .services-two-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .services-two .services-two-heading {
+    font-size: clamp(40px, 4vw, 64px);
+    white-space: nowrap;
+  }
+
+  .services-two-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(12px, 1.4vw, 22px);
+  }
 }
 
 @media (max-width: 575px) {

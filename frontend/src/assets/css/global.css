@@ -166,7 +166,12 @@
 ***/
 
 
-/* width */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--main-color) #f1f1f1;
+}
+
+/* Main website scrollbar width */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -174,11 +179,15 @@
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 999px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 999px;
   background-color: var(--main-color);
+  background-clip: padding-box;
 }
 
 /* Handle on hover */

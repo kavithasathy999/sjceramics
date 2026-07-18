@@ -1,0 +1,80 @@
+/* Keep only the About banner at half of the visible page height. */
+.about-page-wrapper > .page-title {
+  display: flex !important;
+  height: 50vh;
+  min-height: 50vh !important;
+  padding: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-attachment: scroll !important;
+  background-position: center center !important;
+}
+
+.about-page-wrapper > .page-title > .auto-container {
+  width: 100%;
+}
+
+/* Continuous Shop By Room Designs marquee */
+.about-page-wrapper .room-designs-section {
+  overflow: hidden;
+}
+
+.about-page-wrapper .room-designs-swiper {
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 4px 22px;
+}
+
+.about-page-wrapper .room-designs-swiper .swiper-wrapper {
+  align-items: stretch;
+  transition-timing-function: linear !important;
+}
+
+.about-page-wrapper .room-designs-swiper .swiper-slide {
+  display: flex;
+  height: auto;
+}
+
+.about-page-wrapper .room-designs-swiper .room-design-card {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(86, 65, 50, 0.08);
+  box-shadow: 0 12px 30px rgba(53, 40, 31, 0.1);
+  transform: translateZ(0);
+}
+
+.about-page-wrapper .room-designs-swiper .room-design-card:focus-visible {
+  outline: 3px solid rgba(221, 35, 40, 0.55);
+  outline-offset: 3px;
+}
+
+.about-page-wrapper .room-designs-swiper .room-design-banner {
+  background: linear-gradient(180deg, rgba(27, 25, 24, 0.68), rgba(20, 18, 17, 0.94));
+  backdrop-filter: blur(4px);
+}
+
+@media (min-width: 1024px) {
+  .about-page-wrapper .room-designs-swiper {
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .about-page-wrapper .room-designs-swiper .room-design-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 38px rgba(53, 40, 31, 0.16);
+  }
+}
+
+@media (max-width: 767px) {
+  .about-page-wrapper .room-designs-swiper {
+    width: calc(100% + 12px);
+    padding: 6px 0 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page-wrapper .room-designs-swiper .room-design-card,
+  .about-page-wrapper .room-designs-swiper .room-design-img-wrap img {
+    transition: none !important;
+  }
+}

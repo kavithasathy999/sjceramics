@@ -34,6 +34,21 @@ const RoomIcons = {
     <svg viewBox="0 0 24 24">
       <path d="M19 3h-3v3h-3v3H10v3H7v3H4v6h17V3zm-1 17H5v-1h3v-3h3v-3h3v-3h3V5h1v15z" />
     </svg>
+  ),
+  kitchen: (
+    <svg viewBox="0 0 24 24">
+      <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm0 2v5h7V5H4zm9 0v5h7V5h-7zM4 12v7h7v-7H4zm9 0v7h7v-7h-7zm3 1h2v2h-2v-2zM6 13h2v2H6v-2z" />
+    </svg>
+  ),
+  flooring: (
+    <svg viewBox="0 0 24 24">
+      <path d="M3 3h18v18H3V3zm2 2v6h6V5H5zm8 0v6h6V5h-6zM5 13v6h6v-6H5zm8 0v6h6v-6h-6z" />
+    </svg>
+  ),
+  parking: (
+    <svg viewBox="0 0 24 24">
+      <path d="M7 2h7a6 6 0 0 1 0 12h-3v8H7V2zm4 4v4h3a2 2 0 0 0 0-4h-3z" />
+    </svg>
   )
 };
 
@@ -73,18 +88,21 @@ export default function ChooseTabSection() {
     { name: 'Living room', icon: 'livingroom', value: 'Living room' },
     { name: 'Elevation', icon: 'elevation', value: 'Elevation' },
     { name: 'Swimming pool', icon: 'pool', value: 'Swimming pool' },
-    { name: 'Stair case', icon: 'staircase', value: 'Stair case' }
+    { name: 'Stair case', icon: 'staircase', value: 'Stair case' },
+    { name: 'Kitchen', icon: 'kitchen', value: 'Kitchen' },
+    { name: 'Flooring', icon: 'flooring', value: 'Tiles', category: 'category' },
+    { name: 'Parking', icon: 'parking', value: 'Parking' }
   ];
 
   const sizes = [
-    '12X12 mm', '12x22 mm', '12x8 mm', '15x10 mm', '16x16 mm',
-    '18x12 mm', '20x20 mm', '24x12 mm', '24x24 mm', '40x8 mm',
-    '48x24 mm', '64x32 mm', '72x48 mm', '96x32 mm'
+    '12X12', '12x22', '12x8', '15x10', '16x16',
+    '18x12', '20x20', '24x12', '24x24', '40x8',
+    '48x24', '64x32', '72x48', '96x32'
   ];
 
   const thicknesses = [
-    '1 mm', '2 mm', '3 mm', '4 mm', '5 mm', '6 mm', '7 mm', '8 mm',
-    '9 mm', '10 mm', '11 mm', '12 mm', '13 mm', '14 mm', '15 mm', '16 mm'
+    '6 mm', '7 mm', '8.5 mm',
+    '9 mm', '10 mm', '12 mm', '15 mm', '20 mm'
   ];
 
   // Route to catalog with parameters
@@ -153,12 +171,17 @@ export default function ChooseTabSection() {
             {/* Rooms tab panel */}
             {activeTab === 1 && (
               <div className="rooms-panel-container">
-                <div className="rooms-grid">
+                <div
+                  className="rooms-grid"
+                  role="region"
+                  aria-label="Room collections"
+                  tabIndex={0}
+                >
                   {rooms.map((room, idx) => (
                     <div 
                       className="room-card-item" 
                       key={idx}
-                      onClick={() => handleSelect('room', room.value)}
+                      onClick={() => handleSelect(room.category || 'room', room.value)}
                     >
                       <div className="room-card-icon-wrap">
                         {RoomIcons[room.icon]}

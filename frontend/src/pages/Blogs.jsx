@@ -5,10 +5,11 @@ import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { posts } from '../utils/BlogData';
 import bannerBg from '../assets/images/background/blogs_banner_bg.png';
+import './Blogs.css';
 
 export default function Blogs() {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper blogs-page-wrapper">
       <Header />
 
       {/* Standardized Marble Page Title Banner */}

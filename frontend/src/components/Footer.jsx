@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import footerLogo from '../assets/images/Logo-Png.png';
+import kagLogo from '../assets/images/kaglogo.svg';
 import '../styles/quicklinks.css';
 
 const quickLinks = [
@@ -14,33 +15,9 @@ const seoColumns = [
   {
     sections: [
       {
-        title: 'Tiles By Space',
-        type: 'search',
-        links: ['Floor Tiles', 'Wall Tiles'],
-      },
-      {
-        title: 'Tiles By Area',
-        type: 'search',
-        links: [
-          'Bathroom Tiles', 'Kitchen Tiles', 'Living Room Tiles', 'Outdoor Tiles',
-          'Parking Tiles', 'Bedroom Tiles', 'Elevation Tiles', 'Balcony Tiles',
-          'Pooja Room Tiles', 'Stair Tiles', 'Terrace Tiles', 'Drawing Room Tiles',
-          'Wash Basin Tiles', 'Hallway Tiles', 'Garden Tiles', 'Paving Tiles',
-          'TV Unit Tiles', 'Foyer Tiles', 'Stout Passage Tiles', 'Porch Tiles',
-          'Pathway Tiles', 'Dining Room Tiles', 'Commercial Tiles',
-          'Swimming Pool Tiles', 'Hospital Tiles', 'School Tiles', 'Bar Tiles',
-          'Restaurant Tiles',
-        ],
-      },
-      {
-        title: 'Natural Stone and Brick Cladding',
-        type: 'search',
-        links: [
-          'Natural Stone Cladding', 'Brick Cladding', 'Red Brick Cladding',
-          'White Brick Cladding', 'Stone Murals', 'God Picture Tiles and Stones',
-          'Buddha Tiles and Stones', 'Krishna Tiles and Stones',
-          'Ganesha Tiles and Stones', 'Venkateshwara Tiles and Stones',
-        ],
+        title: 'Popular Tiles By Size',
+        type: 'size',
+        links: ['12X12 Tiles', '24X24 Tiles', '18X12 Tiles', '15X10 Tiles', '16X16 Tiles', '24X12 Tiles'],
       },
     ],
   },
@@ -50,48 +27,23 @@ const seoColumns = [
         title: 'Tiles By Size',
         type: 'size',
         links: [
-          '1x1 Tiles', '2x2 Tiles', '2x4 Tiles', '4x4 Tiles', '4x8 Tiles',
-          '300x450 mm Tiles', '300x600 mm Tiles', '1200x1800 mm Tiles',
-          '800x1600 mm Tiles', '300x900 mm Tiles', '300x1200 mm Tiles',
-          '400x400 mm Tiles', '400x1200 mm Tiles', '500x500 mm Tiles',
-          '800x3000 mm Tiles', '800x2400 mm Tiles', '100x300 mm Tiles',
-          '100x200 mm Tiles', '150x900 mm Tiles', '200x1200 mm Tiles',
-          '200x200 mm Tiles',
+          '12x22 Tiles', '12x8 Tiles', '20x20 Tiles', '40x8 Tiles',
+          '48x24 Tiles', '64x32 Tiles', '72x48 Tiles', '96x32 Tiles',
+          '12x12 Tiles', '24x24 Tiles', '18x12 Tiles', '15x10 Tiles',
+          '16x16 Tiles', '24x12 Tiles',
         ],
       },
+    ],
+  },
+  {
+    sections: [
       {
         title: 'Tiles By Finish',
         type: 'finish',
         links: [
-          'Anti Skid Tiles', 'Glossy Tiles', 'Polished Tiles', 'Matt Tiles',
-          'Carving Tiles', 'Metallic Tiles', 'Rustic Tiles', 'Lappato Tiles',
-          'Satin Tiles', 'Hi-Gloss Tiles',
-        ],
-      },
-      {
-        title: 'Wall Panels',
-        type: 'search',
-        links: ['Louver Panels', 'PVC Wall Panels', 'Charcoal Panels', 'Fluted Panels'],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: 'Tiles By Design',
-        type: 'search',
-        links: [
-          '3D Tiles', 'Wooden Tiles', 'Marble Tiles', 'Texture Tiles',
-          'Mosaic Tiles', 'Granite Tiles', 'Stone Tiles', 'Pattern Tiles',
-          'Geometric Tiles', 'Cement Tiles', 'Flower Tiles', 'Travertine Tiles',
-          'Slate Tiles', 'Statuario Tiles', 'Plain Tiles', 'Onyx Tiles',
-          'End Match Tiles', 'Book Match Tiles', 'Carrara Tiles', 'Abstract Tiles',
-          'Monochrome Tiles', 'Stylized Tiles', 'Brick Tiles', 'Hexagonal Tiles',
-          'Limestone Tiles', 'Wooden Plank Tiles', 'Athangudi Tiles',
-          'Moroccan Tiles', 'Subway Tiles', 'Kitkat Tiles', 'Chevron Tiles',
-          'Octagon Tiles', 'Border Tiles', 'Fluted Tiles', 'Terrazzo Tiles',
-          'Tropical Tiles', 'Carpet Tiles', 'Poster Tiles', 'Herringbone Tiles',
-          'Kota Tiles', 'Blue Pottery Tiles', 'Terracotta Clay Jali',
+          'Dark Light Highlighter Concept', 'Digital Vitrified Parking',
+          'High Depth Elevation', 'Satin Interior', 'Glossy', 'Matt',
+          'Glossy Floor', 'Dark Wooden Glossy', 'Punch',
         ],
       },
     ],
@@ -99,54 +51,18 @@ const seoColumns = [
   {
     sections: [
       {
-        title: 'Tiles By Type',
+        title: 'Tiles By Material',
         type: 'search',
-        links: [
-          'Vitrified Tiles', 'Ceramic Tiles', 'Porcelain Tiles', 'Designer Tiles',
-          'Digital Tiles', 'Double Charge Vitrified Tiles', 'Glazed Tiles',
-          'Cool Tiles', 'Glass Highlighter Tiles', 'Full Body Vitrified Tiles',
-          'Printed Tiles', 'Nano Tiles',
-        ],
-      },
-      {
-        title: 'Tiles Accessories',
-        type: 'search',
-        links: [
-          'Tile Grout', 'Epoxy Grout', 'Cementitious Grout', 'Tile Beading',
-          'Metal Beading', 'Tile Adhesives', 'Tile Spacers', 'Stone Care',
-          'T Profile Patti', 'U Profile Patti',
-        ],
-      },
-      {
-        title: 'Decorative Stones',
-        type: 'search',
-        links: ['Pebble Stones', 'Black Pebble Stones', 'White Pebble Stones'],
-      },
-      {
-        title: 'Imported Tiles Collection',
-        type: 'search',
-        links: ['Imported Tiles', 'Italian Tiles', 'Spanish Tiles', 'Chinese Tiles'],
-      },
-      {
-        title: 'Home Utility Products',
-        type: 'search',
-        links: ['Wash Basin', 'Kitchen Sink', 'Glass Blocks'],
+        links: ['Vitrified', 'Ceramic', 'Porcelain', 'Wooden', 'GVT'],
       },
     ],
   },
   {
     sections: [
       {
-        title: 'Tiles By Color',
-        type: 'color',
-        links: [
-          'White Tiles', 'Black Tiles', 'Brown Tiles', 'Beige Tiles', 'Ivory Tiles',
-          'Cream Tiles', 'Yellow Tiles', 'Blue Tiles', 'Green Tiles', 'Grey Tiles',
-          'Pink Tiles', 'Red Tiles', 'Aqua Tiles', 'Orange Tiles', 'Sky Blue Tiles',
-          'Gold Tiles', 'Purple Tiles', 'Terracotta Tiles', 'Black and White Tiles',
-          'Blue and White Tiles', 'Grey and White Tiles', 'Black and Gold Tiles',
-          'White and Gold Tiles',
-        ],
+        title: 'Where To Use',
+        type: 'search',
+        links: ['Elevation Tiles', 'Living Room Tiles', 'Staircase Tiles', 'Roof Tiles', 'Bathroom Tiles'],
       },
     ],
   },
@@ -198,7 +114,7 @@ export default function Footer() {
       </section>
 
       <footer className="main-footer">
-      <div className="main-footer_bg" style={{ backgroundImage: `url("https://themazine.com/html/fllopi/assets/images/background/6.jpg")` }} />
+      <div className="main-footer_bg" />
       <div className="auto-container">
         <div className="inner-container">
           <div className="widgets-section">
@@ -207,12 +123,32 @@ export default function Footer() {
               <div className="footer_column col-lg-3 col-md-6 col-sm-12">
                 <div className="footer-widget footer-two_logo-widget">
                   <div className="footer-logo">
-                    <Link to="/" onClick={() => window.scrollTo(0, 0)}><img src={footerLogo} alt="SJ Ceramics" title="SJ Ceramics" style={{ borderRadius: '10px' }} /></Link>
+                    <div className="footer-brand-lockup">
+                      <Link
+                        className="footer-logo-card footer-logo-card--sj"
+                        to="/"
+                        onClick={() => window.scrollTo(0, 0)}
+                      >
+                        <img src={footerLogo} alt="SJ Ceramics" title="SJ Ceramics" />
+                      </Link>
+
+                      <div className="footer-partner-brand">
+                        <div className="footer-partner-logo-card">
+                          <img src={kagLogo} alt="KAG Tiles" title="KAG Tiles" />
+                        </div>       
+                        <span className="footer-partner-label footer-partner-label--tagline" lang="ta">
+                          இது பேரல்ல, பெருமை
+                        </span>
+                        <span className="footer-partner-label footer-partner-label--channel">
+                          Authorized Channel Partner
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="footer-text mt-4">
+                  <div className="footer-text">
                     SJ Ceramics, a proud channel partner of KAG Tiles, is your trusted destination for premium sanitary wares, luxurious bath fittings, and top-quality tiles. Browse our wide range of products and enquire directly.
                   </div>
-                  <div className="footer_socials mt-4">
+                  <div className="footer_socials">
                     <a className="fa-brands fa-facebook-f fa-fw me-2" href="#" aria-label="Facebook" />
                     <a className="fa-brands fa-instagram fa-fw me-2" href="#" aria-label="Instagram" />
                     <a
@@ -265,12 +201,13 @@ export default function Footer() {
 
               {/* Column 3: Address */}
               <div className="footer_column col-lg-3 col-md-6 col-sm-12">
-                <div className="footer-widget links-widget">
+                <div className="footer-widget links-widget footer-address-widget">
                   <h5 className="footer-title">ADDRESS</h5>
-                  <ul className="footer-list text-white">
-                    <li className="mb-1" style={{ color: '#ffffff', fontWeight: 'bold' }}>SJ Ceramics</li>
-                    <li className="mb-3" style={{ fontSize: '0.9em' }}>Authorized Channel Partner - KAG Tiles</li>
-                    <li style={{ lineHeight: '1.8' }}>107/2A, Medavakkam - Mambakkam Main Road, <br/>Mambakkam, Chennai, <br/>Tamil Nadu, India - 600127</li>
+                  <ul className="footer-list footer-address-list text-white">
+                    <li className="footer-address-lines">
+                      <span>107/2A, Medavakkam - Mambakkam Main Road, Mambakkam, Chennai, Tamil Nadu,</span>
+                      <span>India - 600127.</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -281,27 +218,18 @@ export default function Footer() {
                   <h5 className="footer-title">CONTACT US</h5>
                   <ul className="footer-list">
                     <li className="mb-3">
-                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Mobile Contact</span>
-                      <a href="tel:+919944242685" style={{ display: 'flex', alignItems: 'center' }} className="mb-1">
-                        <i className="fa-brands fa-whatsapp me-2" style={{color: '#25D366', fontSize: '1.2em'}} /> +91 99442 42685
-                      </a>
+                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Mobile Numbers</span>
                       <a href="tel:+919384105222" style={{ display: 'flex', alignItems: 'center' }}>
                         <i className="fa-solid fa-phone me-2" style={{ fontSize: '1.1em' }} /> +91 93841 05222
                       </a>
-                    </li>
-                    <li className="mb-3">
-                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Office Landline</span>
-                      <a href="tel:04446560926" style={{ display: 'flex', alignItems: 'center' }}>
-                        <i className="fa-solid fa-phone me-2" style={{ fontSize: '1.1em' }} /> 044 46560926
+                      <a href="tel:044-4656 0926" style={{ display: 'flex', alignItems: 'center' }}>
+                        <i className="fa-solid fa-phone me-2" style={{ fontSize: '1.1em' }} /> 044-4656 0926
                       </a>
                     </li>
                     <li>
-                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Official Email Address</span>
-                      <a href="mailto:sales@sjceramics.in" style={{ display: 'flex', alignItems: 'center' }} className="mb-1">
+                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Email Address</span>
+                      <a href="mailto:sales@sjceramics.in" style={{ display: 'flex', alignItems: 'center' }}>
                         <i className="fa-solid fa-envelope me-2" style={{ fontSize: '1.1em' }} /> sales@sjceramics.in
-                      </a>
-                      <a href="mailto:premkumar@sjceramics.in" style={{ display: 'flex', alignItems: 'center' }}>
-                        <i className="fa-solid fa-envelope me-2" style={{ fontSize: '1.1em' }} /> premkumar@sjceramics.in
                       </a>
                     </li>
                   </ul>

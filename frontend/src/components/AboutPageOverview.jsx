@@ -39,7 +39,7 @@ export default function AboutPageOverview() {
                 <div className="about-one_feature col-lg-6 col-md-6 col-sm-12">
                   <div className="about-one_feature-inner">
                     <div className="about-one_feature-icon flaticon-tile" />
-                    Premium Sanitaryware &amp; <br /> Bath Fittings
+                    Sanitaryware &amp; <br /> Bath Fittings
                   </div>
                 </div>
               </div>

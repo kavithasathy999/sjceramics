@@ -602,8 +602,8 @@
 	top:0px;
 	right:0px;
 	bottom:0px;
-	opacity:0.80;
-	background-color:var(--color-ten);
+	opacity:0.35;
+	background-color:#17124f;
 }
 
 .cta-one_ball{
@@ -843,6 +843,57 @@
 .services-three_content-outer{
 	position:relative;
 	margin-right:-30px;
+}
+
+.services-three_highlights{
+	position:relative;
+	display:grid;
+	grid-template-columns:repeat(2, minmax(0, 1fr));
+	gap:14px;
+	margin:30px 0px 0px;
+	padding:0px;
+	list-style:none;
+}
+
+.services-three_highlight{
+	position:relative;
+	display:flex;
+	align-items:center;
+	gap:14px;
+	min-height:76px;
+	padding:15px 18px;
+	font-size:17px;
+	font-weight:600;
+	line-height:25px;
+	color:var(--color-two);
+	background-color:var(--white-color);
+	border:1px solid rgba(var(--main-color-rgb), 0.16);
+	box-shadow:0px 10px 30px rgba(24, 24, 24, 0.06);
+	transition:transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.services-three_highlight:hover{
+	transform:translateY(-3px);
+	border-color:rgba(var(--main-color-rgb), 0.42);
+	box-shadow:0px 14px 34px rgba(24, 24, 24, 0.10);
+}
+
+.services-three_highlight-icon{
+	position:relative;
+	display:inline-flex;
+	flex:0 0 42px;
+	width:42px;
+	height:42px;
+	align-items:center;
+	justify-content:center;
+	border-radius:50%;
+	background-color:rgba(var(--main-color-rgb), 0.12);
+}
+
+.services-three_highlight-icon i{
+	font-size:18px;
+	line-height:1;
+	color:var(--main-color);
 }
 
 /* Skills Section */

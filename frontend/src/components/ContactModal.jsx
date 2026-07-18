@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
+import { PRODUCT_FILTER_OPTIONS, PRODUCT_TYPE_OPTIONS } from '../utils/productCatalogOptions';
 import SearchableDropdown from './SearchableDropdown';
 
 const PhoneInputComponent = PhoneInput.default || PhoneInput;
@@ -13,6 +14,32 @@ const EMPTY_FORM = {
 const ADDRESS_PATTERN = /^[a-zA-Z0-9\s,./-]*$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const wordCount = (value) => value.trim() ? value.trim().split(/\s+/).length : 0;
+let nextPreferenceId = 0;
+const createProductPreference = () => ({
+  id: `product-preference-${nextPreferenceId += 1}`,
+  productType: '',
+  whereToUse: '',
+  tileSize: '',
+  roomLength: '',
+  roomWidth: '',
+});
+const isEmptyProductPreference = (row) => (
+  !row.productType && !row.whereToUse && !row.tileSize && !row.roomLength && !row.roomWidth
+);
+
+function getProductPreferenceErrors(row) {
+  const dimensionError = (value) => (
+    value && Number(value) > 0 ? '' : 'Enter a value greater than 0.'
+  );
+
+  return {
+    productType: row.productType ? '' : 'Select a product type.',
+    whereToUse: row.whereToUse ? '' : 'Select where to use it.',
+    tileSize: row.tileSize ? '' : 'Select a size.',
+    roomLength: dimensionError(row.roomLength),
+    roomWidth: dimensionError(row.roomWidth),
+  };
+}
 
 // Returns the precise inline message used by both live validation and submit validation.
 function getFieldError(field, value) {
@@ -34,16 +61,20 @@ function getFieldError(field, value) {
 export default function ContactModal({ isOpen, onClose }) {
   const [preference, setPreference] = useState('');
   const [formData, setFormData] = useState(EMPTY_FORM);
+  const [productPreferences, setProductPreferences] = useState(() => [createProductPreference()]);
+  const [productPreferenceErrors, setProductPreferenceErrors] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const preferenceRef = useRef(null);
 
-  const resetAndClose = () => {
+  const resetAndClose = useCallback(() => {
     setPreference('');
     setFormData(EMPTY_FORM);
+    setProductPreferences([createProductPreference()]);
+    setProductPreferenceErrors({});
     setErrors({});
     onClose();
-  };
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -51,7 +82,7 @@ export default function ContactModal({ isOpen, onClose }) {
     document.addEventListener('keydown', onKeyDown);
     const focusTimer = window.setTimeout(() => preferenceRef.current?.focus(), 80);
     return () => { document.removeEventListener('keydown', onKeyDown); window.clearTimeout(focusTimer); };
-  }, [isOpen]);
+  }, [isOpen, resetAndClose]);
 
   if (!isOpen) return null;
 
@@ -63,6 +94,8 @@ export default function ContactModal({ isOpen, onClose }) {
     const value = event.target.value;
     setPreference(value);
     setFormData(EMPTY_FORM);
+    setProductPreferences([createProductPreference()]);
+    setProductPreferenceErrors({});
     setErrors({ preference: getFieldError('preference', value) });
   };
 
@@ -103,18 +136,85 @@ export default function ContactModal({ isOpen, onClose }) {
     setLiveError('city', city);
   };
 
+  const handleProductPreferenceChange = (rowId, field, value) => {
+    if ((field === 'roomLength' || field === 'roomWidth') && value && !/^\d*(?:\.\d{0,2})?$/.test(value)) return;
+
+    setProductPreferences((current) => current.map((row) => (
+      row.id === rowId ? { ...row, [field]: value } : row
+    )));
+    setProductPreferenceErrors((current) => ({
+      ...current,
+      [rowId]: { ...current[rowId], [field]: '' },
+    }));
+  };
+
+  const validateProductPreference = (row) => {
+    const rowErrors = getProductPreferenceErrors(row);
+    setProductPreferenceErrors((current) => ({ ...current, [row.id]: rowErrors }));
+    return Object.values(rowErrors).every((error) => !error);
+  };
+
+  const handleAddProductPreference = () => {
+    const lastRow = productPreferences[productPreferences.length - 1];
+    if (!validateProductPreference(lastRow)) return;
+    setProductPreferences((current) => [...current, createProductPreference()]);
+  };
+
+  const handleRemoveProductPreference = (rowId) => {
+    setProductPreferences((current) => current.filter((row) => row.id !== rowId));
+    setProductPreferenceErrors((current) => {
+      const nextErrors = { ...current };
+      delete nextErrors[rowId];
+      return nextErrors;
+    });
+  };
+
+  const getActiveProductPreferences = () => productPreferences.filter((row, index) => (
+    index === 0 || !isEmptyProductPreference(row)
+  ));
+
+  const validateProductPreferences = () => {
+    const activeRows = getActiveProductPreferences();
+    const nextErrors = activeRows.reduce((result, row) => ({
+      ...result,
+      [row.id]: getProductPreferenceErrors(row),
+    }), {});
+    setProductPreferenceErrors(nextErrors);
+    return Object.values(nextErrors).every((rowErrors) => (
+      Object.values(rowErrors).every((error) => !error)
+    ));
+  };
+
   const validateAll = () => {
     const values = { preference, ...formData };
     const nextErrors = Object.keys(values).reduce((result, field) => ({ ...result, [field]: getFieldError(field, values[field]) }), {});
     setErrors(nextErrors);
-    return Object.values(nextErrors).every((error) => !error);
+    const formIsValid = Object.values(nextErrors).every((error) => !error);
+    const preferencesAreValid = validateProductPreferences();
+    return formIsValid && preferencesAreValid;
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!validateAll()) return;
     setIsSubmitting(true);
-    const payload = { preference, ...formData, phone: `+${formData.phone}`, fullName: formData.fullName.trim(), email: formData.email.trim(), address1: formData.address1.trim(), address2: formData.address2.trim(), interest: formData.interest.trim() };
+    const payload = {
+      preference,
+      ...formData,
+      productPreferences: getActiveProductPreferences().map((row) => ({
+        productType: row.productType,
+        whereToUse: row.whereToUse,
+        tileSize: row.tileSize,
+        roomLength: row.roomLength,
+        roomWidth: row.roomWidth,
+      })),
+      phone: `+${formData.phone}`,
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
+      address1: formData.address1.trim(),
+      address2: formData.address2.trim(),
+      interest: formData.interest.trim(),
+    };
     // Replace this boundary with the enquiry API call when it is available.
     window.setTimeout(() => {
       console.info('Submitted inquiry:', payload);
@@ -157,6 +257,114 @@ export default function ContactModal({ isOpen, onClose }) {
               <div className="form-group"><label htmlFor="state">State <span className="required">*</span></label><SearchableDropdown id="state" name="state" options={statesList} value={formData.state} onChange={handleStateChange} placeholder="Select your state" error={Boolean(errors.state)} ariaInvalid={Boolean(errors.state)} ariaDescribedby={errors.state ? 'state-error' : undefined} /><Error field="state" /></div>
               <div className="form-group"><label htmlFor="city">City <span className="required">*</span></label><SearchableDropdown id="city" name="city" options={cities} value={formData.city} onChange={handleCityChange} placeholder={formData.state ? 'Select your city' : 'Choose a state first'} disabled={!formData.state} error={Boolean(errors.city)} ariaInvalid={Boolean(errors.city)} ariaDescribedby={errors.city ? 'city-error' : undefined} /><Error field="city" /></div>
             </div>
+            <section className="product-preferences" aria-labelledby="product-preferences-title">
+              <div className="product-preferences-heading">
+                <h4 id="product-preferences-title">Choose your preferences</h4>
+              </div>
+              <div className="product-preferences-table">
+                <div className="product-preferences-columns" aria-hidden="true">
+                  <span>Product Type</span>
+                  <span>Where to Use</span>
+                  <span>Size of the Tile</span>
+                  <span>Room Length (ft)</span>
+                  <span>Room Width (ft)</span>
+                  <span>Action</span>
+                </div>
+                {productPreferences.map((row, index) => {
+                  const rowErrors = productPreferenceErrors[row.id] || {};
+                  const isLastRow = index === productPreferences.length - 1;
+                  return (
+                    <div className="product-preference-row" key={row.id}>
+                      <div className="product-preference-field" data-label="Product Type">
+                        <label className="visually-hidden" htmlFor={`${row.id}-type`}>Product Type</label>
+                        <SearchableDropdown
+                          id={`${row.id}-type`}
+                          name="productType"
+                          options={PRODUCT_TYPE_OPTIONS}
+                          value={row.productType}
+                          onChange={(event) => handleProductPreferenceChange(row.id, 'productType', event.target.value)}
+                          placeholder="Select"
+                          error={Boolean(rowErrors.productType)}
+                          ariaInvalid={Boolean(rowErrors.productType)}
+                          ariaDescribedby={rowErrors.productType ? `${row.id}-type-error` : undefined}
+                        />
+                        {rowErrors.productType && <span id={`${row.id}-type-error`} className="error-text">{rowErrors.productType}</span>}
+                      </div>
+                      <div className="product-preference-field" data-label="Where to Use">
+                        <label className="visually-hidden" htmlFor={`${row.id}-usage`}>Where to Use</label>
+                        <SearchableDropdown
+                          id={`${row.id}-usage`}
+                          name="whereToUse"
+                          options={PRODUCT_FILTER_OPTIONS.usage}
+                          value={row.whereToUse}
+                          onChange={(event) => handleProductPreferenceChange(row.id, 'whereToUse', event.target.value)}
+                          placeholder="Select"
+                          error={Boolean(rowErrors.whereToUse)}
+                          ariaInvalid={Boolean(rowErrors.whereToUse)}
+                          ariaDescribedby={rowErrors.whereToUse ? `${row.id}-usage-error` : undefined}
+                        />
+                        {rowErrors.whereToUse && <span id={`${row.id}-usage-error`} className="error-text">{rowErrors.whereToUse}</span>}
+                      </div>
+                      <div className="product-preference-field" data-label="Size of the Tile">
+                        <label className="visually-hidden" htmlFor={`${row.id}-size`}>Size of the Tile</label>
+                        <SearchableDropdown
+                          id={`${row.id}-size`}
+                          name="tileSize"
+                          options={PRODUCT_FILTER_OPTIONS.sizes}
+                          value={row.tileSize}
+                          onChange={(event) => handleProductPreferenceChange(row.id, 'tileSize', event.target.value)}
+                          placeholder="Select"
+                          error={Boolean(rowErrors.tileSize)}
+                          ariaInvalid={Boolean(rowErrors.tileSize)}
+                          ariaDescribedby={rowErrors.tileSize ? `${row.id}-size-error` : undefined}
+                        />
+                        {rowErrors.tileSize && <span id={`${row.id}-size-error`} className="error-text">{rowErrors.tileSize}</span>}
+                      </div>
+                      <div className="product-preference-field" data-label="Room Length (ft)">
+                        <label className="visually-hidden" htmlFor={`${row.id}-length`}>Room Length in feet</label>
+                        <input
+                          id={`${row.id}-length`}
+                          type="text"
+                          inputMode="decimal"
+                          value={row.roomLength}
+                          onChange={(event) => handleProductPreferenceChange(row.id, 'roomLength', event.target.value)}
+                          placeholder="Length"
+                          className={rowErrors.roomLength ? 'error' : ''}
+                          aria-invalid={Boolean(rowErrors.roomLength)}
+                        />
+                        {rowErrors.roomLength && <span className="error-text">{rowErrors.roomLength}</span>}
+                      </div>
+                      <div className="product-preference-field" data-label="Room Width (ft)">
+                        <label className="visually-hidden" htmlFor={`${row.id}-width`}>Room Width in feet</label>
+                        <input
+                          id={`${row.id}-width`}
+                          type="text"
+                          inputMode="decimal"
+                          value={row.roomWidth}
+                          onChange={(event) => handleProductPreferenceChange(row.id, 'roomWidth', event.target.value)}
+                          placeholder="Width"
+                          className={rowErrors.roomWidth ? 'error' : ''}
+                          aria-invalid={Boolean(rowErrors.roomWidth)}
+                        />
+                        {rowErrors.roomWidth && <span className="error-text">{rowErrors.roomWidth}</span>}
+                      </div>
+                      <div className="product-preference-actions" data-label="Action">
+                        {isLastRow && (
+                          <button type="button" className="product-preference-add" onClick={handleAddProductPreference}>
+                            <i className="fa-solid fa-plus" aria-hidden="true" /> Add
+                          </button>
+                        )}
+                        {productPreferences.length > 1 && (
+                          <button type="button" className="product-preference-remove" onClick={() => handleRemoveProductPreference(row.id)} aria-label="Remove preference row">
+                            <i className="fa-solid fa-trash" aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
             <div className="form-group"><label htmlFor="interest">I am Interested In <span className="required">*</span></label><textarea id="interest" name="interest" value={formData.interest} onChange={handleInputChange} onBlur={() => trimOnBlur('interest')} rows="3" placeholder="Tiles, sanitary ware or bath fittings you are looking for" className={errors.interest ? 'error' : ''} aria-required="true" {...errorProps('interest')} /><span className={`word-counter ${interestWords > 50 ? 'limit-exceeded' : ''}`}>{interestWords}/50 words</span><Error field="interest" /></div>
           </div>
           <div className="contact-modal-actions"><button type="button" className="btn-cancel" onClick={resetAndClose} disabled={isSubmitting}>Cancel</button><button type="submit" className="btn-submit" disabled={isSubmitting}>{isSubmitting ? 'Sending…' : 'Send Enquiry'}</button></div>

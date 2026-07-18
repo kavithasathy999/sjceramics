@@ -1,3 +1,39 @@
+import { products } from './ProductData';
+
+const productCategoryOrder = ['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others'];
+
+const productMenuChildren = productCategoryOrder.map((category) => {
+  const categoryProducts = products.filter((product) => product.category === category);
+  const types = [...new Set(categoryProducts.map((product) => product.type))];
+
+  return {
+    label: category,
+    path: '/products',
+    state: { filterCategory: 'category', filterValue: category },
+    children: types.map((type) => ({
+      label: type,
+      path: '/products',
+      state: {
+        filterCategory: 'type',
+        filterValue: type,
+        parentCategory: category,
+      },
+      children: categoryProducts
+        .filter((product) => product.type === type)
+        .map((product) => ({
+          label: product.name,
+          path: '/products',
+          state: {
+            filterCategory: 'product',
+            filterValue: product.name,
+            parentCategory: category,
+            parentType: type,
+          },
+        })),
+    })),
+  };
+});
+
 // Central navigation data so the desktop and mobile menus never fall out of sync.
 export const navigation = [
   {
@@ -24,12 +60,7 @@ export const navigation = [
   {
     label: 'Products',
     path: '/products',
-    children: [
-      { label: 'Tiles', path: '/products', state: { filterCategory: 'category', filterValue: 'Tiles' } },
-      { label: 'Sanitary Wares', path: '/products', state: { filterCategory: 'category', filterValue: 'Sanitary Wares' } },
-      { label: 'Bath Fittings', path: '/products', state: { filterCategory: 'category', filterValue: 'Bath Fittings' } },
-      { label: 'Others', path: '/products', state: { filterCategory: 'category', filterValue: 'Others' } },
-    ],
+    children: productMenuChildren,
   },
   {
     label: 'Blogs',

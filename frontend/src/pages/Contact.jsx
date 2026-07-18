@@ -4,10 +4,11 @@ import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import bannerBg from '../assets/images/background/bathroom_banner.png';
+import './Contact.css';
 
 export default function Contact() {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper contact-page-wrapper">
       <Header />
       
       {/* Page Title */}

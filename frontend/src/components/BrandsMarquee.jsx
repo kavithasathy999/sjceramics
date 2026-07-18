@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import './BrandsMarquee.css';
+import { products } from '../utils/ProductData';
 
 import allTiles from '../assets/images/brands/all_tiles.png';
 import wallTiles from '../assets/images/brands/wall_tiles.png';
@@ -15,26 +16,22 @@ import kitchenSink from '../assets/images/brands/kitchen_sink.png';
 import ptmtTaps from '../assets/images/brands/ptmt_taps.png';
 import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
 
-const promotions = [
-  {
-    label: "Today's Offer",
-    copy: 'Discover selected wall and floor tile collections for inspired everyday spaces.',
-    image: allTiles,
-    category: 'Tiles',
-  },
-  {
-    label: 'Launching Offer',
-    copy: 'Explore refined sanitary ware created around comfort, hygiene and modern living.',
-    image: sanitaryware,
-    category: 'Sanitary Wares',
-  },
-  {
-    label: 'New Arrivals',
-    copy: 'Meet our latest bath fittings in contemporary forms and enduring finishes.',
-    image: aquaFaucet,
-    category: 'Bath Fittings',
-  },
-];
+const offerProducts = [
+  { label: "Today's Offer", productId: 4, availability: 'Limited-period showroom offer' },
+  { label: 'Launching Offer', productId: 8, availability: 'Coming soon to our showroom' },
+].map((offer) => {
+  const product = products.find(({ id }) => id === offer.productId);
+  const saving = product.mrp - product.offerPrice;
+
+  return {
+    ...offer,
+    product,
+    saving,
+    discount: Math.round((saving / product.mrp) * 100),
+  };
+});
+
+const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
 
 const marqueeCategories = [
   { name: 'All Tiles', group: 'Tiles', image: allTiles },
@@ -70,17 +67,30 @@ export default function BrandsMarquee() {
         </header>
 
         <div className="collection-stories__posts">
-          {promotions.map((promotion) => (
-            <article className="story-post" key={promotion.label}>
-              <img src={promotion.image} alt="" />
+          {offerProducts.map((offer) => (
+            <article className="story-post" key={offer.label}>
+              <img src={offer.product.image} alt={`${offer.product.name} tile`} />
               <div className="story-post__shade" />
               <div className="story-post__topline">
-                <span className="story-post__number">{promotion.number}</span>
-                <span className="story-post__category">{promotion.category}</span>
+                <span className="story-post__number">
+                  <strong>{offer.discount}%</strong>
+                  <small>Off</small>
+                </span>
+                <span className="story-post__category">{offer.product.category}</span>
               </div>
               <div className="story-post__content">
-                <h3>{promotion.label}</h3>
-                <p>{promotion.copy}</p>              
+                <h3>{offer.label}</h3>
+                <p className="story-post__product">
+                  <strong>{offer.product.name}</strong>
+                  <span>{offer.product.size} · {offer.product.finish}</span>
+                </p>
+                <div className="story-post__availability" aria-label={`${offer.label} pricing`}>
+                  <span>MRP <del>₹{formatPrice(offer.product.mrp)}</del></span>
+                  <span>Offer <strong>₹{formatPrice(offer.product.offerPrice)}</strong> / sq.ft</span>
+                </div>
+                <p className="story-post__offer-note">
+                  Save ₹{formatPrice(offer.saving)} / sq.ft · {offer.availability}
+                </p>
               </div>
             </article>
           ))}

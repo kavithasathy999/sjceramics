@@ -12,9 +12,14 @@ export default function BlogSection() {
     <section className="blog-one">
       <div className="blog-one_bg" style={{ backgroundImage: `url("https://themazine.com/html/fllopi/assets/images/background/5.jpg")` }} />
       <div className="auto-container">
-        <div className="sec-title centered">
-          <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Blog</div>
-          <h2 className="sec-title_heading">Our Latest News <br /> &amp; Articles Post</h2>
+        <div className="blog-section-header">
+          <div className="sec-title centered">
+            <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Blog</div>
+            <h2 className="sec-title_heading">Our Latest News &amp; Articles Post</h2>
+          </div>
+          <Link to="/blogs" className="blog-view-all-button">
+            View All Blogs
+          </Link>
         </div>
 
         <div className="blog-slider-container">

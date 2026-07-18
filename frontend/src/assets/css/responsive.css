@@ -304,6 +304,10 @@
 	.services-three_content-outer{
 		margin-right:0px;
 	}
+
+	.services-three_highlights{
+		max-width:760px;
+	}
 	
 	.slider-two_content-inner{
 		padding-top:30px;
@@ -509,6 +513,25 @@
 
 
 @media only screen and (max-width: 767px){
+
+	.services-three_highlights{
+		grid-template-columns:1fr;
+		gap:12px;
+		margin-top:24px;
+	}
+
+	.services-three_highlight{
+		min-height:70px;
+		padding:13px 15px;
+		font-size:16px;
+		line-height:23px;
+	}
+
+	.services-three_highlight-icon{
+		flex-basis:38px;
+		width:38px;
+		height:38px;
+	}
 	
 	.main-header .header-upper .logo-outer {
 		position:relative;

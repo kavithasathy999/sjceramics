@@ -1,16 +1,12 @@
 import { Link } from 'react-router-dom';
-import ctaBg from '../assets/images/background/1.jpg';
-import ctaBall from '../assets/images/icons/ball-1.png';
-import cta1 from '../assets/images/resource/cta-1.jpg';
-import tile1 from '../assets/images/background/tileimage1.jpg'
-import tile2 from '../assets/images/background/tileimage2.jpeg'
-import cta2 from '../assets/images/resource/cta-2.jpg';
+import ctaBg from '../assets/images/background/cta-showroom-tiles-sanitary-bath.png';
+import tile1 from '../assets/images/background/tileimage1.jpg';
+import tile2 from '../assets/images/background/tileimage2.jpeg';
 
 export default function CtaOne() {
   return (
     <section className="cta-one">
-      <div className="cta-one_bg" style={{ backgroundImage: `url("https://themazine.com/html/fllopi/assets/images/background/1.jpg")` }} />
-      <div className="cta-one_ball" style={{ backgroundImage: `url(${ctaBall})` }} />
+      <div className="cta-one_bg" style={{ backgroundImage: `url(${ctaBg})` }} />
       <div className="auto-container">
         <div className="row clearfix">
           <div className="cta-one_images-column col-lg-4 col-md-4 col-sm-12">
@@ -28,7 +24,7 @@ export default function CtaOne() {
             <div className="cta-one_content-outer">
               <h2 className="cta-one_title" style={{color: "#ffffff"}}>Best Internal Tiling &amp; Flooring Solution</h2>
               <div className="cta-one_button">
-                <Link to="/contact" className="theme-btn btn-style-three">
+                <Link to="/contact" className="theme-btn btn-style-three" style={{ borderRadius: '8px' }}>
                   <span className="btn-wrap">
                     <span className="text-one">Get In Touch</span>
                     <span className="text-two">Get In Touch</span>

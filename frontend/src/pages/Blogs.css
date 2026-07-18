@@ -1,0 +1,16 @@
+/* Keep only the Blogs banner at half of the visible page height. */
+.blogs-page-wrapper > .page-title {
+  display: flex !important;
+  height: 50vh;
+  min-height: 50vh !important;
+  padding: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-attachment: scroll !important;
+  background-position: center center !important;
+  background-size: cover !important;
+}
+
+.blogs-page-wrapper > .page-title > .auto-container {
+  width: 100%;
+}

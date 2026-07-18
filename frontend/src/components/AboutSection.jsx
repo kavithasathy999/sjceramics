@@ -1,26 +1,46 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './AboutSection.css';
 
-const companyDetails = [
-  { label: 'Starting Year', value: '1990' },
-  { label: 'Founder', value: 'G. Muralidharan' },
-  { label: 'CEO / Managing Director', value: 'G. Muralidharan' },
-];
-
 export default function AboutSection({ showButton = true }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        video.play().catch(() => {
+          // Browsers may still require explicit user interaction to play media.
+        });
+      } else {
+        video.pause();
+      }
+    }, { threshold: 0.25 });
+
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+      video.pause();
+    };
+  }, []);
+
   return (
     <section className="about-one about-company-section">
       <div className="auto-container">
         <div className="about-company-grid">
           <div className="about-company-video-column">
             <div className="about-company-video-shell">
-              <iframe
-                src="https://www.youtube-nocookie.com/embed/DPS_YX-YR8E?rel=0"
-                title="KAG Tiles brand video"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
+              <video
+                ref={videoRef}
+                src="/aboutpagevdo.mp4"
+                title="SJ Ceramics company video"
+                muted
+                loop
+                playsInline
+                controls
+                preload="metadata"
               />
             </div>
             <div className="about-company-video-caption">
@@ -28,8 +48,8 @@ export default function AboutSection({ showButton = true }) {
                 <i className="fa-solid fa-play" />
               </span>
               <div>
-                <strong>Experience the KAG story</strong>
-                <span>Quality, innovation and inspired spaces</span>
+                <strong>Experience SJ Ceramics</strong>
+                <span>Premium products, expert guidance and elegant spaces</span>
               </div>
             </div>
           </div>
@@ -37,20 +57,19 @@ export default function AboutSection({ showButton = true }) {
           <div className="about-company-content-column">
             <div className="sec-title about-company-title">
               <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
-              <h2 className="sec-title_heading">A Trusted Association with KAG Tiles</h2>
+              <h2 className="sec-title_heading">
+                <span className="about-company-title-line">A Trusted Association</span>{' '}
+                <span className="about-company-title-line">With KAG Tiles</span>
+              </h2>
               <div className="sec-title_text">
-                SJ Ceramics is an authorized KAG channel partner, bringing premium tiles,
-                sanitaryware and bath fittings to customers with dependable guidance and service.
+                SJ Ceramics is an authorized KAG Channel Partner specializing in the wholesale and
+                retail sale of premium tiles, sanitary ware, and bath fittings. We offer a wide range
+                of quality products, including floor and wall tiles, vitrified tiles, sanitary ware,
+                faucets, and complete bathroom solutions to meet the needs of homeowners, builders,
+                architects, and interior designers. With a focus on quality, competitive pricing, and
+                excellent customer service, SJ Ceramics is committed to providing reliable products
+                and expert guidance to help customers create functional & elegant spaces.
               </div>
-            </div>
-
-            <div className="about-company-details" aria-label="KAG company details">
-              {companyDetails.map((detail) => (
-                <article className="about-company-detail-card" key={detail.label}>
-                  <span className="about-company-detail-label">{detail.label}</span>
-                  <strong className="about-company-detail-value">{detail.value}</strong>
-                </article>
-              ))}
             </div>
 
             {showButton && (
