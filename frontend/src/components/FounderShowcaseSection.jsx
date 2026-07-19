@@ -1,7 +1,33 @@
+import { useEffect, useState } from 'react';
 import showcaseImage from '../assets/images/about/premium-product-mosaic.jpg';
+import { getFounderShowcase } from '../services/aboutSectionApi';
 import './FounderShowcaseSection.css';
 
 export default function FounderShowcaseSection() {
+  const [portraitUrl, setPortraitUrl] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const loadPortrait = () => {
+      getFounderShowcase()
+        .then((section) => {
+          if (active) setPortraitUrl(section.portraitUrl || '');
+        })
+        .catch(() => {
+          // Keep the designed placeholder until the API is available.
+        });
+    };
+
+    loadPortrait();
+    const refreshTimer = window.setInterval(loadPortrait, 30000);
+    window.addEventListener('focus', loadPortrait);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadPortrait);
+    };
+  }, []);
+
   return (
     <section className="founder-showcase" aria-label="CEO and Founder showcase">
       <span className="founder-showcase_tile founder-showcase_tile--one" aria-hidden="true" />
@@ -31,11 +57,11 @@ export default function FounderShowcaseSection() {
           </div>
 
           <figure className="founder-showcase_founder">
-            <div
-              className="founder-showcase_portrait founder-showcase_portrait--pending"
-              role="img"
-              aria-label="CEO and Founder portrait placeholder"
-            />
+            {portraitUrl ? (
+              <div className="founder-showcase_portrait"><img src={portraitUrl} alt="CEO and Founder" /></div>
+            ) : (
+              <div className="founder-showcase_portrait founder-showcase_portrait--pending" role="img" aria-label="CEO and Founder portrait placeholder" />
+            )}
             <figcaption>CEO &amp; Founder</figcaption>
           </figure>
         </div>

@@ -1,9 +1,33 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getAboutSection } from '../services/aboutSectionApi';
 import './AboutSection.css';
 
 export default function AboutSection({ showButton = true }) {
   const videoRef = useRef(null);
+  const [content, setContent] = useState({ title: '', description: '', videoUrl: '' });
+
+  useEffect(() => {
+    let active = true;
+    const loadContent = () => {
+      getAboutSection()
+        .then((section) => {
+          if (active) setContent(section);
+        })
+        .catch(() => {
+          // Dynamic content remains empty until the API becomes available.
+        });
+    };
+
+    loadContent();
+    const refreshTimer = window.setInterval(loadContent, 30000);
+    window.addEventListener('focus', loadContent);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadContent);
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -24,7 +48,7 @@ export default function AboutSection({ showButton = true }) {
       observer.disconnect();
       video.pause();
     };
-  }, []);
+  }, [content.videoUrl]);
 
   return (
     <section className="about-one about-company-section">
@@ -32,44 +56,26 @@ export default function AboutSection({ showButton = true }) {
         <div className="about-company-grid">
           <div className="about-company-video-column">
             <div className="about-company-video-shell">
-              <video
-                ref={videoRef}
-                src="/aboutpagevdo.mp4"
-                title="SJ Ceramics company video"
-                muted
-                loop
-                playsInline
-                controls
-                preload="metadata"
-              />
-            </div>
-            <div className="about-company-video-caption">
-              <span className="about-company-video-icon" aria-hidden="true">
-                <i className="fa-solid fa-play" />
-              </span>
-              <div>
-                <strong>Experience SJ Ceramics</strong>
-                <span>Premium products, expert guidance and elegant spaces</span>
-              </div>
+              {content.videoUrl ? (
+                <video
+                  ref={videoRef}
+                  src={content.videoUrl}
+                  title={content.title}
+                  muted
+                  loop
+                  playsInline
+                  controls
+                  preload="metadata"
+                />
+              ) : <span className="about-company-video-placeholder" aria-hidden="true" />}
             </div>
           </div>
 
           <div className="about-company-content-column">
             <div className="sec-title about-company-title">
               <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
-              <h2 className="sec-title_heading">
-                <span className="about-company-title-line">A Trusted Association</span>{' '}
-                <span className="about-company-title-line">With KAG Tiles</span>
-              </h2>
-              <div className="sec-title_text">
-                SJ Ceramics is an authorized KAG Channel Partner specializing in the wholesale and
-                retail sale of premium tiles, sanitary ware, and bath fittings. We offer a wide range
-                of quality products, including floor and wall tiles, vitrified tiles, sanitary ware,
-                faucets, and complete bathroom solutions to meet the needs of homeowners, builders,
-                architects, and interior designers. With a focus on quality, competitive pricing, and
-                excellent customer service, SJ Ceramics is committed to providing reliable products
-                and expert guidance to help customers create functional & elegant spaces.
-              </div>
+              <h2 className="sec-title_heading">{content.title}</h2>
+              <div className="sec-title_text">{content.description}</div>
             </div>
 
             {showButton && (

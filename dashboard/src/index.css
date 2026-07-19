@@ -1,0 +1,23 @@
+:root {
+  --brand-red: #dd2328;
+  --brand-black: #231f1c;
+  --surface: #ffffff;
+  --canvas: #f7f5f3;
+  --line: #e7e1dd;
+  --muted: #77706b;
+  font-family: Inter, sans-serif;
+  color: var(--brand-black);
+  background: var(--canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; min-height: 100%; background: var(--canvas); }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+button, input, select, textarea { font: inherit; }
+button { border: 0; }
+#root { min-height: 100vh; }
+::selection { color: #fff; background: var(--brand-red); }

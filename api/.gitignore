@@ -1,0 +1,10 @@
+node_modules/
+.env
+uploads/banners/*
+!uploads/banners/.gitkeep
+uploads/about/*
+!uploads/about/.gitkeep
+uploads/founder/*
+!uploads/founder/.gitkeep
+uploads/room-designs/*
+!uploads/room-designs/.gitkeep

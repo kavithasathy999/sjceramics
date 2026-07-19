@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import tileTexture from '../assets/images/background/projects-tile-texture.png';
 import allTiles from '../assets/images/brands/all_tiles.png';
@@ -12,9 +13,10 @@ import kitchenSink from '../assets/images/brands/kitchen_sink.png';
 import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
 import sanitaryGallery from '../assets/images/gallery/sanitary-ware-gallery-v2.png';
 import bathFittingsGallery from '../assets/images/gallery/bath-fittings-gallery-v2.png';
+import { getGalleryItems } from '../services/galleryApi';
 import './ProjectsOne.css';
 
-const galleryItems = [
+const fallbackGalleryItems = [
   { image: floorTiles, name: 'Premium Floor Tiles', category: 'Tiles', position: 'center 64%', filter: { filterCategory: 'room', filterValue: 'Living Room' } },
   { image: wallTiles, name: 'Decorative Wall Tiles', category: 'Tiles', position: 'center', filter: { filterCategory: 'room', filterValue: 'Bathroom Tiles' } },
   { image: allTiles, name: 'Designer Tile Collection', category: 'Tiles', position: 'center', filter: { filterCategory: 'category', filterValue: 'Tiles' } },
@@ -30,6 +32,38 @@ const galleryItems = [
 ];
 
 export default function ProjectsOne() {
+  const [galleryItems, setGalleryItems] = useState(fallbackGalleryItems);
+
+  useEffect(() => {
+    let active = true;
+    const loadGallery = () => {
+      getGalleryItems()
+        .then((items) => {
+          if (active && items.length) {
+            setGalleryItems(items.map((item) => ({
+              ...item,
+              image: item.imageUrl,
+              name: item.title,
+              position: item.position || 'center',
+              filter: item.filter || {},
+            })));
+          }
+        })
+        .catch(() => {
+          // Keep the original gallery visible while the API is unavailable.
+        });
+    };
+
+    loadGallery();
+    const refreshTimer = window.setInterval(loadGallery, 30000);
+    window.addEventListener('focus', loadGallery);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadGallery);
+    };
+  }, []);
+
   return (
     <section
       className="project-showcase"
@@ -53,7 +87,7 @@ export default function ProjectsOne() {
           {galleryItems.map((item) => (
             <article
               className="project-showcase__gallery-item"
-              key={item.name}
+              key={item.id || item.name}
               style={{ '--gallery-object-position': item.position }}
             >
               <Link

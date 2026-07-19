@@ -41,6 +41,18 @@
   object-fit: cover;
 }
 
+.about-company-video-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(110deg, #171512 30%, #2b2723 48%, #171512 66%);
+  background-size: 220% 100%;
+  animation: aboutVideoLoading 1.4s ease-in-out infinite;
+}
+
+@keyframes aboutVideoLoading {
+  to { background-position-x: -220%; }
+}
+
 .about-company-video-caption {
   display: flex;
   align-items: center;

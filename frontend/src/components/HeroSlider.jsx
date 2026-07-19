@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from 'react-router-dom';
+import { getBanners } from '../services/bannerApi';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -12,7 +13,7 @@ import designerWallImage from '../assets/images/main-slider/hero-designer-wall-v
 import woodStoneImage from '../assets/images/main-slider/hero-wood-stone-v2.webp';
 import sanitaryBathImage from '../assets/images/main-slider/hero-sanitary-bath-v2.webp';
 
-const slides = [
+const fallbackSlides = [
   {
     category: 'Floor Tiles',
     image: marbleFloorImage,
@@ -58,6 +59,39 @@ const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
   const swiperRef = useRef(null);
   const [prevEl, setPrevEl] = useState(null);
   const [nextEl, setNextEl] = useState(null);
+  const [slides, setSlides] = useState(fallbackSlides);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadBanners = async () => {
+      try {
+        const banners = await getBanners();
+        if (!active || !banners.length) return;
+        setSlides(banners.map((banner, index) => ({
+          id: banner.id,
+          category: banner.placement || 'Featured Collection',
+          image: banner.imageUrl || fallbackSlides[index % fallbackSlides.length].image,
+          title: banner.title,
+          copy: banner.description,
+          position: 'center center',
+          mobilePosition: 'center center',
+          state: { filterCategory: 'category', filterValue: 'Tiles' },
+        })));
+      } catch {
+        // The existing curated slides remain visible when the API is unavailable.
+      }
+    };
+
+    loadBanners();
+    const refreshTimer = window.setInterval(loadBanners, 30000);
+    window.addEventListener('focus', loadBanners);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadBanners);
+    };
+  }, []);
 
   useEffect(() => {
     const autoplay = swiperRef.current?.autoplay;
@@ -87,7 +121,7 @@ const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
         a11y={{ paginationBulletMessage: 'Go to collection slide {{index}}' }}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={slide.category}>
+          <SwiperSlide key={slide.id || slide.category}>
             <article className="premium-hero-slide premium-hero-zoom-in">
               <img
                 className="premium-hero-media"

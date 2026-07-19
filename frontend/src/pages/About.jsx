@@ -11,63 +11,13 @@ import MapLocation from '../components/MapLocation';
 import ChooseTabSection from '../components/ChooseTabSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import { getRoomDesigns } from '../services/aboutSectionApi';
 import bannerBg from '../assets/images/background/25.jpg';
 import './About.css';
 
-import roomImg from '../assets/images/bgimages/pro1.jpeg';
-import bathImg from '../assets/images/bgimages/bathroom.jpeg';
-import paveImg from '../assets/images/bgimages/elevation1.jpeg';
-import livingImg from '../assets/images/bgimages/pro2.jpeg';
-import elevationDesignImg from '../assets/images/bgimages/elevation-design-v2.png';
-import parkingDesignImg from '../assets/images/bgimages/parking-design-v2.png';
-import kitchenRoomDesignImg from '../assets/images/bgimages/kitchen-room-design-v2.png';
-
-const designs = [
-  {
-    title: 'Room Designs',
-    image: roomImg,
-    applications: ['Living Room/Bedroom', 'Office/Commercial/Shop'],
-  },
-  {
-    title: 'Bathroom Designs',
-    image: bathImg,
-    applications: [
-      'Bathroom',
-      'Bathroom/Dining',
-      'Bathroom/Kitchen',
-      'Bathroom/Toilet/Kitchen',
-      'Outdoor/Bathroom',
-    ],
-  },
-  {
-    title: 'Pavement Designs',
-    image: paveImg,
-    applications: ['Parking/Driveway/Garage'],
-  },
-  {
-    title: 'Living Room Designs',
-    image: livingImg,
-    applications: ['Living Room/Bedroom'],
-  },
-  {
-    title: 'Elevation Designs',
-    image: elevationDesignImg,
-    applications: ['Elevation/Exterior'],
-  },
-  {
-    title: 'Parking Designs',
-    image: parkingDesignImg,
-    applications: ['Parking/Driveway/Garage'],
-  },
-  {
-    title: 'Kitchen Room Designs',
-    image: kitchenRoomDesignImg,
-    applications: ['Bathroom/Toilet/Kitchen', 'Bathroom/Kitchen'],
-  },
-];
-
 export default function About() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [designs, setDesigns] = useState([]);
   const roomDesignsSwiperRef = useRef(null);
 
   const pauseRoomDesignsMarquee = (event) => {
@@ -115,6 +65,28 @@ export default function About() {
 
     return () => {
       elements.forEach(el => observer.unobserve(el));
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const loadDesigns = () => {
+      getRoomDesigns()
+        .then((data) => {
+          if (active) setDesigns(data);
+        })
+        .catch(() => {
+          // Keep the section stable while the API is temporarily unavailable.
+        });
+    };
+
+    loadDesigns();
+    const refreshTimer = window.setInterval(loadDesigns, 30000);
+    window.addEventListener('focus', loadDesigns);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+      window.removeEventListener('focus', loadDesigns);
     };
   }, []);
 
@@ -171,6 +143,7 @@ export default function About() {
               onPointerLeave={resumeRoomDesignsMarquee}
             >
               <Swiper
+                key={designs.map((design) => design.id).join('-')}
                 className="room-designs-swiper"
                 modules={[A11y, Autoplay]}
                 onSwiper={(swiper) => { roomDesignsSwiperRef.current = swiper; }}
@@ -204,7 +177,7 @@ export default function About() {
                       aria-label={`Shop ${design.title}`}
                     >
                       <div className="room-design-img-wrap">
-                        <img src={design.image} alt={design.title} loading="lazy" />
+                        <img src={design.imageUrl} alt={design.title} loading="lazy" />
                       </div>
                       <div className="room-design-banner">
                         <span>{design.title}</span>
