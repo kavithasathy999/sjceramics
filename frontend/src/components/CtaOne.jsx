@@ -26,8 +26,8 @@ export default function CtaOne() {
               <div className="cta-one_button">
                 <Link to="/contact" className="theme-btn btn-style-three" style={{ borderRadius: '8px' }}>
                   <span className="btn-wrap">
-                    <span className="text-one">Get In Touch</span>
-                    <span className="text-two">Get In Touch</span>
+                    <span className="text-one">Contact Us</span>
+                    <span className="text-two">Contact Us</span>
                   </span>
                 </Link>
               </div>

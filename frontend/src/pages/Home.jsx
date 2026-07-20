@@ -66,8 +66,9 @@ export default function Home() {
       <AboutSection />
       
       <ProjectsOne />
-      <BrandsMarquee />
-      <HomeNewArrivals />
+      <BrandsMarquee>
+        <HomeNewArrivals />
+      </BrandsMarquee>
       <ServicesOne />
       <CtaOne />
       

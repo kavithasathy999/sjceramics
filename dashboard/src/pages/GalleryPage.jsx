@@ -6,6 +6,7 @@ import useToast from '../hooks/useToast'
 import { createGalleryItem, deleteGalleryItem, getGalleryItems, updateGalleryItem } from '../services/galleryApi'
 
 const MAX_GALLERY_ITEMS = 20
+const ITEMS_PER_PAGE = 10
 
 function GalleryPage() {
   const { showToast } = useToast()
@@ -15,13 +16,18 @@ function GalleryPage() {
   const [editingItem, setEditingItem] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [activePage, setActivePage] = useState(1)
 
   const loadItems = () => {
     setLoading(true)
     setError('')
     return getGalleryItems()
-      .then(setItems)
-      .catch((requestError) => setError(requestError.message))
+      .then((data) => {
+        setItems(data)
+        setActivePage((current) => Math.min(current, Math.max(1, Math.ceil(data.length / ITEMS_PER_PAGE))))
+        return data
+      })
+      .catch((requestError) => { setError(requestError.message); return null })
       .finally(() => setLoading(false))
   }
 
@@ -34,7 +40,13 @@ function GalleryPage() {
     return () => { active = false }
   }, [])
 
+  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE))
+  const startIndex = (activePage - 1) * ITEMS_PER_PAGE
+  const visibleItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+  const showPagination = items.length > ITEMS_PER_PAGE
+
   const saveItem = async (values) => {
+    const isCreating = !editingItem
     try {
       if (editingItem) {
         await updateGalleryItem(editingItem.id, values)
@@ -43,7 +55,8 @@ function GalleryPage() {
         await createGalleryItem(values)
         showToast('Gallery item added successfully.')
       }
-      await loadItems()
+      const refreshedItems = await loadItems()
+      if (isCreating && refreshedItems) setActivePage(Math.max(1, Math.ceil(refreshedItems.length / ITEMS_PER_PAGE)))
       setModalOpen(false)
       setEditingItem(null)
     } catch (requestError) {
@@ -80,21 +93,37 @@ function GalleryPage() {
       <div className="gallery-table-card banner-table-card">
         <div className="table-summary"><strong>All gallery items</strong><span>{items.length} / {MAX_GALLERY_ITEMS} items</span></div>
         {loading ? <div className="about-editor-loading"><span className="spinner banner-spinner" /><strong>Loading gallery</strong></div> : (
-          <div className="gallery-table" role="table" aria-label="Gallery items">
-            <div className="gallery-row gallery-table-head" role="row"><span>S.No</span><span>Image Preview</span><span>Title</span><span>Actions</span></div>
-            {items.map((item, index) => (
-              <div className="gallery-row" role="row" key={item.id}>
-                <span className="serial-number">{index + 1}</span>
-                <div className="gallery-table-preview"><img src={item.imageUrl} alt={`${item.title} preview`} /></div>
-                <strong>{item.title}</strong>
-                <div className="row-actions">
-                  <button className="edit" type="button" onClick={() => { setEditingItem(item); setModalOpen(true) }} aria-label={`Edit ${item.title}`} title="Edit gallery item"><Icon name="edit" /></button>
-                  <button className="delete" type="button" onClick={() => setDeleteTarget(item)} aria-label={`Delete ${item.title}`} title="Delete gallery item"><Icon name="trash" /></button>
-                </div>
+          <>
+            <div className="gallery-table-scroll">
+              <div className="gallery-table" role="table" aria-label="Gallery items">
+                <div className="gallery-row gallery-table-head" role="row"><span>S.No</span><span>Image Preview</span><span>Title</span><span>Category</span><span>Actions</span></div>
+                {visibleItems.map((item, index) => (
+                  <div className="gallery-row" role="row" key={item.id}>
+                    <span className="serial-number">{startIndex + index + 1}</span>
+                    <div className="gallery-table-preview"><img src={item.imageUrl} alt={`${item.title} preview`} /></div>
+                    <strong>{item.title}</strong>
+                    <span className="gallery-category-badge">{item.category}</span>
+                    <div className="row-actions">
+                      <button className="edit" type="button" onClick={() => { setEditingItem(item); setModalOpen(true) }} aria-label={`Edit ${item.title}`} title="Edit gallery item"><Icon name="edit" /></button>
+                      <button className="delete" type="button" onClick={() => setDeleteTarget(item)} aria-label={`Delete ${item.title}`} title="Delete gallery item"><Icon name="trash" /></button>
+                    </div>
+                  </div>
+                ))}
+                {!items.length && <div className="empty-banners"><Icon name="gallery" /><strong>No gallery items yet</strong><span>Add your first gallery item to get started.</span></div>}
               </div>
-            ))}
-            {!items.length && <div className="empty-banners"><Icon name="gallery" /><strong>No gallery items yet</strong><span>Add your first gallery item to get started.</span></div>}
-          </div>
+            </div>
+            {showPagination && (
+              <nav className="gallery-pagination" aria-label="Gallery pagination">
+                <button type="button" disabled={activePage === 1} onClick={() => setActivePage((page) => page - 1)} aria-label="Previous gallery page">Previous</button>
+                <div>
+                  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                    <button type="button" className={page === activePage ? 'active' : ''} aria-current={page === activePage ? 'page' : undefined} onClick={() => setActivePage(page)} key={page}>{page}</button>
+                  ))}
+                </div>
+                <button type="button" disabled={activePage === totalPages} onClick={() => setActivePage((page) => page + 1)} aria-label="Next gallery page">Next</button>
+              </nav>
+            )}
+          </>
         )}
       </div>
 

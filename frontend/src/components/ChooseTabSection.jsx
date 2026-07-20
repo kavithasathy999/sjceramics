@@ -1,7 +1,28 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import modelImg from '../assets/images/bgimages/leftimage.png';
 import '../styles/choosetab.css';
+import { getExploreCollections } from '../services/exploreCollectionsApi';
+
+const STATIC_COLLECTIONS = {
+  colors: [
+    { name: 'Brown', hex: '#6E473B' }, { name: 'Black', hex: '#000000' },
+    { name: 'Blue', hex: '#2B3E7A' }, { name: 'Cream', hex: '#D2C4B1' },
+    { name: 'Gold', hex: '#B1A066' }, { name: 'Green', hex: '#5A9E48' },
+    { name: 'Ivory', hex: '#FDFBF7' }, { name: 'Orange', hex: '#EB6824' },
+    { name: 'Pearl', hex: '#E5E4DE' }, { name: 'Pink', hex: '#C51B60' },
+    { name: 'Red', hex: '#D8232A' }, { name: 'Teal', hex: '#0A7D84' },
+    { name: 'White', hex: '#FFFFFF' }, { name: 'Gray', hex: '#555555' },
+    { name: 'Yellow', hex: '#F4B324' },
+    { name: 'Multicolor', hex: 'linear-gradient(45deg, #FF0055, #00FF55, #0055FF, #FFFF00)' }
+  ],
+  sizes: [
+    '12X12', '12x22', '12x8', '15x10', '16x16',
+    '18x12', '20x20', '24x12', '24x24', '40x8',
+    '48x24', '64x32', '72x48', '96x32'
+  ],
+  thicknesses: ['6 mm', '7 mm', '8.5 mm', '9 mm', '10 mm', '12 mm', '15 mm', '20 mm']
+};
 
 // SVG Icons for Rooms
 const RoomIcons = {
@@ -55,31 +76,30 @@ const RoomIcons = {
 export default function ChooseTabSection() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
+  const [collections, setCollections] = useState(STATIC_COLLECTIONS);
+  const [collectionError, setCollectionError] = useState('');
+
+  const loadCollections = useCallback(() => {
+    setCollectionError('');
+    return getExploreCollections()
+      .then((items) => setCollections({
+        colors: items.filter((item) => item.type === 'colors').map((item) => ({ name: item.colorName, hex: item.colorHex })),
+        sizes: items.filter((item) => item.type === 'size').map((item) => item.displayValue),
+        thicknesses: items.filter((item) => item.type === 'thickness').map((item) => item.displayValue),
+      }))
+      .catch(() => {
+        setCollections(STATIC_COLLECTIONS);
+        setCollectionError('Showing the default collections because live updates are temporarily unavailable.');
+      });
+  }, []);
+
+  useEffect(() => { loadCollections(); }, [loadCollections]);
 
   const tabs = [
     { label: 'Choose by Colors' },
     { label: 'Choose by Rooms' },
     { label: 'Choose by Size' },
     { label: 'Choose by Thickness' }
-  ];
-
-  const colors = [
-    { name: 'Brown', hex: '#6E473B' },
-    { name: 'Black', hex: '#000000' },
-    { name: 'Blue', hex: '#2B3E7A' },
-    { name: 'Cream', hex: '#D2C4B1' },
-    { name: 'Gold', hex: '#B1A066' },
-    { name: 'Green', hex: '#5A9E48' },
-    { name: 'Ivory', hex: '#FDFBF7' },
-    { name: 'Orange', hex: '#EB6824' },
-    { name: 'Pearl', hex: '#E5E4DE' },
-    { name: 'Pink', hex: '#C51B60' },
-    { name: 'Red', hex: '#D8232A' },
-    { name: 'Teal', hex: '#0A7D84' },
-    { name: 'White', hex: '#FFFFFF' },
-    { name: 'Gray', hex: '#555555' },
-    { name: 'Yellow', hex: '#F4B324' },
-    { name: 'Multicolor', hex: 'linear-gradient(45deg, #FF0055, #00FF55, #0055FF, #FFFF00)' }
   ];
 
   const rooms = [
@@ -92,17 +112,6 @@ export default function ChooseTabSection() {
     { name: 'Kitchen', icon: 'kitchen', value: 'Kitchen' },
     { name: 'Flooring', icon: 'flooring', value: 'Tiles', category: 'category' },
     { name: 'Parking', icon: 'parking', value: 'Parking' }
-  ];
-
-  const sizes = [
-    '12X12', '12x22', '12x8', '15x10', '16x16',
-    '18x12', '20x20', '24x12', '24x24', '40x8',
-    '48x24', '64x32', '72x48', '96x32'
-  ];
-
-  const thicknesses = [
-    '6 mm', '7 mm', '8.5 mm',
-    '9 mm', '10 mm', '12 mm', '15 mm', '20 mm'
   ];
 
   // Route to catalog with parameters
@@ -126,6 +135,7 @@ export default function ChooseTabSection() {
           <h2 style={{ marginTop: '10px', color: '#231f1c', fontWeight: 800 }}>Explore Our Collections</h2>
         </div>
 
+        {collectionError && <div className="collection-fallback-alert" role="status"><span>{collectionError}</span><button type="button" onClick={loadCollections}>Retry</button></div>}
         <div className="choose-tab-container">
           
           {/* Left Vertical Tabs list */}
@@ -149,7 +159,7 @@ export default function ChooseTabSection() {
             {/* Colors tab panel */}
             {activeTab === 0 && (
               <div className="colors-grid">
-                {colors.map((color, idx) => (
+                {collections.colors.map((color, idx) => (
                   <div 
                     className="color-swatch-item" 
                     key={idx}
@@ -199,11 +209,11 @@ export default function ChooseTabSection() {
             {/* Sizes tab panel */}
             {activeTab === 2 && (
               <div className="sizes-grid">
-                {sizes.map((size, idx) => (
+                {collections.sizes.map((size, idx) => (
                   <button 
                     className="size-pill-btn" 
                     key={idx}
-                    onClick={() => handleSelect('size', size)}
+                    onClick={() => handleSelect('size', size.replace(/×/g, 'x'))}
                   >
                     {size}
                   </button>
@@ -214,7 +224,7 @@ export default function ChooseTabSection() {
             {/* Thickness tab panel */}
             {activeTab === 3 && (
               <div className="thickness-grid">
-                {thicknesses.map((thickness, idx) => (
+                {collections.thicknesses.map((thickness, idx) => (
                   <button 
                     className="thickness-pill-btn" 
                     key={idx}

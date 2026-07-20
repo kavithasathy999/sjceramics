@@ -2201,7 +2201,7 @@
 	font-weight: 650;
 	letter-spacing: 0.035em;
 	text-transform: uppercase;
-	color: #4f4a46;
+	color: #dd2328;
 }
 .main-header .header-lower .nav-outer { margin-left: clamp(18px, 2vw, 34px); }
 .main-header .main-menu .navigation { display: flex; align-items: center; gap: 4px; }

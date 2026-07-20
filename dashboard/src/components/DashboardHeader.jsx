@@ -24,7 +24,12 @@ function DashboardHeader({ activePage, onMenu, onLogout }) {
   const pageTitle = activePage === 'dashboard'
     ? 'Admin Portal'
     : activePage === 'banners' ? 'Banner Management'
-      : activePage === 'gallery' ? 'Gallery Management' : 'About Page Management'
+      : activePage === 'gallery' ? 'Gallery Management'
+        : activePage === 'offers' ? 'Offers Management'
+          : activePage === 'categories' ? 'Category Management'
+            : activePage === 'blogs' ? 'Blogs Management'
+              : activePage === 'testimonials' ? 'Testimonials Management'
+                : activePage === 'contact-enquiries' ? 'Contact Enquiries Management' : 'About Page Management'
 
   useEffect(() => {
     if (!profileOpen) return undefined

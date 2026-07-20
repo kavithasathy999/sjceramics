@@ -18,6 +18,7 @@ test('managed media endpoints store relative paths and enforce limits', async ()
   let roomTestPath = '';
   let createdRoomId = null;
   let createdGalleryId = null;
+  let createdCategoryId = null;
   const galleryLimitFixtureIds = [];
 
   try {
@@ -106,6 +107,7 @@ test('managed media endpoints store relative paths and enforce limits', async ()
 
     const galleryForm = new FormData();
     galleryForm.append('title', 'Integration Gallery Item');
+    galleryForm.append('category', 'Tiles');
     galleryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'gallery-test.jpeg');
     const galleryResponse = await fetch(`${baseUrl}/gallery`, { method: 'POST', body: galleryForm });
     const createdGallery = await galleryResponse.json();
@@ -117,16 +119,35 @@ test('managed media endpoints store relative paths and enforce limits', async ()
 
     const galleryUpdateForm = new FormData();
     galleryUpdateForm.append('title', 'Updated Gallery Item');
+    galleryUpdateForm.append('category', 'Bath Fittings');
     const galleryUpdateResponse = await fetch(`${baseUrl}/gallery/${createdGalleryId}`, { method: 'PUT', body: galleryUpdateForm });
     const updatedGallery = await galleryUpdateResponse.json();
     assert.equal(galleryUpdateResponse.status, 200);
     assert.equal(updatedGallery.data.title, 'Updated Gallery Item');
+    assert.equal(updatedGallery.data.category, 'Bath Fittings');
+    assert.deepEqual(updatedGallery.data.filter, { filterCategory: 'category', filterValue: 'Bath Fittings' });
 
     const invalidGalleryForm = new FormData();
     invalidGalleryForm.append('title', 'One Two Three Four Five');
+    invalidGalleryForm.append('category', 'Tiles');
     invalidGalleryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'invalid-gallery.jpeg');
     const invalidGalleryResponse = await fetch(`${baseUrl}/gallery`, { method: 'POST', body: invalidGalleryForm });
     assert.equal(invalidGalleryResponse.status, 400);
+
+    const missingCategoryForm = new FormData();
+    missingCategoryForm.append('title', 'Missing Category');
+    missingCategoryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'missing-category.jpeg');
+    const missingCategoryResponse = await fetch(`${baseUrl}/gallery`, { method: 'POST', body: missingCategoryForm });
+    assert.equal(missingCategoryResponse.status, 400);
+    assert.equal((await missingCategoryResponse.json()).message, 'Category is required.');
+
+    const invalidCategoryForm = new FormData();
+    invalidCategoryForm.append('title', 'Invalid Category');
+    invalidCategoryForm.append('category', 'Lighting');
+    invalidCategoryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'invalid-category.jpeg');
+    const invalidCategoryResponse = await fetch(`${baseUrl}/gallery`, { method: 'POST', body: invalidCategoryForm });
+    assert.equal(invalidCategoryResponse.status, 400);
+    assert.equal((await invalidCategoryResponse.json()).message, 'Select a valid category.');
 
     const galleryDeleteResponse = await fetch(`${baseUrl}/gallery/${createdGalleryId}`, { method: 'DELETE' });
     assert.equal(galleryDeleteResponse.status, 200);
@@ -144,14 +165,54 @@ test('managed media endpoints store relative paths and enforce limits', async ()
 
     const overLimitGalleryForm = new FormData();
     overLimitGalleryForm.append('title', 'Over Limit Item');
+    overLimitGalleryForm.append('category', 'Others');
     overLimitGalleryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'over-limit-gallery.jpeg');
     const overLimitGalleryResponse = await fetch(`${baseUrl}/gallery`, { method: 'POST', body: overLimitGalleryForm });
     const overLimitGalleryPayload = await overLimitGalleryResponse.json();
     assert.equal(overLimitGalleryResponse.status, 409);
     assert.equal(overLimitGalleryPayload.message, 'A maximum of 20 gallery items can be added.');
+
+    const categoriesGet = await (await fetch(`${baseUrl}/home-categories`)).json();
+    assert.equal(categoriesGet.success, true);
+    assert.equal(categoriesGet.configured, true);
+    assert.ok(categoriesGet.data.length >= 10);
+    const nextCategoryOrder = Math.max(0, ...categoriesGet.data.map((item) => item.sortOrder)) + 1;
+    const categoryName = `Test Collection ${Date.now()}`;
+    const categoryForm = new FormData();
+    categoryForm.append('name', categoryName);
+    categoryForm.append('group', 'Tiles');
+    categoryForm.append('sortOrder', String(nextCategoryOrder));
+    categoryForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'category-test.jpeg');
+    const categoryResponse = await fetch(`${baseUrl}/home-categories`, { method: 'POST', body: categoryForm });
+    const createdCategory = await categoryResponse.json();
+    assert.equal(categoryResponse.status, 201);
+    createdCategoryId = createdCategory.data.id;
+    assert.equal(createdCategory.data.group, 'Tiles');
+
+    const categoryUpdateForm = new FormData();
+    categoryUpdateForm.append('name', categoryName);
+    categoryUpdateForm.append('group', 'Others');
+    categoryUpdateForm.append('sortOrder', String(nextCategoryOrder));
+    const categoryUpdateResponse = await fetch(`${baseUrl}/home-categories/${createdCategoryId}`, { method: 'PUT', body: categoryUpdateForm });
+    const updatedCategory = await categoryUpdateResponse.json();
+    assert.equal(categoryUpdateResponse.status, 200);
+    assert.equal(updatedCategory.data.group, 'Others');
+
+    const invalidCategoryGroupForm = new FormData();
+    invalidCategoryGroupForm.append('name', 'Invalid Group');
+    invalidCategoryGroupForm.append('group', 'Lighting');
+    invalidCategoryGroupForm.append('sortOrder', String(nextCategoryOrder + 1));
+    invalidCategoryGroupForm.append('image', new Blob([bytes], { type: 'image/jpeg' }), 'invalid-category-group.jpeg');
+    const invalidCategoryGroupResponse = await fetch(`${baseUrl}/home-categories`, { method: 'POST', body: invalidCategoryGroupForm });
+    assert.equal(invalidCategoryGroupResponse.status, 400);
+
+    const categoryDeleteResponse = await fetch(`${baseUrl}/home-categories/${createdCategoryId}`, { method: 'DELETE' });
+    assert.equal(categoryDeleteResponse.status, 200);
+    createdCategoryId = null;
   } finally {
     if (createdRoomId) await fetch(`${baseUrl}/room-designs/${createdRoomId}`, { method: 'DELETE' }).catch(() => {});
     if (createdGalleryId) await fetch(`${baseUrl}/gallery/${createdGalleryId}`, { method: 'DELETE' }).catch(() => {});
+    if (createdCategoryId) await fetch(`${baseUrl}/home-categories/${createdCategoryId}`, { method: 'DELETE' }).catch(() => {});
     for (const fixtureId of galleryLimitFixtureIds) await db.execute('DELETE FROM gallery_items WHERE id = ?', [fixtureId]);
     await db.query('UPDATE founder_showcase SET portrait = NULL WHERE id = 1');
     if (founderPath) await fs.unlink(path.resolve(__dirname, '..', founderPath)).catch(() => {});

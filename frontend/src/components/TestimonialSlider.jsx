@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -5,37 +6,25 @@ import 'swiper/css/pagination';
 import './TestimonialSlider.css';
 
 import patternBg from '../assets/images/background/pattern-6.png';
-import tilesIcon from '../assets/images/icons/tiles.png';
-import designIcon from '../assets/images/icons/design.png';
-import patternColor from '../assets/images/background/pattern-7.png';
-
-const testimonials = [
-  {
-    id: 1,
-    author: 'Anan Hanona',
-    role: 'Interior Expert And Customer',
-    text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
-  },
-  {
-    id: 2,
-    author: 'Mahfuz Riad',
-    role: 'Interior Expert And Customer',
-    text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
-  },
-  {
-    id: 3,
-    author: 'Anan Hanona',
-    role: 'Interior Expert And Customer',
-    text: 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services',
-  },
-];
+import { getTestimonials } from '../services/testimonialsApi';
 
 export default function TestimonialSlider() {
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    getTestimonials()
+      .then((items) => { if (active) setTestimonials(items); })
+      .catch(() => { if (active) setLoadError(true); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, []);
+
   return (
     <section className="testimonial-one">
       <div className="testimonial-one_bg" style={{ backgroundImage: `url(${patternBg})` }} />
-      {/* <div className="testimonial-one_icon" style={{ backgroundImage: `url(${tilesIcon})` }} />
-      <div className="testimonial-one_icon-two" style={{ backgroundImage: `url(${designIcon})` }} /> */}
       <div className="auto-container">
         <div className="sec-title centered">
           <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Testimonials</div>
@@ -43,11 +32,12 @@ export default function TestimonialSlider() {
         </div>
 
         <div className="two-item-carousel swiper-container">
-          <Swiper
+          {!loading && !loadError && testimonials.length > 0 ? <Swiper
+            key={testimonials.length}
             modules={[Pagination, Autoplay]}
-            loop
+            loop={testimonials.length > 1}
             speed={800}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            autoplay={testimonials.length > 1 ? { delay: 5000, disableOnInteraction: false } : false}
             pagination={{ el: '.two-item-carousel_pagination', clickable: true }}
             spaceBetween={30}
             slidesPerView={1}
@@ -67,16 +57,16 @@ export default function TestimonialSlider() {
                         </svg>
                       </div>
                       <div className="testimonial-block_one-author_content">
-                        <h4>{item.author}</h4>
-                        <div className="designation">{item.role}</div>
+                        <h4>{item.customerName}</h4>
+                        <div className="designation">{item.designation}</div>
                       </div>
                       <div className="testimonial-block_one-quote flaticon-left" />
                     </div>
                     <div className="testimonial-block_one-lower">
-                      <div className="testimonial-block_one-text">{item.text}</div>
-                      <div className="testimonial-block_one-rating">
+                      <div className="testimonial-block_one-text">{item.description}</div>
+                      <div className="testimonial-block_one-rating" aria-label={`${item.starRating} out of 5 stars`}>
                         {Array.from({ length: 5 }).map((_, i) => (
-                          <span className="fa fa-star" key={i} />
+                          <span className={`fa fa-star${i < item.starRating ? '' : ' is-empty'}`} aria-hidden="true" key={i} />
                         ))}
                       </div>
                     </div>
@@ -84,9 +74,9 @@ export default function TestimonialSlider() {
                 </div>
               </SwiperSlide>
             ))}
-          </Swiper>
+          </Swiper> : <div className="testimonial-slider-status">{loading ? 'Loading testimonials...' : loadError ? 'Testimonials are temporarily unavailable.' : 'No testimonials available.'}</div>}
 
-          <div className="two-item-carousel_pagination" />
+          {testimonials.length > 1 && !loadError && <div className="two-item-carousel_pagination" />}
         </div>
       </div>
     </section>

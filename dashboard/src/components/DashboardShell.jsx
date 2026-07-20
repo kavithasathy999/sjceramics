@@ -4,6 +4,11 @@ import DashboardPage from '../pages/DashboardPage'
 import BannersPage from '../pages/BannersPage'
 import AboutSectionPage from '../pages/AboutSectionPage'
 import GalleryPage from '../pages/GalleryPage'
+import OffersPage from '../pages/OffersPage'
+import CategoriesPage from '../pages/CategoriesPage'
+import BlogsPage from '../pages/BlogsPage'
+import TestimonialsPage from '../pages/TestimonialsPage'
+import ContactEnquiriesPage from '../pages/ContactEnquiriesPage'
 import Sidebar from './Sidebar'
 import DashboardHeader from './DashboardHeader'
 import BannerModal from './BannerModal'
@@ -107,7 +112,13 @@ function DashboardShell({ onLogout }) {
       <div className="dashboard-main">
         <DashboardHeader activePage={activePage} onMenu={() => setSidebarOpen(true)} onLogout={onLogout} />
         {activePage === 'dashboard' ? (
-          <DashboardPage bannerCount={activeBannerCount} onOpenBanners={() => navigate('banners')} onOpenGallery={() => navigate('gallery')} />
+          <DashboardPage
+            bannerCount={activeBannerCount}
+            onOpenBanners={() => navigate('banners')}
+            onOpenGallery={() => navigate('gallery')}
+            onOpenOffers={() => navigate('offers')}
+            onOpenCategories={() => navigate('categories')}
+          />
         ) : activePage === 'banners' ? (
           <BannersPage
             banners={banners}
@@ -120,8 +131,18 @@ function DashboardShell({ onLogout }) {
           />
         ) : activePage === 'about' ? (
           <AboutSectionPage />
-        ) : (
+        ) : activePage === 'gallery' ? (
           <GalleryPage />
+        ) : activePage === 'offers' ? (
+          <OffersPage />
+        ) : activePage === 'blogs' ? (
+          <BlogsPage />
+        ) : activePage === 'categories' ? (
+          <CategoriesPage />
+        ) : activePage === 'testimonials' ? (
+          <TestimonialsPage />
+        ) : (
+          <ContactEnquiriesPage />
         )}
       </div>
       {showBannerModal && (

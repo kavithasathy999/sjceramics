@@ -3,6 +3,7 @@ const path = require('path');
 const db = require('../config/db');
 
 const MAX_GALLERY_ITEMS = 20;
+const CATEGORY_VALUES = new Set(['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others']);
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'gallery');
 const storedPath = (filename) => `uploads/gallery/${path.basename(filename)}`;
 const publicUrl = (req, value) => `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`;
@@ -14,6 +15,15 @@ const validateTitle = (value) => {
   if (countWords(title) > 4) return { title, error: 'Gallery title must contain 4 words or fewer.' };
   return { title, error: '' };
 };
+
+const validateCategory = (value) => {
+  const category = typeof value === 'string' ? value.trim() : '';
+  if (!category) return { category, error: 'Category is required.' };
+  if (!CATEGORY_VALUES.has(category)) return { category, error: 'Select a valid category.' };
+  return { category, error: '' };
+};
+
+const categoryFilter = (category) => JSON.stringify({ filterCategory: 'category', filterValue: category });
 
 const removeFile = async (value) => {
   if (!value) return;
@@ -54,9 +64,10 @@ const getGalleryItems = async (req, res, next) => {
 
 const createGalleryItem = async (req, res, next) => {
   const validated = validateTitle(req.body.title);
-  if (validated.error || !req.file) {
+  const validatedCategory = validateCategory(req.body.category);
+  if (validated.error || validatedCategory.error || !req.file) {
     if (req.file) await removeFile(req.file.filename);
-    return res.status(400).json({ success: false, message: validated.error || 'Choose a gallery image.' });
+    return res.status(400).json({ success: false, message: validated.error || validatedCategory.error || 'Choose a gallery image.' });
   }
 
   let connection;
@@ -73,8 +84,8 @@ const createGalleryItem = async (req, res, next) => {
     const nextOrder = Number(itemCount) + 1;
     const [result] = await connection.execute(
       `INSERT INTO gallery_items (title, image, category, object_position, filter_state, sort_order)
-       VALUES (?, ?, 'Gallery', 'center', '{}', ?)`,
-      [validated.title, storedPath(req.file.filename), nextOrder],
+       VALUES (?, ?, ?, 'center', ?, ?)`,
+      [validated.title, storedPath(req.file.filename), validatedCategory.category, categoryFilter(validatedCategory.category), nextOrder],
     );
     const [created] = await connection.execute('SELECT * FROM gallery_items WHERE id = ?', [result.insertId]);
     await connection.commit();
@@ -95,9 +106,10 @@ const updateGalleryItem = async (req, res, next) => {
     return res.status(400).json({ success: false, message: 'Invalid gallery item id.' });
   }
   const validated = validateTitle(req.body.title);
-  if (validated.error) {
+  const validatedCategory = validateCategory(req.body.category);
+  if (validated.error || validatedCategory.error) {
     if (req.file) await removeFile(req.file.filename);
-    return res.status(400).json({ success: false, message: validated.error });
+    return res.status(400).json({ success: false, message: validated.error || validatedCategory.error });
   }
 
   try {
@@ -107,7 +119,13 @@ const updateGalleryItem = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Gallery item not found.' });
     }
     const nextImage = req.file ? storedPath(req.file.filename) : rows[0].image;
-    await db.execute('UPDATE gallery_items SET title = ?, image = ? WHERE id = ?', [validated.title, nextImage, id]);
+    const nextFilterState = validatedCategory.category === rows[0].category
+      ? rows[0].filter_state
+      : categoryFilter(validatedCategory.category);
+    await db.execute(
+      'UPDATE gallery_items SET title = ?, category = ?, filter_state = ?, image = ? WHERE id = ?',
+      [validated.title, validatedCategory.category, nextFilterState, nextImage, id],
+    );
     const [updated] = await db.execute('SELECT * FROM gallery_items WHERE id = ?', [id]);
     if (req.file) await removeFile(rows[0].image);
     return res.json({ success: true, message: 'Gallery item updated successfully.', data: serialize(req, updated[0]) });

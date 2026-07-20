@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import './BrandsMarquee.css';
 import { products } from '../utils/ProductData';
+import { getHomeOffers } from '../services/homeOffersApi';
+import { getHomeCategories } from '../services/homeCategoriesApi';
 
 import allTiles from '../assets/images/brands/all_tiles.png';
 import wallTiles from '../assets/images/brands/wall_tiles.png';
@@ -16,7 +19,7 @@ import kitchenSink from '../assets/images/brands/kitchen_sink.png';
 import ptmtTaps from '../assets/images/brands/ptmt_taps.png';
 import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
 
-const offerProducts = [
+const fallbackOfferProducts = [
   { label: "Today's Offer", productId: 4, availability: 'Limited-period showroom offer' },
   { label: 'Launching Offer', productId: 8, availability: 'Coming soon to our showroom' },
 ].map((offer) => {
@@ -33,7 +36,7 @@ const offerProducts = [
 
 const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
 
-const marqueeCategories = [
+const fallbackMarqueeCategories = [
   { name: 'All Tiles', group: 'Tiles', image: allTiles },
   { name: 'Wall Tiles', group: 'Tiles', image: wallTiles },
   { name: 'Floor Tiles', group: 'Tiles', image: floorTiles },
@@ -48,7 +51,64 @@ const marqueeCategories = [
 
 const categoryState = (filterValue) => ({ filterCategory: 'category', filterValue });
 
-export default function BrandsMarquee() {
+export default function BrandsMarquee({ children }) {
+  const [offerProducts, setOfferProducts] = useState(fallbackOfferProducts);
+  const [marqueeCategories, setMarqueeCategories] = useState(fallbackMarqueeCategories);
+
+  useEffect(() => {
+    let active = true;
+    getHomeOffers()
+      .then((sections) => {
+        if (!active) return;
+        const dynamicOffers = ['todays_offer', 'launching_offer'].flatMap((sectionType, index) => {
+          const section = sections.find((entry) => entry.sectionType === sectionType);
+          if (!section?.configured) return [fallbackOfferProducts[index]];
+          return section.items.slice(0, 1).map((item) => {
+            const saving = item.mrp - item.offerPrice;
+            return {
+              label: item.label,
+              availability: item.availability,
+              saving,
+              discount: Math.round((saving / item.mrp) * 100),
+              product: {
+                id: item.id,
+                name: item.productName,
+                image: item.imageUrl,
+                category: item.category,
+                size: item.size,
+                finish: item.finish,
+                mrp: item.mrp,
+                offerPrice: item.offerPrice,
+              },
+            };
+          });
+        });
+        setOfferProducts(dynamicOffers);
+      })
+      .catch(() => {
+        // Keep the original curated cards when the API is unavailable.
+      });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    getHomeCategories()
+      .then(({ configured, items }) => {
+        if (!active || !configured) return;
+        setMarqueeCategories(items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          group: item.group,
+          image: item.imageUrl,
+        })));
+      })
+      .catch(() => {
+        // Keep the original ten category cards when the API is unavailable.
+      });
+    return () => { active = false; };
+  }, []);
+
   return (
     <section className="collection-stories" aria-labelledby="collection-stories-title">
       <div className="collection-stories__container">
@@ -96,6 +156,13 @@ export default function BrandsMarquee() {
           ))}
         </div>
 
+        {children ? (
+          <div className="collection-stories__interlude">
+            {children}
+          </div>
+        ) : null}
+
+        {marqueeCategories.length > 0 && <>
         <div className="category-marquee__heading">
           <div className="sec-title centered" style={{ marginBottom: 0 }}>
             <div className="sec-title_title">
@@ -105,18 +172,14 @@ export default function BrandsMarquee() {
               Find the right category
             </h2>
           </div>
-          {/* <div className="category-marquee__controls">
-            <button className="category-marquee__prev" type="button" aria-label="Previous categories">←</button>
-            <button className="category-marquee__next" type="button" aria-label="Next categories">→</button>
-          </div> */}
         </div>
 
         <Swiper
           className="category-marquee"
           modules={[Autoplay, Navigation]}
-          loop
+          loop={marqueeCategories.length > 1}
           speed={5000}
-          autoplay={{ delay: 0, disableOnInteraction: false }}
+          autoplay={marqueeCategories.length > 1 ? { delay: 0, disableOnInteraction: false } : false}
           navigation={{ prevEl: '.category-marquee__prev', nextEl: '.category-marquee__next' }}
           breakpoints={{
             0: { slidesPerView: 1.45, spaceBetween: 14 },
@@ -126,7 +189,7 @@ export default function BrandsMarquee() {
           }}
         >
           {marqueeCategories.map((category) => (
-            <SwiperSlide key={category.name}>
+            <SwiperSlide key={category.id || category.name}>
               <Link
                 className="category-marquee__card"
                 to="/products"
@@ -143,6 +206,7 @@ export default function BrandsMarquee() {
             </SwiperSlide>
           ))}
         </Swiper>
+        </>}
       </div>
     </section>
   );

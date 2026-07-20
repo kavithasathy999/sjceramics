@@ -1,10 +1,44 @@
+import { useEffect, useState } from 'react';
 import { products } from '../utils/ProductData';
+import { getHomeOffers } from '../services/homeOffersApi';
 import './BrandsMarquee.css';
 import './HomeNewArrivals.css';
 
-const upcomingProducts = products.filter((product) => product.isNewArrival).slice(0, 6);
+const fallbackUpcomingProducts = products.filter((product) => product.isNewArrival).slice(0, 6).map((product) => ({
+  ...product,
+  arrivalStatus: 'Coming soon',
+  availability: 'Availability will be announced soon',
+}));
 
 export default function HomeNewArrivals() {
+  const [upcomingProducts, setUpcomingProducts] = useState(fallbackUpcomingProducts);
+
+  useEffect(() => {
+    let active = true;
+    getHomeOffers()
+      .then((sections) => {
+        if (!active) return;
+        const section = sections.find((entry) => entry.sectionType === 'new_arrivals');
+        if (!section?.configured) return;
+        setUpcomingProducts(section.items.slice(0, 6).map((item) => ({
+          id: item.id,
+          name: item.productName,
+          image: item.imageUrl,
+          category: item.category,
+          size: item.size,
+          finish: item.finish,
+          arrivalStatus: item.arrivalStatus,
+          availability: item.availability,
+        })));
+      })
+      .catch(() => {
+        // Keep the original six arrivals when the API is unavailable.
+      });
+    return () => { active = false; };
+  }, []);
+
+  if (!upcomingProducts.length) return null;
+
   return (
     <section className="home-arrivals" aria-labelledby="home-arrivals-title">
       <div className="home-arrivals__container">
@@ -43,10 +77,10 @@ export default function HomeNewArrivals() {
                   <span>{product.finish}</span>
                 </p>
                 <div className="story-post__availability" aria-label={`${displayName} arrival status`}>
-                  <span>Coming soon</span>
+                  <span>{product.arrivalStatus}</span>
                   <span>Showroom arrival</span>
                 </div>
-                <p className="story-post__offer-note">Availability will be announced soon</p>
+                <p className="story-post__offer-note">{product.availability}</p>
               </div>
             </article>
             );

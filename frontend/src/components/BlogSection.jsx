@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
@@ -6,8 +6,19 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import { posts } from '../utils/BlogData';
+import { getBlogs } from '../services/blogsApi';
 
 export default function BlogSection() {
+  const [blogPosts, setBlogPosts] = useState(posts);
+
+  useEffect(() => {
+    let active = true;
+    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {
+      // Preserve the original home-page posts while the API is unavailable.
+    });
+    return () => { active = false; };
+  }, []);
+
   return (
     <section className="blog-one">
       <div className="blog-one_bg" style={{ backgroundImage: `url("https://themazine.com/html/fllopi/assets/images/background/5.jpg")` }} />
@@ -25,9 +36,9 @@ export default function BlogSection() {
         <div className="blog-slider-container">
           <Swiper
             modules={[Pagination, Autoplay]}
-            loop={true}
+            loop={blogPosts.length > 1}
             speed={800}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            autoplay={blogPosts.length > 1 ? { delay: 5000, disableOnInteraction: false } : false}
             pagination={{ el: '.blog-slider-pagination', clickable: true }}
             breakpoints={{
               320: {
@@ -45,11 +56,13 @@ export default function BlogSection() {
             }}
             className="blog-swiper"
           >
-            {posts.map((post) => (
+            {blogPosts.map((post) => (
               <SwiperSlide key={post.id}>
                 <div className="blog-card">
                   <div className="blog-card-image-wrap">
-                    <img src={post.image} alt={post.title} />
+                    {post.mediaType === 'video'
+                      ? <video src={post.mediaUrl} controls preload="metadata" aria-label={`${post.title} video`} />
+                      : <img src={post.mediaUrl || post.image} alt={post.title} />}
                   </div>
                   <div className="blog-card-content">
                     <h5 className="blog-card-heading">

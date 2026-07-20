@@ -23,6 +23,21 @@ function Sidebar({ activePage, onNavigate, open, onClose }) {
           <button className={activePage === 'gallery' ? 'active' : ''} onClick={() => onNavigate('gallery')}>
             <Icon name="gallery" /><span>Gallery</span>
           </button>
+          <button className={activePage === 'offers' ? 'active' : ''} onClick={() => onNavigate('offers')}>
+            <Icon name="offer" /><span>Offers</span>
+          </button>
+          <button className={activePage === 'categories' ? 'active' : ''} onClick={() => onNavigate('categories')}>
+            <Icon name="category" /><span>Category</span>
+          </button>
+          <button className={activePage === 'blogs' ? 'active' : ''} onClick={() => onNavigate('blogs')}>
+            <Icon name="blog" /><span>Blogs</span>
+          </button>
+          <button className={activePage === 'testimonials' ? 'active' : ''} onClick={() => onNavigate('testimonials')}>
+            <Icon name="testimonial" /><span>Testimonials</span>
+          </button>
+          <button className={activePage === 'contact-enquiries' ? 'active' : ''} onClick={() => onNavigate('contact-enquiries')}>
+            <Icon name="mail" /><span>Contact Enquiries</span>
+          </button>
         </nav>
       </aside>
     </>

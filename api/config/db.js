@@ -1,4 +1,6 @@
 const mysql = require('mysql2/promise');
+const blogSeed = require('./blogSeed');
+const exploreCollectionsSeed = require('./exploreCollectionsSeed');
 
 const databaseName = process.env.DB_NAME || 'sj_ceramics';
 if (!/^[A-Za-z0-9_]+$/.test(databaseName)) throw new Error('DB_NAME contains unsupported characters.');
@@ -133,6 +135,120 @@ const initializeDatabase = async () => {
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS home_offer_sections (
+      section_type VARCHAR(30) NOT NULL,
+      configured TINYINT(1) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (section_type)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS home_offer_items (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      section_type VARCHAR(30) NOT NULL,
+      product_name VARCHAR(100) NOT NULL,
+      category VARCHAR(50) NOT NULL,
+      size VARCHAR(50) NOT NULL,
+      finish VARCHAR(60) NOT NULL,
+      mrp DECIMAL(10,2) NULL,
+      offer_price DECIMAL(10,2) NULL,
+      availability VARCHAR(150) NOT NULL,
+      arrival_status VARCHAR(40) NULL,
+      image VARCHAR(255) NOT NULL,
+      sort_order TINYINT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY home_offer_items_section_order_unique (section_type, sort_order),
+      CONSTRAINT home_offer_items_section_fk FOREIGN KEY (section_type)
+        REFERENCES home_offer_sections (section_type) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(
+    `INSERT IGNORE INTO home_offer_sections (section_type, configured)
+     VALUES ('todays_offer', 0), ('launching_offer', 0), ('new_arrivals', 0)`,
+  );
+
+  const [[offerSeedState]] = await pool.query(
+    `SELECT
+       (SELECT COUNT(*) FROM home_offer_items) AS itemCount,
+       (SELECT COALESCE(SUM(configured), 0) FROM home_offer_sections) AS configuredCount`,
+  );
+  if (Number(offerSeedState.itemCount) === 0 && Number(offerSeedState.configuredCount) === 0) {
+    await pool.query(`
+      INSERT INTO home_offer_items
+        (section_type, product_name, category, size, finish, mrp, offer_price, availability, arrival_status, image, sort_order)
+      VALUES
+        ('todays_offer', 'CATALINA BEIGE', 'Tiles', '600x600 mm', 'Glossy/High Glossy', 350, 290,
+          'Limited-period showroom offer', NULL, 'uploads/offers/today-catalina-beige.png', 1),
+        ('launching_offer', 'DOMINO BLUE', 'Tiles', '600x600 mm', 'Satin/Matt', 410, 340,
+          'Coming soon to our showroom', NULL, 'uploads/offers/launching-domino-blue.png', 1),
+        ('new_arrivals', 'CATALINA BEIGE', 'Tiles', '600x600 mm', 'Glossy/High Glossy', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-1-catalina-beige.png', 1),
+        ('new_arrivals', 'DOMINO BLUE', 'Tiles', '600x600 mm', 'Satin/Matt', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-2-domino-blue.png', 2),
+        ('new_arrivals', 'ELEVATION SLATE', 'Tiles', '300x600 mm', 'Structured', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-3-elevation-slate.png', 3),
+        ('new_arrivals', 'KAG RIMLESS ONE PIECE CLOSET', 'Sanitary Wares', 'Standard', 'Glossy White', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-4-rimless-closet.png', 4),
+        ('new_arrivals', 'KAG TABLE TOP WASH BASIN', 'Sanitary Wares', 'Standard', 'Glossy White', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-5-tabletop-basin.png', 5),
+        ('new_arrivals', 'KAG PREMIUM SHOWER HEAD', 'Bath Fittings', 'Standard', 'Chrome', NULL, NULL,
+          'Availability will be announced soon', 'Coming soon', 'uploads/offers/arrival-6-shower-head.png', 6)
+    `);
+    await pool.query('UPDATE home_offer_sections SET configured = 1');
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS home_category_settings (
+      id TINYINT UNSIGNED NOT NULL,
+      configured TINYINT(1) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query('INSERT IGNORE INTO home_category_settings (id, configured) VALUES (1, 0)');
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS home_categories (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      name VARCHAR(60) NOT NULL,
+      group_name VARCHAR(50) NOT NULL,
+      image VARCHAR(255) NOT NULL,
+      sort_order SMALLINT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY home_categories_name_unique (name),
+      UNIQUE KEY home_categories_sort_order_unique (sort_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  const [[categorySeedState]] = await pool.query(
+    `SELECT
+       (SELECT COUNT(*) FROM home_categories) AS itemCount,
+       (SELECT configured FROM home_category_settings WHERE id = 1) AS configured`,
+  );
+  if (Number(categorySeedState.itemCount) === 0 && !Number(categorySeedState.configured)) {
+    await pool.query(`
+      INSERT INTO home_categories (name, group_name, image, sort_order) VALUES
+        ('All Tiles', 'Tiles', 'uploads/categories/01-all-tiles.png', 1),
+        ('Wall Tiles', 'Tiles', 'uploads/categories/02-wall-tiles.png', 2),
+        ('Floor Tiles', 'Tiles', 'uploads/categories/03-floor-tiles.png', 3),
+        ('Athangudi Tiles', 'Tiles', 'uploads/categories/04-athangudi-tiles.png', 4),
+        ('Sanitary Wares', 'Sanitary Wares', 'uploads/categories/05-sanitary-wares.png', 5),
+        ('Flush Tanks', 'Sanitary Wares', 'uploads/categories/06-flush-tanks.png', 6),
+        ('Bath Fittings', 'Bath Fittings', 'uploads/categories/07-bath-fittings.png', 7),
+        ('Kitchen Sinks', 'Bath Fittings', 'uploads/categories/08-kitchen-sinks.png', 8),
+        ('PTMT Taps', 'Bath Fittings', 'uploads/categories/09-ptmt-taps.png', 9),
+        ('Adhesives & Grout', 'Others', 'uploads/categories/10-adhesives-grout.png', 10)
+    `);
+    await pool.query('UPDATE home_category_settings SET configured = 1 WHERE id = 1');
+  }
+
   const [[{ galleryItemCount }]] = await pool.query('SELECT COUNT(*) AS galleryItemCount FROM gallery_items');
   if (Number(galleryItemCount) === 0) {
     await pool.query(
@@ -164,6 +280,176 @@ const initializeDatabase = async () => {
         'Kitchen Sink Collection', JSON.stringify({ filterCategory: 'category', filterValue: 'Others' }),
       ],
     );
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS testimonial_settings (
+      id TINYINT UNSIGNED NOT NULL,
+      initialized TINYINT(1) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query('INSERT IGNORE INTO testimonial_settings (id, initialized) VALUES (1, 0)');
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      customer_name VARCHAR(80) NOT NULL,
+      designation VARCHAR(100) NOT NULL,
+      description VARCHAR(700) NOT NULL,
+      star_rating TINYINT UNSIGNED NOT NULL,
+      sort_order INT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY testimonials_sort_order_unique (sort_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  const [[testimonialSeedState]] = await pool.query(
+    `SELECT
+       (SELECT COUNT(*) FROM testimonials) AS itemCount,
+       (SELECT initialized FROM testimonial_settings WHERE id = 1) AS initialized`,
+  );
+  if (Number(testimonialSeedState.itemCount) === 0 && !Number(testimonialSeedState.initialized)) {
+    const description = 'Lorem ipsum dolor sit amet, consec adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam, quis nostrud exercitation ullamco laboris. Integer ac orci vitae neque porttitor efficitur best flooring services';
+    await pool.query(
+      `INSERT INTO testimonials (customer_name, designation, description, star_rating, sort_order) VALUES
+       ('Anan Hanona', 'Interior Expert And Customer', ?, 5, 1),
+       ('Mahfuz Riad', 'Interior Expert And Customer', ?, 5, 2),
+       ('Anan Hanona', 'Interior Expert And Customer', ?, 5, 3)`,
+      [description, description, description],
+    );
+    await pool.query('UPDATE testimonial_settings SET initialized = 1 WHERE id = 1');
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS blog_settings (
+      id TINYINT UNSIGNED NOT NULL,
+      initialized TINYINT(1) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query('INSERT IGNORE INTO blog_settings (id, initialized) VALUES (1, 0)');
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS blogs (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      title VARCHAR(180) NOT NULL,
+      description MEDIUMTEXT NOT NULL,
+      excerpt TEXT NOT NULL,
+      media VARCHAR(255) NOT NULL,
+      media_type VARCHAR(10) NOT NULL,
+      category VARCHAR(60) NOT NULL DEFAULT 'SJ Ceramics',
+      author VARCHAR(80) NOT NULL DEFAULT 'SJ Ceramics',
+      display_date VARCHAR(30) NOT NULL,
+      sort_order INT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY blogs_title_unique (title),
+      UNIQUE KEY blogs_sort_order_unique (sort_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS contact_enquiries (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      full_name VARCHAR(60) NOT NULL,
+      email VARCHAR(120) NOT NULL,
+      phone VARCHAR(10) NOT NULL,
+      message VARCHAR(700) NOT NULL,
+      submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      KEY contact_enquiries_submitted_at_index (submitted_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS explore_collection_settings (
+      id TINYINT UNSIGNED NOT NULL,
+      initialized TINYINT(1) NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  await pool.query('INSERT IGNORE INTO explore_collection_settings (id, initialized) VALUES (1, 0)');
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS explore_collections (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      collection_type VARCHAR(20) NOT NULL,
+      name VARCHAR(40) NULL,
+      name_key VARCHAR(80) NULL,
+      color_value VARCHAR(100) NULL,
+      width_value DECIMAL(6,2) NULL,
+      height_value DECIMAL(6,2) NULL,
+      thickness_value DECIMAL(5,2) NULL,
+      display_value VARCHAR(40) NOT NULL,
+      identity_key VARCHAR(191) NOT NULL,
+      sort_order INT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY explore_collections_identity_unique (identity_key),
+      UNIQUE KEY explore_collections_name_unique (name_key),
+      UNIQUE KEY explore_collections_type_order_unique (collection_type, sort_order),
+      KEY explore_collections_type_index (collection_type)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  const [[collectionSeedState]] = await pool.query(
+    `SELECT
+       (SELECT COUNT(*) FROM explore_collections) AS itemCount,
+       (SELECT initialized FROM explore_collection_settings WHERE id = 1) AS initialized`,
+  );
+  if (Number(collectionSeedState.itemCount) === 0 && !Number(collectionSeedState.initialized)) {
+    const typeOrders = { colors: 0, size: 0, thickness: 0 };
+    for (const item of exploreCollectionsSeed) {
+      typeOrders[item.type] += 1;
+      const numeric = (value) => Number(value).toString();
+      const identityKey = item.type === 'colors'
+        ? `colors:${item.colorValue.toLowerCase()}`
+        : item.type === 'size' ? `size:${numeric(item.width)}:${numeric(item.height)}` : `thickness:${numeric(item.thickness)}`;
+      await pool.execute(
+        `INSERT INTO explore_collections
+          (collection_type, name, name_key, color_value, width_value, height_value, thickness_value, display_value, identity_key, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          item.type,
+          item.name || null,
+          item.name ? `color-name:${item.name.toLocaleLowerCase('en')}` : null,
+          item.colorValue || null,
+          item.width ?? null,
+          item.height ?? null,
+          item.thickness ?? null,
+          item.displayValue || item.name,
+          identityKey,
+          typeOrders[item.type],
+        ],
+      );
+    }
+    await pool.query('UPDATE explore_collection_settings SET initialized = 1 WHERE id = 1');
+  }
+
+  const [[blogSeedState]] = await pool.query(
+    `SELECT
+       (SELECT COUNT(*) FROM blogs) AS itemCount,
+       (SELECT initialized FROM blog_settings WHERE id = 1) AS initialized`,
+  );
+  if (Number(blogSeedState.itemCount) === 0 && !Number(blogSeedState.initialized)) {
+    for (const [index, blog] of blogSeed.entries()) {
+      await pool.execute(
+        `INSERT INTO blogs
+          (title, description, excerpt, media, media_type, category, author, display_date, sort_order)
+         VALUES (?, ?, ?, ?, 'image', ?, ?, ?, ?)`,
+        [blog.title, blog.description, blog.excerpt, blog.media, blog.category, blog.author, blog.displayDate, index + 1],
+      );
+    }
+    await pool.query('UPDATE blog_settings SET initialized = 1 WHERE id = 1');
   }
 
   const [[{ count }]] = await pool.query('SELECT COUNT(*) AS count FROM banners');

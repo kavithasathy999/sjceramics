@@ -11,9 +11,10 @@ export const getGalleryItems = async () => {
   return payload.data
 }
 
-const galleryFormData = ({ title, image }) => {
+const galleryFormData = ({ title, category, image }) => {
   const formData = new FormData()
   formData.append('title', title)
+  formData.append('category', category)
   if (image) formData.append('image', image)
   return formData
 }

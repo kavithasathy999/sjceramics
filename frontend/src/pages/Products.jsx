@@ -172,7 +172,7 @@ export default function Products() {
   const location = useLocation();
 
   // --- Filter & Sort States ---
-  const [selectedCategories, setSelectedCategories] = useState(['Tiles']);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [selectedApplications, setSelectedApplications] = useState([]);
@@ -256,8 +256,9 @@ export default function Products() {
   };
 
   const handleCategorySelect = (category) => {
+    const isAlreadySelected = selectedCategories.includes(category);
     clearAllFilters();
-    setSelectedCategories(category ? [category] : []);
+    setSelectedCategories(isAlreadySelected ? [] : (category ? [category] : []));
     setMobileFiltersOpen(false);
   };
 
@@ -292,7 +293,7 @@ export default function Products() {
         setSearchQuery(incomingSearch);
       } else if (filterCategory === 'category') {
         const incomingCategories = Array.isArray(filterValues)
-          ? filterValues.filter(value => categories.some(category => category.name === value))
+          ? filterValues.filter(value => PRODUCT_CATEGORIES.some(category => category.name === value))
           : [filterValue];
         setSelectedCategories(incomingCategories);
       } else if (filterCategory === 'type') {

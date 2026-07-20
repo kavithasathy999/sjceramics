@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
 import { posts } from '../utils/BlogData';
+import { getBlogs } from '../services/blogsApi';
 import bannerBg from '../assets/images/background/blogs_banner_bg.png';
 import './Blogs.css';
 
 export default function Blogs() {
+  const [blogPosts, setBlogPosts] = useState(posts);
+
+  useEffect(() => {
+    let active = true;
+    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {
+      // Preserve the original frontend posts while the API is unavailable.
+    });
+    return () => { active = false; };
+  }, []);
+
   return (
     <div className="page-wrapper blogs-page-wrapper">
       <Header />
@@ -32,10 +43,12 @@ export default function Blogs() {
           </div>
 
           <div className="blogs-grid">
-            {posts.map((post) => (
+            {blogPosts.map((post) => (
               <div className="blog-card" key={post.id}>
                 <div className="blog-card-image-wrap">
-                  <img src={post.image} alt={post.title} />
+                  {post.mediaType === 'video'
+                    ? <video src={post.mediaUrl} controls preload="metadata" aria-label={`${post.title} video`} />
+                    : <img src={post.mediaUrl || post.image} alt={post.title} />}
                 </div>
                 <div className="blog-card-content">
                   <h5 className="blog-card-heading">
@@ -46,6 +59,7 @@ export default function Blogs() {
                 </div>
               </div>
             ))}
+            {!blogPosts.length && <p className="blogs-empty-message">No blogs are currently available.</p>}
           </div>
         </div>
       </section>

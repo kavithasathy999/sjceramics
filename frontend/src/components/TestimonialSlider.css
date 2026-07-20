@@ -38,6 +38,19 @@
   stroke-linejoin: round;
 }
 
+.testimonial-block_one-rating .is-empty {
+  color: #d8d8d8;
+}
+
+.testimonial-slider-status {
+  display: grid;
+  min-height: 190px;
+  place-items: center;
+  color: #777;
+  font-size: 15px;
+  text-align: center;
+}
+
 @media (max-width: 575px) {
   .testimonial-block_one-upper.testimonial-block_one-upper--with-icon {
     padding-top: 0;

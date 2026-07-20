@@ -4,10 +4,12 @@ import Icon from './Icon'
 
 const MAX_IMAGE_SIZE = 3 * 1024 * 1024
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const CATEGORY_OPTIONS = ['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others']
 const countWords = (value) => value.trim() ? value.trim().split(/\s+/).length : 0
 
 function GalleryModal({ item, onClose, onSave }) {
   const [title, setTitle] = useState(item?.title || '')
+  const [category, setCategory] = useState(item?.category || '')
   const [image, setImage] = useState(null)
   const [previewUrl, setPreviewUrl] = useState(item?.imageUrl || '')
   const [errors, setErrors] = useState({})
@@ -56,13 +58,15 @@ function GalleryModal({ item, onClose, onSave }) {
     const nextErrors = {}
     if (!trimmedTitle) nextErrors.title = 'Gallery title is required.'
     else if (countWords(trimmedTitle) > 4) nextErrors.title = 'Title must contain 4 words or fewer.'
+    if (!category) nextErrors.category = 'Category is required.'
+    else if (!CATEGORY_OPTIONS.includes(category)) nextErrors.category = 'Select a valid category.'
     if (!item && !image) nextErrors.image = 'Gallery image is required.'
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
 
     setSaving(true)
     try {
-      await onSave({ title: trimmedTitle, image })
+      await onSave({ title: trimmedTitle, category, image })
     } finally {
       setSaving(false)
     }
@@ -81,6 +85,15 @@ function GalleryModal({ item, onClose, onSave }) {
             <input value={title} onChange={(event) => { setTitle(event.target.value); setErrors((current) => ({ ...current, title: '' })) }} placeholder="Enter gallery title" />
           </label>
           {errors.title && <em>{errors.title}</em>}
+
+          <label>
+            <span className="field-label-row"><strong>Category</strong></span>
+            <select value={category} onChange={(event) => { setCategory(event.target.value); setErrors((current) => ({ ...current, category: '' })) }} aria-invalid={Boolean(errors.category)} aria-describedby={errors.category ? 'gallery-category-error' : undefined}>
+              <option value="">Select category</option>
+              {CATEGORY_OPTIONS.map((option) => <option value={option} key={option}>{option}</option>)}
+            </select>
+          </label>
+          {errors.category && <em id="gallery-category-error">{errors.category}</em>}
 
           <div className="gallery-modal-preview">
             {previewUrl ? <img src={previewUrl} alt="Gallery preview" /> : <Icon name="gallery" />}

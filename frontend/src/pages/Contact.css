@@ -258,6 +258,34 @@
   box-shadow: 0 0 0 4px rgba(221, 35, 40, 0.09);
 }
 
+.contact-page-wrapper .default-form .form-group.has-error input,
+.contact-page-wrapper .default-form .form-group.has-error textarea {
+  border-color: #dd2328;
+  box-shadow: 0 0 0 4px rgba(221, 35, 40, 0.09);
+}
+
+.contact-page-wrapper .contact-field-error {
+  display: block;
+  margin-top: 7px;
+  color: #dd2328;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.contact-page-wrapper .contact-message-counter {
+  display: block;
+  margin-top: 7px;
+  color: #716a64;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.contact-page-wrapper .contact-message-counter.over-limit {
+  color: #dd2328;
+}
+
 .contact-page-wrapper .default-form .form-group .submit-btn {
   min-height: 58px;
   padding: 16px 24px;
@@ -274,6 +302,12 @@
   background: #b91c21;
   box-shadow: 0 15px 30px rgba(185, 28, 33, 0.24);
   transform: translateY(-2px);
+}
+
+.contact-page-wrapper .default-form .form-group .submit-btn:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
 }
 
 .contact-page-wrapper .default-form .form-group .submit-btn:focus-visible {

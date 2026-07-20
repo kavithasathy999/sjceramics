@@ -13,6 +13,7 @@ import {
 import useToast from '../hooks/useToast'
 import RoomDesignModal from '../components/RoomDesignModal'
 import ConfirmDelete from '../components/ConfirmDelete'
+import ExploreCollectionsEditor from '../components/ExploreCollectionsEditor'
 
 const MAX_VIDEO_SIZE = 8 * 1024 * 1024
 const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/webm'])
@@ -403,6 +404,7 @@ const tabs = [
   { id: 'home', label: 'Home About Section' },
   { id: 'founder', label: 'CEO & Founder' },
   { id: 'room-designs', label: 'Room Designs' },
+  { id: 'explore-collections', label: 'Explore Collections' },
 ]
 
 const getSelectedTab = () => {
@@ -442,6 +444,7 @@ function AboutSectionPage() {
       {activeTab === 'home' && <HomeAboutEditor />}
       {activeTab === 'founder' && <FounderEditor />}
       {activeTab === 'room-designs' && <RoomDesignsEditor />}
+      {activeTab === 'explore-collections' && <ExploreCollectionsEditor />}
     </section>
   )
 }

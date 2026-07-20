@@ -33,6 +33,32 @@
   align-items: flex-start;
 }
 
+.collection-fallback-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: -25px 0 22px;
+  padding: 12px 15px;
+  color: #6a5e54;
+  border: 1px solid #ead9c3;
+  border-radius: 8px;
+  background: #fff9ef;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.collection-fallback-alert button {
+  flex: 0 0 auto;
+  padding: 7px 14px;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 6px;
+  background: #231f1c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 /* Left Sidebar Tab Buttons Container */
 .choose-tabs-list {
   display: flex;
