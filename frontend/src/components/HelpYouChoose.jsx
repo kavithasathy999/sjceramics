@@ -1,8 +1,18 @@
 import './HelpYouChoose.css';
+import catalinaBeige from '../assets/images/resource/products/kag-tiles/catalina-beige.png';
+import dominoBlue from '../assets/images/resource/products/kag-tiles/domino-blue.png';
 
 export default function HelpYouChoose() {
   return (
     <section className="help-you-choose" aria-labelledby="help-you-choose-title">
+      <div className="help-you-choose_floating-elements" aria-hidden="true">
+        <span className="floating-item floating-tile float-tile-cream">
+          <img src={catalinaBeige} alt="" />
+        </span>
+        <span className="floating-item floating-tile float-tile-blue">
+          <img src={dominoBlue} alt="" />
+        </span>
+      </div>
       <div className="auto-container">
         <div className="help-you-choose_card">
           <div className="help-you-choose_icon" aria-hidden="true">

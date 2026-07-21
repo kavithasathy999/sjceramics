@@ -16,6 +16,8 @@ const blogsRoutes = require('./routes/blogsRoutes');
 const testimonialsRoutes = require('./routes/testimonialsRoutes');
 const contactEnquiriesRoutes = require('./routes/contactEnquiriesRoutes');
 const exploreCollectionsRoutes = require('./routes/exploreCollectionsRoutes');
+const productsRoutes = require('./routes/productsRoutes');
+const footerColumnsRoutes = require('./routes/footerColumnsRoutes');
 const { initializeDatabase } = require('./config/db');
 
 const app = express();
@@ -29,6 +31,7 @@ fs.mkdirSync(path.join(uploadsPath, 'gallery'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'offers'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'categories'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'blogs'), { recursive: true });
+fs.mkdirSync(path.join(uploadsPath, 'products'), { recursive: true });
 
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174')
   .split(',')
@@ -51,6 +54,8 @@ app.use('/api/blogs', blogsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/contact-enquiries', contactEnquiriesRoutes);
 app.use('/api/explore-collections', exploreCollectionsRoutes);
+app.use('/api/products', productsRoutes);
+app.use('/api/footer-columns', footerColumnsRoutes);
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route not found.' }));
 
 app.use((error, _req, res, _next) => {

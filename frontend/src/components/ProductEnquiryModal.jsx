@@ -171,6 +171,7 @@ export default function ProductEnquiryModal({ product, onClose }) {
   const Error = ({ field }) => errors[field]
     ? <span id={`product-${field}-error`} className="error-text" role="alert">{errors[field]}</span>
     : null;
+  const hasPricing = Number(product.mrp) > 0 && Number(product.offerPrice) > 0;
 
   return (
     <div className="contact-modal-overlay product-enquiry-overlay" onMouseDown={resetAndClose}>
@@ -188,10 +189,14 @@ export default function ProductEnquiryModal({ product, onClose }) {
           <div>
             <span>{product.category} · KAG</span>
             <h3 id="product-enquiry-title">{product.name}</h3>
-            <p>
-              <del>MRP ₹{formatPrice(product.mrp)}</del>
-              <strong>Offer Price ₹{formatPrice(product.offerPrice)}</strong>
-            </p>
+            {hasPricing ? (
+              <p>
+                <del>MRP Rs.{formatPrice(product.mrp)}</del>
+                <strong>Offer Price Rs.{formatPrice(product.offerPrice)}</strong>
+              </p>
+            ) : (
+              <p><strong>{product.arrivalStatus || 'New arrival'}</strong></p>
+            )}
           </div>
         </div>
 
@@ -295,14 +300,23 @@ export default function ProductEnquiryModal({ product, onClose }) {
                 <dt>Where to Use</dt>
                 <dd>{product.application}</dd>
               </div>
-              <div>
-                <dt>MRP</dt>
-                <dd><del>₹{formatPrice(product.mrp)}</del></dd>
-              </div>
-              <div className="product-enquiry-offer-price">
-                <dt>Offer Price</dt>
-                <dd>₹{formatPrice(product.offerPrice)}</dd>
-              </div>
+              {hasPricing ? (
+                <>
+                  <div>
+                    <dt>MRP</dt>
+                    <dd><del>Rs.{formatPrice(product.mrp)}</del></dd>
+                  </div>
+                  <div className="product-enquiry-offer-price">
+                    <dt>Offer Price</dt>
+                    <dd>Rs.{formatPrice(product.offerPrice)}</dd>
+                  </div>
+                </>
+              ) : (
+                <div className="product-enquiry-offer-price">
+                  <dt>Arrival Status</dt>
+                  <dd>{product.arrivalStatus || 'New arrival'}</dd>
+                </div>
+              )}
             </dl>
           </section>
 

@@ -4,6 +4,7 @@ import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
 import { PRODUCT_FILTER_OPTIONS, PRODUCT_TYPE_OPTIONS } from '../utils/productCatalogOptions';
+import { getProducts } from '../services/productsApi';
 import SearchableDropdown from './SearchableDropdown';
 
 const PhoneInputComponent = PhoneInput.default || PhoneInput;
@@ -66,6 +67,26 @@ export default function ContactModal({ isOpen, onClose }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const preferenceRef = useRef(null);
+
+  const [dynamicTypes, setDynamicTypes] = useState(PRODUCT_TYPE_OPTIONS);
+  const [dynamicUsages, setDynamicUsages] = useState(PRODUCT_FILTER_OPTIONS.usage);
+  const [dynamicSizes, setDynamicSizes] = useState(PRODUCT_FILTER_OPTIONS.sizes);
+
+  useEffect(() => {
+    getProducts()
+      .then((data) => {
+        const types = [...new Set(data.map(p => p.productType).filter(Boolean))];
+        const usages = [...new Set(data.map(p => p.whereToUse).filter(Boolean))];
+        const sizes = [...new Set(data.map(p => p.size).filter(Boolean))];
+        
+        if (types.length) setDynamicTypes(types);
+        if (usages.length) setDynamicUsages(usages);
+        if (sizes.length) setDynamicSizes(sizes);
+      })
+      .catch((err) => {
+        console.error('Failed to load dynamic contact modal options:', err);
+      });
+  }, []);
 
   const resetAndClose = useCallback(() => {
     setPreference('');
@@ -280,7 +301,7 @@ export default function ContactModal({ isOpen, onClose }) {
                         <SearchableDropdown
                           id={`${row.id}-type`}
                           name="productType"
-                          options={PRODUCT_TYPE_OPTIONS}
+                          options={dynamicTypes}
                           value={row.productType}
                           onChange={(event) => handleProductPreferenceChange(row.id, 'productType', event.target.value)}
                           placeholder="Select"
@@ -295,7 +316,7 @@ export default function ContactModal({ isOpen, onClose }) {
                         <SearchableDropdown
                           id={`${row.id}-usage`}
                           name="whereToUse"
-                          options={PRODUCT_FILTER_OPTIONS.usage}
+                          options={dynamicUsages}
                           value={row.whereToUse}
                           onChange={(event) => handleProductPreferenceChange(row.id, 'whereToUse', event.target.value)}
                           placeholder="Select"
@@ -310,7 +331,7 @@ export default function ContactModal({ isOpen, onClose }) {
                         <SearchableDropdown
                           id={`${row.id}-size`}
                           name="tileSize"
-                          options={PRODUCT_FILTER_OPTIONS.sizes}
+                          options={dynamicSizes}
                           value={row.tileSize}
                           onChange={(event) => handleProductPreferenceChange(row.id, 'tileSize', event.target.value)}
                           placeholder="Select"

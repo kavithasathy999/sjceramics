@@ -1,12 +1,28 @@
+import { useEffect, useState } from 'react';
 import { A11y, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { getFallbackNewArrivals, getNewArrivalProducts } from '../utils/newArrivalsData';
 import './NewArrivalsSlider.css';
 
-const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
+export default function NewArrivalsSlider({ products: initialProducts }) {
+  const [products, setProducts] = useState(() => (
+    initialProducts?.length ? initialProducts : getFallbackNewArrivals()
+  ));
 
-export default function NewArrivalsSlider({ products, onProductSelect }) {
+  useEffect(() => {
+    let active = true;
+    getNewArrivalProducts()
+      .then((items) => {
+        if (active) setProducts(items);
+      })
+      .catch(() => {
+        if (active && !initialProducts?.length) setProducts(getFallbackNewArrivals());
+      });
+    return () => { active = false; };
+  }, [initialProducts]);
+
   if (products.length === 0) return null;
 
   return (
@@ -44,29 +60,33 @@ export default function NewArrivalsSlider({ products, onProductSelect }) {
           1100: { slidesPerView: 4 },
         }}
       >
-        {products.map((product) => (
-          <SwiperSlide key={product.id}>
-            <button
-              type="button"
-              className="new-arrivals_card"
-              onClick={() => onProductSelect(product)}
-              aria-label={`Enquire about ${product.name}`}
-            >
-              <span className="new-arrivals_image">
-                <img src={product.image} alt={product.name} loading="lazy" />
-                <span className="new-arrivals_badge">New</span>
-              </span>
-              <span className="new-arrivals_content">
-                <small>{product.category}</small>
-                <strong>{product.name}</strong>
-                <span className="new-arrivals_prices">
-                  <span>MRP <del>₹{formatPrice(product.mrp)}</del></span>
-                  <b>₹{formatPrice(product.offerPrice)}</b>
+        {products.map((product) => {
+          const displayName = product.name.replace(/^KAG\s+/i, '');
+
+          return (
+            <SwiperSlide key={product.id}>
+              <div className="new-arrivals_card">
+                <span className="new-arrivals_image">
+                  <img src={product.image} alt={displayName} loading="lazy" />
+                  <span className="new-arrivals_badge">New</span>
                 </span>
-              </span>
-            </button>
-          </SwiperSlide>
-        ))}
+                <span className="new-arrivals_content">
+                  <small>{product.category}</small>
+                  <strong>{displayName}</strong>
+                  <span className="new-arrivals_product">
+                    <strong>{product.size}</strong>
+                    <span>{product.finish}</span>
+                  </span>
+                  <div className="new-arrivals_availability" aria-label={`${displayName} arrival status`}>
+                    <span>{product.arrivalStatus}</span>
+                    <span>Showroom arrival</span>
+                  </div>
+                  <p className="new-arrivals_offer-note">{product.availability}</p>
+                </span>
+              </div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </section>
   );

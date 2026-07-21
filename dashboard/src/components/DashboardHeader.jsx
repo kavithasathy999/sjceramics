@@ -21,15 +21,21 @@ function DashboardHeader({ activePage, onMenu, onLogout }) {
   const [uploadError, setUploadError] = useState('')
   const profileMenuRef = useRef(null)
   const fileInputRef = useRef(null)
-  const pageTitle = activePage === 'dashboard'
-    ? 'Admin Portal'
-    : activePage === 'banners' ? 'Banner Management'
-      : activePage === 'gallery' ? 'Gallery Management'
-        : activePage === 'offers' ? 'Offers Management'
-          : activePage === 'categories' ? 'Category Management'
-            : activePage === 'blogs' ? 'Blogs Management'
-              : activePage === 'testimonials' ? 'Testimonials Management'
-                : activePage === 'contact-enquiries' ? 'Contact Enquiries Management' : 'About Page Management'
+  const pageTitles = {
+    dashboard: 'Admin Portal',
+    banners: 'Banner Management',
+    about: 'About Page Management',
+    gallery: 'Gallery Management',
+    offers: 'Offers Management',
+    'new-arrivals': 'New Arrivals Management',
+    categories: 'Category Management',
+    products: 'Products Management',
+    footer: 'Footer Management',
+    blogs: 'Blogs Management',
+    testimonials: 'Testimonials Management',
+    'contact-enquiries': 'Contact Enquiries Management',
+  }
+  const pageTitle = pageTitles[activePage] || 'Admin Portal'
 
   useEffect(() => {
     if (!profileOpen) return undefined

@@ -3,22 +3,11 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
+import { getProducts } from '../services/productsApi';
 import SearchableDropdown from './SearchableDropdown';
 import './ServiceEnquiryModal.css';
 
 const PhoneInputComponent = PhoneInput.default || PhoneInput;
-
-const TILE_TYPES = [
-  'Vitrified Tiles',
-  'Ceramic Tiles',
-  'Porcelain Tiles',
-  'GVT / PGVT Tiles',
-  'Floor Tiles',
-  'Wall Tiles',
-  'Parking / Outdoor Tiles',
-  'Elevation Tiles',
-  'Other',
-];
 
 const EMPTY_FORM = {
   roomType: '',
@@ -80,6 +69,23 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const firstFieldRef = useRef(null);
+
+  const [tileTypes, setTileTypes] = useState([]);
+
+  useEffect(() => {
+    getProducts()
+      .then((data) => {
+        const types = [...new Set(data
+          .filter(p => p.category === 'Tiles')
+          .map(p => p.productType)
+          .filter(Boolean)
+        )];
+        setTileTypes(types);
+      })
+      .catch((err) => {
+        console.error('Failed to load dynamic tile types for ServiceEnquiryModal:', err);
+      });
+  }, []);
 
   const resetAndClose = useCallback(() => {
     setFormData(EMPTY_FORM);
@@ -239,8 +245,8 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
               <div className="form-group">
                 <label htmlFor="service-tileType">Type of Tile <span className="required">*</span></label>
                 <select id="service-tileType" name="tileType" value={formData.tileType} onChange={handleInputChange} className={errors.tileType ? 'error' : ''} aria-required="true" {...errorProps('tileType')}>
-                  <option value="">Select tile type</option>
-                  {TILE_TYPES.map((tileType) => <option value={tileType} key={tileType}>{tileType}</option>)}
+                  <option value="">{tileTypes.length ? 'Select tile type' : 'No product types available'}</option>
+                  {tileTypes.map((tileType) => <option value={tileType} key={tileType}>{tileType}</option>)}
                 </select>
                 <Error field="tileType" />
               </div>

@@ -2173,7 +2173,7 @@
 .header-logo-partner {
 	display: block;
 	flex: 0 0 88px;
-	width: 142px;
+	width: 112px;
 	height: 88px;
 	object-fit: contain;
 }
@@ -2183,8 +2183,8 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	margin-top: 1px;
-	line-height: 1.15;
+	margin-top: -8px;
+	line-height: 1.1;
 	text-align: center;
 	white-space: nowrap;
 }
@@ -2196,7 +2196,7 @@
 	color: var(--header-red);
 }
 .header-logo-partner-status {
-	margin-top: 3px;
+	margin-top: 1px;
 	font-size: 7.5px;
 	font-weight: 650;
 	letter-spacing: 0.035em;
@@ -2363,8 +2363,9 @@
 	.header-logo-link { width: 122px; height: 78px; }
 	.header-logo-partner-wrap { width: 136px; height: 98px; }
 	.header-logo-partner { flex-basis: 76px; width: 122px; height: 76px; }
+	.header-logo-partner-copy { margin-top: -6px; }
 	.header-logo-partner-slogan { font-size: 8px; }
-	.header-logo-partner-status { margin-top: 2px; font-size: 6.25px; }
+	.header-logo-partner-status { margin-top: 1px; font-size: 6.25px; }
 	.main-header .header-lower .nav-outer { margin-left: 12px; }
 	.main-header .main-menu .navigation { gap: 0; }
 	.main-header .main-menu .navigation > li > a { padding: 18px 9px; font-size: 13px; }

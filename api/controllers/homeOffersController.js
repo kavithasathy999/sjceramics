@@ -7,7 +7,7 @@ const MAX_IMAGE_SIZE = 3 * 1024 * 1024;
 const SECTION_CONFIG = Object.freeze({
   todays_offer: { label: "Today's Offer", limit: 1 },
   launching_offer: { label: 'Launching Offer', limit: 1 },
-  new_arrivals: { label: 'New Arrivals', limit: 6 },
+  new_arrivals: { label: 'New Arrivals', limit: null },
 });
 const CATEGORY_VALUES = new Set(['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others']);
 const ARRIVAL_STATUSES = new Set(['Coming soon', 'Available soon', 'Showroom arrival']);
@@ -136,7 +136,7 @@ const createHomeOffer = async (req, res, next) => {
     await connection.execute('SELECT section_type FROM home_offer_sections WHERE section_type = ? FOR UPDATE', [sectionType]);
     const [[{ itemCount }]] = await connection.execute('SELECT COUNT(*) AS itemCount FROM home_offer_items WHERE section_type = ?', [sectionType]);
     const limit = SECTION_CONFIG[sectionType].limit;
-    if (Number(itemCount) >= limit) {
+    if (Number.isInteger(limit) && Number(itemCount) >= limit) {
       await connection.rollback();
       await removeFile(req.file.filename);
       return res.status(409).json({ success: false, message: `${SECTION_CONFIG[sectionType].label} can contain a maximum of ${limit} ${limit === 1 ? 'card' : 'cards'}.` });

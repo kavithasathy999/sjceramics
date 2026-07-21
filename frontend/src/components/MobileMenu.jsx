@@ -53,7 +53,7 @@ function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem,
   });
 }
 
-export default function MobileMenu({ open, onClose, onOpenContactModal }) {
+export default function MobileMenu({ open, onClose, onOpenContactModal, navigationItems = navigation }) {
   const [openItems, setOpenItems] = useState({});
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function MobileMenu({ open, onClose, onOpenContactModal }) {
         <div className="menu-outer">
           <ul className="navigation">
             <MobileNavigationItems
-              items={navigation}
+              items={navigationItems}
               level={0}
               parentKey="root"
               openItems={openItems}

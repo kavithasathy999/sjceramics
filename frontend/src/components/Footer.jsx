@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import footerLogo from '../assets/images/Logo-Png.png';
 import kagLogo from '../assets/images/kaglogo.svg';
+import { getFooterColumns } from '../services/footerApi';
 import '../styles/quicklinks.css';
 
 const quickLinks = [
@@ -11,65 +13,21 @@ const quickLinks = [
   { label: 'Contact Us', path: '/contact' },
 ];
 
-const seoColumns = [
-  {
-    sections: [
-      {
-        title: 'Popular Tiles By Size',
-        type: 'size',
-        links: ['12X12 Tiles', '24X24 Tiles', '18X12 Tiles', '15X10 Tiles', '16X16 Tiles', '24X12 Tiles'],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: 'Tiles By Size',
-        type: 'size',
-        links: [
-          '12x22 Tiles', '12x8 Tiles', '20x20 Tiles', '40x8 Tiles',
-          '48x24 Tiles', '64x32 Tiles', '72x48 Tiles', '96x32 Tiles',
-          '12x12 Tiles', '24x24 Tiles', '18x12 Tiles', '15x10 Tiles',
-          '16x16 Tiles', '24x12 Tiles',
-        ],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: 'Tiles By Finish',
-        type: 'finish',
-        links: [
-          'Dark Light Highlighter Concept', 'Digital Vitrified Parking',
-          'High Depth Elevation', 'Satin Interior', 'Glossy', 'Matt',
-          'Glossy Floor', 'Dark Wooden Glossy', 'Punch',
-        ],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: 'Tiles By Material',
-        type: 'search',
-        links: ['Vitrified', 'Ceramic', 'Porcelain', 'Wooden', 'GVT'],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: 'Where To Use',
-        type: 'search',
-        links: ['Elevation Tiles', 'Living Room Tiles', 'Staircase Tiles', 'Roof Tiles', 'Bathroom Tiles'],
-      },
-    ],
-  },
-];
-
 export default function Footer() {
   const navigate = useNavigate();
+  const [columns, setColumns] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    getFooterColumns()
+      .then((data) => {
+        if (active && data) setColumns(data);
+      })
+      .catch((err) => {
+        console.error('Failed to load dynamic footer columns:', err);
+      });
+    return () => { active = false; };
+  }, []);
 
   const handleQuickLinkClick = (type, rawValue) => {
     let value = rawValue.replace(/ Tiles$/i, '').trim();
@@ -79,7 +37,18 @@ export default function Footer() {
       return;
     }
 
-    navigate('/products', { state: { filterCategory: type, filterValue: value } });
+    const filterCategoryMap = {
+      usage: 'room',
+      whereToUse: 'room',
+      material: 'material',
+      productType: 'productType',
+      color: 'color',
+      netQuantity: 'netQuantity',
+      size: 'size',
+      finish: 'finish',
+    };
+
+    navigate('/products', { state: { filterCategory: filterCategoryMap[type] || type, filterValue: value } });
   };
 
   return (
@@ -88,25 +57,29 @@ export default function Footer() {
       <section className="footer-quick-links-section">
         <div className="auto-container">
           <div className="quick-links-grid">
-            {seoColumns.map((column, columnIdx) => (
-              <div className="quick-links-column" key={columnIdx}>
-                {column.sections.map((section) => (
-                  <div className="quick-links-group" key={section.title}>
-                    <h6 className="quick-links-column-title">{section.title}</h6>
-                    <ul className="quick-links-list">
-                      {section.links.map((linkText) => (
-                        <li key={linkText}>
-                          <button
-                            type="button"
-                            onClick={() => handleQuickLinkClick(section.type, linkText)}
-                          >
-                            {linkText}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            {(Array.isArray(columns) && columns.length > 0 ? columns : [
+              { id: 'c1', title: 'Popular Tiles By Size', columnType: 'size', links: ['12X12 Tiles', '24X24 Tiles', '18X12 Tiles', '15X10 Tiles', '16X16 Tiles', '24X12 Tiles'] },
+              { id: 'c2', title: 'Tiles By Size', columnType: 'size', links: ['12x22 Tiles', '12x8 Tiles', '20x20 Tiles', '40x8 Tiles', '48x24 Tiles', '64x32 Tiles', '72x48 Tiles', '96x32 Tiles', '12x12 Tiles', '24x24 Tiles', '18x12 Tiles', '15x10 Tiles', '16x16 Tiles', '24x12 Tiles'] },
+              { id: 'c3', title: 'Tiles By Finish', columnType: 'finish', links: ['Dark Light Highlighter Concept', 'Digital Vitrified Parking', 'High Depth Elevation', 'Satin Interior', 'Glossy', 'Matt', 'Glossy Floor', 'Dark Wooden Glossy', 'Punch'] },
+              { id: 'c4', title: 'Tiles By Material', columnType: 'material', links: ['Vitrified', 'Ceramic', 'Porcelain', 'Wooden', 'GVT'] },
+              { id: 'c5', title: 'Where To Use', columnType: 'usage', links: ['Elevation Tiles', 'Living Room Tiles', 'Staircase Tiles', 'Roof Tiles', 'Bathroom Tiles'] }
+            ]).map((column) => (
+              <div className="quick-links-column" key={column.id || column.title}>
+                <div className="quick-links-group">
+                  <h6 className="quick-links-column-title">{column.title}</h6>
+                  <ul className="quick-links-list">
+                    {(column.links || []).map((linkText) => (
+                      <li key={linkText}>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickLinkClick(column.columnType || column.type, linkText)}
+                        >
+                          {linkText}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ))}
           </div>

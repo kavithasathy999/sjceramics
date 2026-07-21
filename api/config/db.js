@@ -1,6 +1,10 @@
 const mysql = require('mysql2/promise');
 const blogSeed = require('./blogSeed');
 const exploreCollectionsSeed = require('./exploreCollectionsSeed');
+const productsSeed = require('./productsSeed');
+const footerSeed = require('./footerSeed');
+const fs = require('fs');
+const path = require('path');
 
 const databaseName = process.env.DB_NAME || 'sj_ceramics';
 if (!/^[A-Za-z0-9_]+$/.test(databaseName)) throw new Error('DB_NAME contains unsupported characters.');
@@ -157,7 +161,7 @@ const initializeDatabase = async () => {
       availability VARCHAR(150) NOT NULL,
       arrival_status VARCHAR(40) NULL,
       image VARCHAR(255) NOT NULL,
-      sort_order TINYINT UNSIGNED NOT NULL,
+      sort_order SMALLINT UNSIGNED NOT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (id),
@@ -166,6 +170,8 @@ const initializeDatabase = async () => {
         REFERENCES home_offer_sections (section_type) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  await pool.query('ALTER TABLE home_offer_items MODIFY sort_order SMALLINT UNSIGNED NOT NULL');
 
   await pool.query(
     `INSERT IGNORE INTO home_offer_sections (section_type, configured)
@@ -465,6 +471,131 @@ const initializeDatabase = async () => {
         'New Arrivals 2026', 'Discover our latest ceramic collection',
       ],
     );
+  }
+
+  // Create products table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS products (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      name VARCHAR(150) NOT NULL,
+      category VARCHAR(60) NOT NULL,
+      preference VARCHAR(30) NOT NULL,
+      product_type VARCHAR(100) NULL,
+      type VARCHAR(100) NULL,
+      price DECIMAL(10,2) NULL,
+      size VARCHAR(50) NULL,
+      finish VARCHAR(100) NULL,
+      where_to_use VARCHAR(255) NULL,
+      material VARCHAR(150) NULL,
+      color VARCHAR(100) NULL,
+      net_quantity VARCHAR(50) NULL,
+      mrp_price DECIMAL(10,2) NULL,
+      sale_price DECIMAL(10,2) NULL,
+      image VARCHAR(255) NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
+    UPDATE products
+    SET category = CASE
+      WHEN category IN ('Sanitary Wares', 'Sanitary Ware', 'Sanitaryware') THEN 'Sanitarywares'
+      WHEN category = 'Bath Fittings' THEN 'Bath fittings'
+      ELSE category
+    END
+  `);
+
+  // Create footer_columns table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS footer_columns (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      title VARCHAR(150) NOT NULL,
+      column_type VARCHAR(50) NOT NULL DEFAULT 'size',
+      links TEXT NOT NULL,
+      sort_order INT UNSIGNED NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY footer_columns_sort_order_unique (sort_order)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
+    UPDATE footer_columns
+    SET column_type = CASE
+      WHEN title = 'Tiles By Material' AND column_type = 'search' THEN 'material'
+      WHEN title = 'Where To Use' AND column_type = 'search' THEN 'usage'
+      ELSE column_type
+    END
+  `);
+
+  // Seeding products
+  const [[{ productCount }]] = await pool.query('SELECT COUNT(*) AS productCount FROM products');
+  if (Number(productCount) === 0) {
+    const sourceDir = path.resolve(__dirname, '..', '..', 'frontend', 'src', 'assets', 'images', 'resource', 'products', 'kag-tiles');
+    const destDir = path.resolve(__dirname, '..', 'uploads', 'products');
+    
+    // Ensure destination directory exists
+    fs.mkdirSync(destDir, { recursive: true });
+
+    if (fs.existsSync(sourceDir)) {
+      try {
+        const files = fs.readdirSync(sourceDir);
+        for (const file of files) {
+          const srcFile = path.join(sourceDir, file);
+          const destFile = path.join(destDir, file);
+          if (!fs.existsSync(destFile)) {
+            fs.copyFileSync(srcFile, destFile);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to copy product seeds images:', err.message);
+      }
+    }
+
+    // Insert seeded products
+    for (const p of productsSeed) {
+      await pool.execute(
+        `INSERT INTO products 
+         (name, category, preference, product_type, type, price, size, finish, where_to_use, material, color, net_quantity, mrp_price, sale_price, image) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          p.name,
+          p.category,
+          p.preference,
+          p.product_type,
+          p.type,
+          p.price,
+          p.size,
+          p.finish,
+          p.where_to_use,
+          p.material,
+          p.color,
+          p.net_quantity,
+          p.price ? Math.ceil((p.price * 1.18) / 10) * 10 : null,
+          p.price || null,
+          p.image
+        ]
+      );
+    }
+  }
+
+  // Seeding footer columns
+  const [[{ footerCount }]] = await pool.query('SELECT COUNT(*) AS footerCount FROM footer_columns');
+  if (Number(footerCount) === 0) {
+    for (const col of footerSeed) {
+      await pool.execute(
+        `INSERT INTO footer_columns (title, column_type, links, sort_order) VALUES (?, ?, ?, ?)`,
+        [
+          col.title,
+          col.column_type,
+          JSON.stringify(col.links),
+          col.sort_order
+        ]
+      );
+    }
   }
 };
 

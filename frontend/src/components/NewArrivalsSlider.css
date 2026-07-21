@@ -68,7 +68,8 @@
 }
 
 .new-arrivals_card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -79,7 +80,7 @@
   border: 0;
   border: 1px solid #e8e3de;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: default;
   box-shadow: 0 7px 20px rgba(35, 31, 28, 0.06);
   transition: transform 250ms ease, box-shadow 250ms ease;
 }
@@ -132,6 +133,7 @@
   min-height: 116px;
   flex-direction: column;
   padding: 15px 16px 16px;
+  flex-grow: 1;
 }
 
 .new-arrivals_content small {
@@ -151,23 +153,53 @@
   color: #231f1c;
 }
 
-.new-arrivals_prices {
+.new-arrivals_product {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+.new-arrivals_product strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #231f1c;
+}
+
+.new-arrivals_product span {
+  display: block;
+  font-size: 11px;
+  color: #777069;
+}
+
+.new-arrivals_availability {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #e8e3de;
+  color: var(--main-color);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
-.new-arrivals_prices > span {
-  font-size: 9px;
-  font-weight: 700;
+.new-arrivals_availability span:last-child {
   color: #99918a;
 }
 
-.new-arrivals_prices b {
-  font-size: 16px;
-  color: var(--main-color);
+.new-arrivals_offer-note {
+  margin: 6px 0 0;
+  color: #99918a;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
 .new-arrivals_controls {

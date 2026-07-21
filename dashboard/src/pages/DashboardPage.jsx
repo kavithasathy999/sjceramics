@@ -4,9 +4,10 @@ import { getHomeCategories } from '../services/categoriesApi'
 import { getGalleryItems } from '../services/galleryApi'
 import { getHomeOffers } from '../services/offersApi'
 
-function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers, onOpenCategories }) {
+function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers, onOpenNewArrivals, onOpenCategories }) {
   const [galleryCount, setGalleryCount] = useState(null)
   const [offerCount, setOfferCount] = useState(null)
+  const [newArrivalCount, setNewArrivalCount] = useState(null)
   const [categoryCount, setCategoryCount] = useState(null)
 
   useEffect(() => {
@@ -22,7 +23,11 @@ function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers
 
       getHomeOffers()
         .then((sections) => {
-          if (active) setOfferCount(sections.reduce((total, section) => total + section.items.length, 0))
+          if (!active) return
+          setOfferCount(sections
+            .filter((section) => section.sectionType !== 'new_arrivals')
+            .reduce((total, section) => total + section.items.length, 0))
+          setNewArrivalCount(sections.find((section) => section.sectionType === 'new_arrivals')?.items.length || 0)
         })
         .catch(() => {
           // Each count fails independently so the remaining cards stay available.
@@ -89,6 +94,19 @@ function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers
           <span className="banner-stat-copy">
             <span>Offers</span>
             <strong>{offerCount ?? '—'}</strong>
+          </span>
+        </button>
+
+        <button
+          className="banner-stat-card"
+          type="button"
+          onClick={onOpenNewArrivals}
+          aria-label={newArrivalCount === null ? 'Open New Arrivals' : `Open New Arrivals, ${newArrivalCount} total`}
+        >
+          <span className="banner-stat-icon"><Icon name="arrival" /></span>
+          <span className="banner-stat-copy">
+            <span>New Arrivals</span>
+            <strong>{newArrivalCount ?? '-'}</strong>
           </span>
         </button>
 

@@ -1,38 +1,25 @@
 import { useEffect, useState } from 'react';
-import { products } from '../utils/ProductData';
-import { getHomeOffers } from '../services/homeOffersApi';
+import {
+  getFallbackNewArrivals,
+  getNewArrivalProducts,
+  HOME_NEW_ARRIVALS_LIMIT,
+} from '../utils/newArrivalsData';
 import './BrandsMarquee.css';
 import './HomeNewArrivals.css';
 
-const fallbackUpcomingProducts = products.filter((product) => product.isNewArrival).slice(0, 6).map((product) => ({
-  ...product,
-  arrivalStatus: 'Coming soon',
-  availability: 'Availability will be announced soon',
-}));
-
 export default function HomeNewArrivals() {
-  const [upcomingProducts, setUpcomingProducts] = useState(fallbackUpcomingProducts);
+  const [upcomingProducts, setUpcomingProducts] = useState(() => (
+    getFallbackNewArrivals({ limit: HOME_NEW_ARRIVALS_LIMIT })
+  ));
 
   useEffect(() => {
     let active = true;
-    getHomeOffers()
-      .then((sections) => {
-        if (!active) return;
-        const section = sections.find((entry) => entry.sectionType === 'new_arrivals');
-        if (!section?.configured) return;
-        setUpcomingProducts(section.items.slice(0, 6).map((item) => ({
-          id: item.id,
-          name: item.productName,
-          image: item.imageUrl,
-          category: item.category,
-          size: item.size,
-          finish: item.finish,
-          arrivalStatus: item.arrivalStatus,
-          availability: item.availability,
-        })));
+    getNewArrivalProducts({ limit: HOME_NEW_ARRIVALS_LIMIT })
+      .then((items) => {
+        if (active) setUpcomingProducts(items);
       })
       .catch(() => {
-        // Keep the original six arrivals when the API is unavailable.
+        if (active) setUpcomingProducts(getFallbackNewArrivals({ limit: HOME_NEW_ARRIVALS_LIMIT }));
       });
     return () => { active = false; };
   }, []);

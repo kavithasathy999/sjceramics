@@ -7,120 +7,33 @@ import BackToTop from '../components/BackToTop';
 import NewArrivalsSlider from '../components/NewArrivalsSlider';
 import ProductEnquiryModal from '../components/ProductEnquiryModal';
 import ProductImageModal from '../components/ProductImageModal';
-import { products } from '../utils/ProductData';
-import { PRODUCT_FILTER_OPTIONS as FILTER_OPTIONS } from '../utils/productCatalogOptions';
+import { getProducts } from '../services/productsApi';
 import headerBg from '../assets/images/background/14.jpg';
 import productsMarbleHero from '../assets/images/background/products-marble-hero.png';
 import sjCeramicsLogo from '../assets/images/Logo-Png.png';
-import kagLogo from '../assets/images/kaglogo.svg';
 
 // Import our custom Products CSS
 import '../styles/products.css';
 
-const PRODUCT_CATEGORIES = [
-  { name: 'Tiles', icon: 'fa-border-all' },
-  { name: 'Sanitary Wares', icon: 'fa-toilet' },
-  { name: 'Bath Fittings', icon: 'fa-shower' },
-  { name: 'Others', icon: 'fa-shapes' },
-];
-
-const SIZE_ALIASES = {
-  '300x300 mm': ['12x12'],
-  '300x600 mm': ['24X12'],
-  '600x600 mm': ['24X24'],
-  '600x1200 mm': ['48X24'],
-  '200x1200 mm': ['40X8'],
+const CATEGORY_ALIASES = {
+  'Sanitary Wares': 'Sanitarywares',
+  'Sanitary Ware': 'Sanitarywares',
+  Sanitaryware: 'Sanitarywares',
+  'Bath Fittings': 'Bath fittings',
 };
 
-const FINISH_ALIASES = {
-  'Glossy/High Glossy': ['Glossy', 'Crystal_high_glossy'],
-  'Satin/Matt': ['Matt'],
-  Structured: ['Engrave'],
-  'Rustic/Carving': ['Carving'],
-  Wood: ['Varnis'],
-  'Glossy White': ['Glossy'],
-  Chrome: ['Glossy'],
-  'Mirror Finish': ['Hg_polished_finish'],
-  'Grey Powder': ['Glue'],
-  'White/Ivory': ['Matt'],
+const CATEGORY_ICONS = {
+  Tiles: 'fa-border-all',
+  Sanitarywares: 'fa-toilet',
+  'Bath fittings': 'fa-shower',
+  Others: 'fa-shapes',
 };
 
-const USAGE_ALIASES = {
-  'Bathroom/Toilet/Kitchen': ['Bath_bedroom_living-Kit', 'Kitchen_bathroom'],
-  'Living Room/Bedroom': ['Living_room', 'Bedroom_livingroom_kit'],
-  'Elevation/Exterior': ['Elevation / Exterior Tiles', 'Elevation_exterior'],
-  'Parking/Driveway/Garage': ['Parking'],
-  Bathroom: ['Bathroom_tiles'],
-  'Bathroom/Dining': ['Bath_bedroom_living'],
-  'Bathroom/Kitchen': ['Kitchen_bathroom'],
-  'Office/Commercial/Shop': ['Commercial_spaces'],
-  'Outdoor/Bathroom': ['Outdoor', 'Bathroom_tiles'],
-  'Tiling Installation': ['Outdoor'],
-};
+const CATEGORY_ORDER = ['Tiles', 'Sanitarywares', 'Bath fittings', 'Others'];
 
-const MATERIAL_ALIASES = {
-  'Double Charge Vitrified': ['Double_charge', 'Vitrified'],
-  'Full Body Vitrified': ['Full_body_vitrified', 'Vitrified'],
-  'Glazed Vitrified (GVT)': ['Vitrified'],
-  'Polished Glazed Vitrified (PGVT)': ['Pgvt', 'Vitrified'],
-  Ceramic: ['Porcelain'],
-  'Ceramic/Glazed Ceramic': ['Porcelain'],
-  'Cement-based': ['Floor_tiles_material'],
-};
+const normalizeCategory = (value) => CATEGORY_ALIASES[value] || value || 'Tiles';
+const uniqueValues = (items) => [...new Set(items.map((item) => String(item || '').trim()).filter(Boolean))];
 
-const NET_QUANTITY_BY_SIZE = {
-  '300x300 mm': '10',
-  '300x600 mm': '6',
-  '600x600 mm': '4',
-  '600x1200 mm': '2',
-  '800x800 mm': '3',
-  '200x1200 mm': '6',
-  Standard: '1',
-  '20 kg': '1',
-};
-
-const COLOR_KEYWORDS = {
-  Brown: ['brown', 'wood'],
-  Blue: ['blue', 'aqua'],
-  Black: ['black'],
-  Cream: ['beige'],
-  Gold: ['gold'],
-  Green: ['green'],
-  Ivory: ['ivory'],
-  Orange: ['orange'],
-  Pearl: ['pearl'],
-  Pink: ['pink', 'rose'],
-  Red: ['red'],
-  Teal: ['teal'],
-  White: ['white', 'bianco'],
-  Gray: ['grey', 'gray', 'slate'],
-  Yellow: ['yellow'],
-  Multicolor: ['decor', 'multi'],
-};
-
-const getProductColors = (product) => {
-  const searchableName = product.name.toLowerCase();
-  const colors = Object.entries(COLOR_KEYWORDS)
-    .filter(([, keywords]) => keywords.some((keyword) => searchableName.includes(keyword)))
-    .map(([color]) => color);
-  const darkKeywords = ['black', 'brown', 'blue', 'slate'];
-  const tone = darkKeywords.some((keyword) => searchableName.includes(keyword)) ? 'Dark' : 'Light';
-  return [...new Set([tone, ...colors])];
-};
-
-const catalogProducts = products.map((product) => ({
-  ...product,
-  filterMeta: {
-    sizes: SIZE_ALIASES[product.size] || [],
-    finishes: FINISH_ALIASES[product.finish] || [],
-    usage: USAGE_ALIASES[product.application] || [],
-    materials: MATERIAL_ALIASES[product.material] || [],
-    colors: getProductColors(product),
-    netQuantities: NET_QUANTITY_BY_SIZE[product.size] ? [NET_QUANTITY_BY_SIZE[product.size]] : [],
-  },
-}));
-const newArrivalProducts = catalogProducts.filter(product => product.isNewArrival);
-const MAX_PRICE = Math.max(...catalogProducts.map(product => product.offerPrice));
 const PRODUCTS_PER_PAGE = 12;
 const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
 
@@ -145,33 +58,25 @@ const findCanonicalOption = (options, value) => options.find(
   (option) => option.toLowerCase() === String(value).toLowerCase()
 );
 
-const ROOM_USAGE_ALIASES = {
-  Bathroom: 'Bathroom_tiles',
-  'Bathroom Tiles': 'Bathroom_tiles',
-  'Living room': 'Living_room',
-  'Living Room': 'Living_room',
-  Elevation: 'Elevation / Exterior Tiles',
-  'Elevation Tiles': 'Elevation / Exterior Tiles',
-  'Stair case': 'Staircase',
-  Staircase: 'Staircase',
-  Roof: 'Roof',
-  'Roof Tiles': 'Roof',
-  Kitchen: 'Kitchen',
-  Parking: 'Parking',
-  'Swimming pool': 'Swimming_pool',
-};
-
-const getCanonicalUsage = (value) => {
-  const directMatch = findCanonicalOption(FILTER_OPTIONS.usage, value);
-  if (directMatch) return directMatch;
-  if (ROOM_USAGE_ALIASES[value]) return ROOM_USAGE_ALIASES[value];
-  return USAGE_ALIASES[value]?.[0] || '';
-};
+const getCanonicalOption = (options, value) => findCanonicalOption(options, value) || String(value || '').trim();
 
 export default function Products() {
   const location = useLocation();
 
   // --- Filter & Sort States ---
+  const [catalogProducts, setCatalogProducts] = useState([]);
+  const [catalogMaxPrice, setCatalogMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [filterOptions, setFilterOptions] = useState({
+    sizes: [],
+    finishes: [],
+    usage: [],
+    materials: [],
+    colors: [],
+    netQuantities: []
+  });
+  const [loading, setLoading] = useState(true);
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -180,9 +85,60 @@ export default function Products() {
   const [selectedFinishes, setSelectedFinishes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedNetQuantities, setSelectedNetQuantities] = useState([]);
-  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [sortBy, setSortBy] = useState('default');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // --- Dynamic API Fetching ---
+  useEffect(() => {
+    getProducts()
+      .then((data) => {
+        const mapped = data.map((product) => {
+          const category = normalizeCategory(product.category);
+          const offerPrice = product.salePrice || product.price || 0;
+          const mappedProduct = {
+            ...product,
+            category,
+            productType: product.productType || product.type || '',
+            type: product.type || product.productType || '',
+            image: product.imageUrl,
+            mrp: product.mrpPrice || Math.ceil((offerPrice * 1.18) / 10) * 10,
+            offerPrice,
+            application: product.whereToUse || '',
+          };
+          return {
+            ...mappedProduct,
+            filterMeta: {
+              sizes: mappedProduct.size ? [mappedProduct.size] : [],
+              finishes: mappedProduct.finish ? [mappedProduct.finish] : [],
+              usage: mappedProduct.application ? [mappedProduct.application] : [],
+              materials: mappedProduct.material ? [mappedProduct.material] : [],
+              colors: mappedProduct.color ? [mappedProduct.color] : [],
+              netQuantities: mappedProduct.netQuantity ? [mappedProduct.netQuantity] : [],
+            },
+          };
+        });
+        setCatalogProducts(mapped);
+        
+        const maxOfferPrice = Math.max(...mapped.map(p => p.offerPrice || 0), 1000);
+        setMaxPrice(maxOfferPrice);
+        setCatalogMaxPrice(maxOfferPrice);
+
+        const calculatedOptions = {
+          sizes: uniqueValues(mapped.flatMap(p => p.filterMeta.sizes)),
+          finishes: uniqueValues(mapped.flatMap(p => p.filterMeta.finishes)),
+          usage: uniqueValues(mapped.flatMap(p => p.filterMeta.usage)),
+          materials: uniqueValues(mapped.flatMap(p => p.filterMeta.materials)),
+          colors: uniqueValues(mapped.flatMap(p => p.filterMeta.colors)),
+          netQuantities: uniqueValues(mapped.flatMap(p => p.filterMeta.netQuantities)).sort((a,b) => Number(a) - Number(b))
+        };
+        setFilterOptions(calculatedOptions);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch catalog products:', err);
+        setLoading(false);
+      });
+  }, []);
   
   // --- UI States ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -192,9 +148,9 @@ export default function Products() {
 
   // --- Filtering Logic ---
   const filteredProducts = catalogProducts.filter(product => {
-    const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category || 'Tiles');
+    const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(normalizeCategory(product.category));
     const sizeMatch = matchesSelectedOptions(selectedSizes, product.filterMeta.sizes);
-    const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(product.type);
+    const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(product.productType) || selectedTypes.includes(product.type);
     const appMatch = matchesSelectedOptions(selectedApplications, product.filterMeta.usage);
     const matMatch = matchesSelectedOptions(selectedMaterials, product.filterMeta.materials);
     const finishMatch = matchesSelectedOptions(selectedFinishes, product.filterMeta.finishes);
@@ -205,10 +161,11 @@ export default function Products() {
     // Fuzzy text search match across multiple database attributes
     const searchMatch = searchQuery === '' || 
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.material.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.application.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.size.toLowerCase().includes(searchQuery.toLowerCase());
+      String(product.productType || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(product.type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(product.material || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(product.application || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(product.size || '').toLowerCase().includes(searchQuery.toLowerCase());
 
     return categoryMatch && sizeMatch && typeMatch && appMatch && matMatch && finishMatch &&
       colorMatch && netQuantityMatch && priceMatch && searchMatch;
@@ -227,6 +184,13 @@ export default function Products() {
   const pageStartIndex = (activePage - 1) * PRODUCTS_PER_PAGE;
   const paginatedProducts = sortedProducts.slice(pageStartIndex, pageStartIndex + PRODUCTS_PER_PAGE);
   const paginationItems = getPaginationItems(activePage, totalPages);
+  const productCategories = uniqueValues(catalogProducts.map((product) => product.category))
+    .sort((first, second) => {
+      const firstIndex = CATEGORY_ORDER.indexOf(first);
+      const secondIndex = CATEGORY_ORDER.indexOf(second);
+      return (firstIndex === -1 ? 99 : firstIndex) - (secondIndex === -1 ? 99 : secondIndex);
+    })
+    .map((name) => ({ name, icon: CATEGORY_ICONS[name] || 'fa-shapes' }));
 
   // --- Reset pagination when the catalogue result set changes ---
   useEffect(() => {
@@ -242,7 +206,7 @@ export default function Products() {
     setSelectedFinishes([]);
     setSelectedColors([]);
     setSelectedNetQuantities([]);
-    setMaxPrice(MAX_PRICE);
+    setMaxPrice(catalogMaxPrice);
     setSortBy('default');
     setSearchQuery('');
   };
@@ -293,9 +257,9 @@ export default function Products() {
         setSearchQuery(incomingSearch);
       } else if (filterCategory === 'category') {
         const incomingCategories = Array.isArray(filterValues)
-          ? filterValues.filter(value => PRODUCT_CATEGORIES.some(category => category.name === value))
-          : [filterValue];
-        setSelectedCategories(incomingCategories);
+          ? filterValues.map(normalizeCategory)
+          : [normalizeCategory(filterValue)];
+        setSelectedCategories(incomingCategories.filter(Boolean));
       } else if (filterCategory === 'type') {
         if (parentCategory) setSelectedCategories([parentCategory]);
         setSelectedTypes([filterValue]);
@@ -304,42 +268,28 @@ export default function Products() {
         if (parentType) setSelectedTypes([parentType]);
         setSearchQuery(filterValue);
       } else if (filterCategory === 'applications' && Array.isArray(filterValues)) {
-        const validApplications = [...new Set(filterValues.map(getCanonicalUsage).filter(Boolean))];
+        const validApplications = [...new Set(filterValues.map((value) => getCanonicalOption(filterOptions.usage, value)).filter(Boolean))];
         setSelectedApplications(validApplications);
       } else if (filterCategory === 'room') {
-        const mappedUsage = getCanonicalUsage(filterValue);
+        const mappedUsage = getCanonicalOption(filterOptions.usage, filterValue);
         if (mappedUsage) setSelectedApplications([mappedUsage]);
       } else if (filterCategory === 'size') {
-        const matchedSize = findCanonicalOption(FILTER_OPTIONS.sizes, filterValue);
+        const matchedSize = getCanonicalOption(filterOptions.sizes, filterValue);
         if (matchedSize) setSelectedSizes([matchedSize]);
       } else if (filterCategory === 'color') {
-        const matchedColor = findCanonicalOption(FILTER_OPTIONS.colors, filterValue);
+        const matchedColor = getCanonicalOption(filterOptions.colors, filterValue);
         if (matchedColor) setSelectedColors([matchedColor]);
       } else if (filterCategory === 'finish') {
-        const normFinish = filterValue.toLowerCase();
-        if (normFinish.includes('glossy')) {
-          setSelectedFinishes(['Glossy']);
-        } else if (normFinish.includes('matt') || normFinish.includes('satin') || normFinish.includes('punch')) {
-          setSelectedFinishes(['Matt']);
-        } else if (normFinish.includes('elevation')) {
-          setSelectedApplications(['Elevation / Exterior Tiles']);
-          setSelectedFinishes(['Matt']);
-        } else if (normFinish.includes('parking')) {
-          setSelectedApplications(['Parking']);
-        }
+        const matchedFinish = getCanonicalOption(filterOptions.finishes, filterValue);
+        if (matchedFinish) setSelectedFinishes([matchedFinish]);
       } else if (filterCategory === 'material') {
-        const normMat = filterValue.toLowerCase();
-        if (normMat === 'vitrified') {
-          setSelectedMaterials(['Vitrified']);
-        } else if (normMat === 'ceramic') {
-          setSelectedMaterials(['Porcelain']);
-        } else if (normMat === 'porcelain') {
-          setSelectedMaterials(['Porcelain']);
-        } else if (normMat === 'wooden') {
-          setSelectedFinishes(['Varnis']);
-        } else if (normMat === 'gvt') {
-          setSelectedMaterials(['Vitrified']);
-        }
+        const matchedMaterial = getCanonicalOption(filterOptions.materials, filterValue);
+        if (matchedMaterial) setSelectedMaterials([matchedMaterial]);
+      } else if (filterCategory === 'productType') {
+        setSelectedTypes([filterValue]);
+      } else if (filterCategory === 'netQuantity') {
+        const matchedNetQuantity = getCanonicalOption(filterOptions.netQuantities, filterValue);
+        if (matchedNetQuantity) setSelectedNetQuantities([matchedNetQuantity]);
       }
       
       // Clear navigation state so a reload doesn't re-apply on reset
@@ -421,7 +371,7 @@ export default function Products() {
         </section>
 
         <div className="auto-container">
-          <NewArrivalsSlider products={newArrivalProducts} onProductSelect={setSelectedProduct} />
+          <NewArrivalsSlider />
 
           <section className="product-categories" aria-labelledby="product-categories-title">
             <div className="product-categories_heading">
@@ -430,7 +380,7 @@ export default function Products() {
               <p style={{color: "var(--color-seven)"}}>Choose a category to view products curated for your space.</p>
             </div>
             <div className="product-category-buttons" aria-label="Product categories">
-              {PRODUCT_CATEGORIES.map(({ name, icon }) => {
+              {productCategories.map(({ name, icon }) => {
                 const isSelected = selectedCategories.includes(name);
                 return (
                   <button
@@ -473,7 +423,7 @@ export default function Products() {
                   selectedFinishes.length > 0 ||
                   selectedColors.length > 0 ||
                   selectedNetQuantities.length > 0 ||
-                  maxPrice < MAX_PRICE) && (
+                  maxPrice < catalogMaxPrice) && (
                   <button className="clear-filters-btn" onClick={clearAllFilters}>
                     Clear All
                   </button>
@@ -485,18 +435,18 @@ export default function Products() {
                 <div className="filter-group-title">Price ({formatPrice(maxPrice)})</div>
                 <div className="price-slider-wrap">
                   <input 
-                    type="range" 
-                    min="0" 
-                    max={MAX_PRICE}
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                    className="price-range-input"
-                    aria-label="Maximum product price"
-                    style={{ '--price-progress': `${(maxPrice / MAX_PRICE) * 100}%` }}
+                     type="range" 
+                     min="0" 
+                     max={catalogMaxPrice}
+                     value={maxPrice}
+                     onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+                     className="price-range-input"
+                     aria-label="Maximum product price"
+                     style={{ '--price-progress': `${(maxPrice / (catalogMaxPrice || 1)) * 100}%` }}
                   />
                   <div className="price-values">
                     <span>₹0</span>
-                    <span>₹{formatPrice(MAX_PRICE)}</span>
+                    <span>₹{formatPrice(catalogMaxPrice)}</span>
                   </div>
                 </div>
               </div>
@@ -505,7 +455,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Size</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.sizes.map(size => (
+                  {filterOptions.sizes.map(size => (
                     <label key={size} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -522,7 +472,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Finish</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.finishes.map(finish => (
+                  {filterOptions.finishes.map(finish => (
                     <label key={finish} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -539,7 +489,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Where To Use</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.usage.map(app => (
+                  {filterOptions.usage.map(app => (
                     <label key={app} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -556,7 +506,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Material</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.materials.map(mat => (
+                  {filterOptions.materials.map(mat => (
                     <label key={mat} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -573,7 +523,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Color</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.colors.map(color => (
+                  {filterOptions.colors.map(color => (
                     <label key={color} className="filter-checkbox-label">
                       <input 
                         type="checkbox" 
@@ -590,7 +540,7 @@ export default function Products() {
               <div className="filter-group">
                 <div className="filter-group-title">Net quantity (tiles per box)</div>
                 <div className="filter-options-list">
-                  {FILTER_OPTIONS.netQuantities.map(quantity => (
+                  {filterOptions.netQuantities.map(quantity => (
                     <label key={quantity} className="filter-checkbox-label">
                       <input
                         type="checkbox"
@@ -611,8 +561,14 @@ export default function Products() {
 
             {/* --- Products Catalog Content --- */}
             <section className="products-content-area">
-              
-              <div className="catalog-top-bar">
+              {loading ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', width: '100%' }}>
+                  <span className="spinner banner-spinner" style={{ borderTopColor: '#006a4e', width: '40px', height: '40px' }} />
+                  <strong style={{ marginTop: '16px', color: '#666' }}>Loading catalog...</strong>
+                </div>
+              ) : (
+                <>
+                  <div className="catalog-top-bar">
                 <div className="product-count-label">
                   {sortedProducts.length > 0
                     ? `Showing ${pageStartIndex + 1}–${Math.min(pageStartIndex + PRODUCTS_PER_PAGE, sortedProducts.length)} of ${sortedProducts.length} Products`
@@ -685,10 +641,10 @@ export default function Products() {
                     <button className="active-tag-remove" onClick={() => setSearchQuery('')}>×</button>
                   </span>
                 )}
-                {maxPrice < MAX_PRICE && (
+                {maxPrice < catalogMaxPrice && (
                   <span className="active-tag-badge">
                     Price: ≤ ₹{formatPrice(maxPrice)}
-                    <button className="active-tag-remove" onClick={() => setMaxPrice(MAX_PRICE)}>×</button>
+                    <button className="active-tag-remove" onClick={() => setMaxPrice(catalogMaxPrice)}>×</button>
                   </span>
                 )}
               </div>
@@ -812,6 +768,8 @@ export default function Products() {
                     </span>
                   </button>
                 </div>
+              )}
+              </>
               )}
             </section>
 

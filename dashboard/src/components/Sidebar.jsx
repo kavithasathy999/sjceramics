@@ -26,6 +26,15 @@ function Sidebar({ activePage, onNavigate, open, onClose }) {
           <button className={activePage === 'offers' ? 'active' : ''} onClick={() => onNavigate('offers')}>
             <Icon name="offer" /><span>Offers</span>
           </button>
+          <button className={activePage === 'new-arrivals' ? 'active' : ''} onClick={() => onNavigate('new-arrivals')}>
+            <Icon name="arrival" /><span>New Arrivals</span>
+          </button>
+          <button className={activePage === 'products' ? 'active' : ''} onClick={() => onNavigate('products')}>
+            <Icon name="product" /><span>Products</span>
+          </button>
+          <button className={activePage === 'footer' ? 'active' : ''} onClick={() => onNavigate('footer')}>
+            <Icon name="footer" /><span>Footer Columns</span>
+          </button>
           <button className={activePage === 'categories' ? 'active' : ''} onClick={() => onNavigate('categories')}>
             <Icon name="category" /><span>Category</span>
           </button>

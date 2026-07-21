@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useStickyHeader from '../hooks/useStickyHeader';
-import { navigation } from '../utils/navigation';
+import { navigation as baseNavigation } from '../utils/navigation';
+import { getProducts } from '../services/productsApi';
 import MobileMenu from './MobileMenu';
 import ContactModal from './ContactModal';
 import logo from '../assets/images/Logo-Png.png';
@@ -24,6 +25,49 @@ function DesktopSubmenu({ items, level = 1 }) {
   );
 }
 
+const uniqueValues = (values) => [...new Set(values.map((value) => String(value || '').trim()).filter(Boolean))];
+
+const buildProductMenu = (products) => {
+  const productTypes = uniqueValues(products.map((product) => product.productType || product.type));
+  const usageValues = uniqueValues(products.map((product) => product.whereToUse));
+  const sizeValues = uniqueValues(products.map((product) => product.size));
+
+  const menuSections = [
+    {
+      label: 'Product Type',
+      values: productTypes,
+      filterCategory: 'productType',
+    },
+    {
+      label: 'Where To Use',
+      values: usageValues,
+      filterCategory: 'room',
+    },
+    {
+      label: 'Size of the Tile',
+      values: sizeValues,
+      filterCategory: 'size',
+    },
+  ].filter((section) => section.values.length);
+
+  return menuSections.map((section) => ({
+    label: section.label,
+    path: '/products',
+    children: section.values.map((value) => ({
+      label: value,
+      path: '/products',
+      state: {
+        filterCategory: section.filterCategory,
+        filterValue: value,
+      },
+    })),
+  }));
+};
+
+const navigationWithoutStaticProducts = baseNavigation.map((item) => (
+  item.label === 'Products' ? { ...item, children: undefined } : item
+));
+
 export default function Header() {
   const navigate = useNavigate();
   const headerRef = useRef(null);
@@ -33,7 +77,25 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   const [partnerLogoFailed, setPartnerLogoFailed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [navigation, setNavigation] = useState(navigationWithoutStaticProducts);
   const shouldShowHeader = isVisible || mobileMenuOpen || isModalOpen;
+
+  useEffect(() => {
+    let active = true;
+    getProducts()
+      .then((products) => {
+        if (!active) return;
+        const productMenuChildren = buildProductMenu(products);
+        if (!productMenuChildren.length) return;
+        setNavigation(navigationWithoutStaticProducts.map((item) => (
+          item.label === 'Products' ? { ...item, children: productMenuChildren } : item
+        )));
+      })
+      .catch((error) => {
+        console.error('Failed to load dynamic header products menu:', error);
+      });
+    return () => { active = false; };
+  }, []);
 
   // The original template toggled these as body-level classes so the
   // CSS transitions (defined against `body.mobile-menu-visible`) keep working unmodified.
@@ -237,6 +299,7 @@ export default function Header() {
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
           onOpenContactModal={() => setIsModalOpen(true)}
+          navigationItems={navigation}
         />
       </header>
       <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

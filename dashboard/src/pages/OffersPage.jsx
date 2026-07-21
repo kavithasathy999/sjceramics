@@ -8,7 +8,6 @@ import { createHomeOffer, deleteHomeOffer, getHomeOffers, updateHomeOffer } from
 const tabs = [
   { type: 'todays_offer', label: "Today's Offer", limit: 1 },
   { type: 'launching_offer', label: 'Launching Offer', limit: 1 },
-  { type: 'new_arrivals', label: 'New Arrivals', limit: 6 },
 ]
 
 function OffersPage() {
