@@ -22,10 +22,11 @@ export default function SearchableDropdown({
     setSearchTerm(value);
   }, [value]);
 
-  // Filter options based on search term
-  const filteredOptions = options.filter(option =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter options based on search term (show all options when opening with an existing selected value)
+  const filteredOptions = options.filter(option => {
+    if (!searchTerm || searchTerm === value) return true;
+    return option.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   // Reset highlighted index when filter changes
   useEffect(() => {

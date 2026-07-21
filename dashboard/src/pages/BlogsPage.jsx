@@ -72,7 +72,7 @@ function BlogsPage() {
   return (
     <section className="dashboard-content blogs-management-page page-enter">
       <div className="banner-page-head">
-        <div className="page-heading"><h1>Blogs</h1><p>Manage the articles displayed on the website and home page.</p></div>
+        <div className="page-heading"><h1>Blogs</h1><p>Manage the articles displayed on the website and home page</p></div>
         <button className="add-banner-button" type="button" disabled={loading || Boolean(error)} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Blog</button>
       </div>
       {error && <div className="banner-api-error" role="alert"><span>{error}</span><button type="button" onClick={loadItems}>Retry</button></div>}

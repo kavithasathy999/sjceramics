@@ -580,20 +580,12 @@
 	background-color:var(--main-color);
 }
 
-.main-header .main-menu .navigation > li.products-dropdown .product-menu-level-2 > li.dropdown > a{
-	padding-right:34px;
+.main-header .main-menu .navigation > li.products-dropdown li.dropdown > a::after{
+	display: none !important;
 }
 
-.main-header .main-menu .navigation > li.products-dropdown .product-menu-level-2 > li.dropdown > a::after{
-	position:absolute;
-	right:12px;
-	top:50%;
-	content:"\f105";
-	transform:translateY(-50%);
-	color:currentColor;
-	font-family:'Font Awesome 6 Free';
-	font-size:12px;
-	font-weight:800;
+.main-header .main-menu .navigation > li.products-dropdown .product-menu-level-2 > li.dropdown > a{
+	padding-right: 15px;
 }
 
 .main-header .main-menu .navigation > li.products-dropdown .product-menu-level-1 > li:focus-within > .product-menu-level-2{
@@ -2163,7 +2155,7 @@
 	position: relative;
 	justify-content: flex-start;
 	width: 160px;
-	height: 112px;
+	height: auto;
 	border: none;
 	border-radius: 0;
 	background: transparent;
@@ -2172,9 +2164,9 @@
 }
 .header-logo-partner {
 	display: block;
-	flex: 0 0 88px;
-	width: 112px;
-	height: 88px;
+	flex: 0 0 75px;
+	width: 100px;
+	height: 75px;
 	object-fit: contain;
 }
 .header-logo-partner-copy {
@@ -2183,8 +2175,7 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	margin-top: -8px;
-	line-height: 1.1;
+	line-height: 1.25;
 	text-align: center;
 	white-space: nowrap;
 }
@@ -2196,7 +2187,7 @@
 	color: var(--header-red);
 }
 .header-logo-partner-status {
-	margin-top: 1px;
+	margin-top: 3px;
 	font-size: 7.5px;
 	font-weight: 650;
 	letter-spacing: 0.035em;
@@ -2362,10 +2353,10 @@
 	.header-logo-container { gap: 8px; }
 	.header-logo-link { width: 122px; height: 78px; }
 	.header-logo-partner-wrap { width: 136px; height: 98px; }
-	.header-logo-partner { flex-basis: 76px; width: 122px; height: 76px; }
-	.header-logo-partner-copy { margin-top: -6px; }
+	.header-logo-partner { flex-basis: 75px; width: 112px; height: 75px; }
+	.header-logo-partner-copy { margin-top: 3px; }
 	.header-logo-partner-slogan { font-size: 8px; }
-	.header-logo-partner-status { margin-top: 1px; font-size: 6.25px; }
+	.header-logo-partner-status { margin-top: 3px; font-size: 6.25px; }
 	.main-header .header-lower .nav-outer { margin-left: 12px; }
 	.main-header .main-menu .navigation { gap: 0; }
 	.main-header .main-menu .navigation > li > a { padding: 18px 9px; font-size: 13px; }

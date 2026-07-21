@@ -9,6 +9,7 @@ import NewArrivalsPage from '../pages/NewArrivalsPage'
 import CategoriesPage from '../pages/CategoriesPage'
 import ProductsPage from '../pages/ProductsPage'
 import FooterPage from '../pages/FooterPage'
+import MetaPage from '../pages/MetaPage'
 import BlogsPage from '../pages/BlogsPage'
 import TestimonialsPage from '../pages/TestimonialsPage'
 import ContactEnquiriesPage from '../pages/ContactEnquiriesPage'
@@ -122,6 +123,10 @@ function DashboardShell({ onLogout }) {
             onOpenOffers={() => navigate('offers')}
             onOpenNewArrivals={() => navigate('new-arrivals')}
             onOpenCategories={() => navigate('categories')}
+            onOpenProducts={() => navigate('products')}
+            onOpenBlogs={() => navigate('blogs')}
+            onOpenTestimonials={() => navigate('testimonials')}
+            onOpenContactEnquiries={() => navigate('contact-enquiries')}
           />
         ) : activePage === 'banners' ? (
           <BannersPage
@@ -145,6 +150,8 @@ function DashboardShell({ onLogout }) {
           <ProductsPage />
         ) : activePage === 'footer' ? (
           <FooterPage />
+        ) : activePage === 'meta' ? (
+          <MetaPage />
         ) : activePage === 'blogs' ? (
           <BlogsPage />
         ) : activePage === 'categories' ? (

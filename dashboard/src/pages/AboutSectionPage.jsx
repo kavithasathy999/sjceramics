@@ -432,7 +432,7 @@ function AboutSectionPage() {
     <section className="dashboard-content about-section-page page-enter">
       <div className="about-settings-heading">
         <span className="about-settings-icon"><Icon name="video" /></span>
-        <div><h1>About Us Settings</h1><p style={{color: "#dd2328"}}>Select a website section and update its visual content.</p></div>
+        <div><h1>About Us Settings</h1><p style={{color: "#dd2328"}}>Select a website section and update its visual content</p></div>
       </div>
 
       <nav className="about-settings-tabs" aria-label="About page settings">

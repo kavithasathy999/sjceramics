@@ -5,19 +5,19 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { posts } from '../utils/BlogData';
 import { getBlogs } from '../services/blogsApi';
+import { generateSlug } from '../utils/slug';
 
 export default function BlogSection() {
-  const [blogPosts, setBlogPosts] = useState(posts);
+  const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
     let active = true;
-    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {
-      // Preserve the original home-page posts while the API is unavailable.
-    });
+    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {});
     return () => { active = false; };
   }, []);
+
+  if (!blogPosts.length) return null;
 
   return (
     <section className="blog-one">
@@ -66,10 +66,10 @@ export default function BlogSection() {
                   </div>
                   <div className="blog-card-content">
                     <h5 className="blog-card-heading">
-                      <Link to={`/blog/${post.id}`}>{post.title}</Link>
+                      <Link to={`/blog/${generateSlug(post.title)}`}>{post.title}</Link>
                     </h5>
                     <p className="blog-card-excerpt">{post.excerpt}</p>
-                    <Link to={`/blog/${post.id}`} className="blog-card-readmore">Read More</Link>
+                    <Link to={`/blog/${generateSlug(post.title)}`} className="blog-card-readmore">Read More</Link>
                   </div>
                 </div>
               </SwiperSlide>

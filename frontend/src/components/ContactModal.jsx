@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
 import { PRODUCT_FILTER_OPTIONS, PRODUCT_TYPE_OPTIONS } from '../utils/productCatalogOptions';
 import { getProducts } from '../services/productsApi';
+import { submitEnquiry } from '../services/enquiriesApi';
 import SearchableDropdown from './SearchableDropdown';
 
 const PhoneInputComponent = PhoneInput.default || PhoneInput;
@@ -215,11 +216,12 @@ export default function ContactModal({ isOpen, onClose }) {
     return formIsValid && preferencesAreValid;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateAll()) return;
     setIsSubmitting(true);
     const payload = {
+      type: 'contact',
       preference,
       ...formData,
       productPreferences: getActiveProductPreferences().map((row) => ({
@@ -236,13 +238,16 @@ export default function ContactModal({ isOpen, onClose }) {
       address2: formData.address2.trim(),
       interest: formData.interest.trim(),
     };
-    // Replace this boundary with the enquiry API call when it is available.
-    window.setTimeout(() => {
-      console.info('Submitted inquiry:', payload);
+    try {
+      await submitEnquiry(payload);
       toast.success(`Thank you, ${payload.fullName}. Your enquiry has been submitted.`);
-      setIsSubmitting(false);
       resetAndClose();
-    }, 600);
+    } catch (error) {
+      setErrors((current) => ({ ...current, ...(error.fields || {}) }));
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const cities = formData.state ? stateCitiesMap[formData.state] || [] : [];

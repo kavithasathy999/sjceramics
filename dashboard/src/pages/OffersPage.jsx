@@ -78,7 +78,7 @@ function OffersPage() {
   return (
     <section className="dashboard-content offers-page page-enter">
       <div className="banner-page-head">
-        <div className="page-heading"><h1>Offers</h1><p>Manage the offer and new-arrival cards displayed on the home page.</p></div>
+        <div className="page-heading"><h1>Offers</h1><p>Manage the offer and new-arrival cards displayed on the home page</p></div>
       </div>
 
       <div className="offers-tabs" role="tablist" aria-label="Offer sections">

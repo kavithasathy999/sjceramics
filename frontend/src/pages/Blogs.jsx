@@ -3,24 +3,24 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
-import { posts } from '../utils/BlogData';
+import PageMeta from '../components/PageMeta';
 import { getBlogs } from '../services/blogsApi';
+import { generateSlug } from '../utils/slug';
 import bannerBg from '../assets/images/background/blogs_banner_bg.png';
 import './Blogs.css';
 
 export default function Blogs() {
-  const [blogPosts, setBlogPosts] = useState(posts);
+  const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
     let active = true;
-    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {
-      // Preserve the original frontend posts while the API is unavailable.
-    });
+    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {});
     return () => { active = false; };
   }, []);
 
   return (
     <div className="page-wrapper blogs-page-wrapper">
+      <PageMeta pageKey="blogs" />
       <Header />
 
       {/* Standardized Marble Page Title Banner */}
@@ -52,10 +52,10 @@ export default function Blogs() {
                 </div>
                 <div className="blog-card-content">
                   <h5 className="blog-card-heading">
-                    <Link to={`/blog/${post.id}`}>{post.title}</Link>
+                    <Link to={`/blog/${generateSlug(post.title)}`}>{post.title}</Link>
                   </h5>
                   <p className="blog-card-excerpt">{post.excerpt}</p>
-                  <Link to={`/blog/${post.id}`} className="blog-card-readmore">Read More</Link>
+                  <Link to={`/blog/${generateSlug(post.title)}`} className="blog-card-readmore">Read More</Link>
                 </div>
               </div>
             ))}

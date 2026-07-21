@@ -18,10 +18,14 @@ const contactEnquiriesRoutes = require('./routes/contactEnquiriesRoutes');
 const exploreCollectionsRoutes = require('./routes/exploreCollectionsRoutes');
 const productsRoutes = require('./routes/productsRoutes');
 const footerColumnsRoutes = require('./routes/footerColumnsRoutes');
+const pageMetaRoutes = require('./routes/pageMetaRoutes');
+const enquiriesRoutes = require('./routes/enquiriesRoutes');
 const { initializeDatabase } = require('./config/db');
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
+const host = '0.0.0.0';
+const hostUrl = `http://${host}:${port}`;
 const uploadsPath = path.resolve(__dirname, 'uploads');
 fs.mkdirSync(path.join(uploadsPath, 'banners'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'about'), { recursive: true });
@@ -33,15 +37,17 @@ fs.mkdirSync(path.join(uploadsPath, 'categories'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'blogs'), { recursive: true });
 fs.mkdirSync(path.join(uploadsPath, 'products'), { recursive: true });
 
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174')
-  .split(',')
-  .map((origin) => origin.trim());
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean)
+  : ['*'];
 
-app.use(cors({ origin: allowedOrigins }));
+// app.use(cors({ origin: allowedOrigins, optionsSuccessStatus: 200 }));
+app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadsPath));
 
+app.get('/', (_req, res) => res.json({ success: true, message: 'SJ Ceramics API is running.' }));
 app.get('/api/health', (_req, res) => res.json({ success: true, message: 'SJ Ceramics API is running.' }));
 app.use('/api/banners', bannersRoutes);
 app.use('/api/about-section', aboutSectionRoutes);
@@ -56,6 +62,9 @@ app.use('/api/contact-enquiries', contactEnquiriesRoutes);
 app.use('/api/explore-collections', exploreCollectionsRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/footer-columns', footerColumnsRoutes);
+app.use('/api/page-meta', pageMetaRoutes);
+app.use('/page-meta', pageMetaRoutes);
+app.use('/api/enquiries', enquiriesRoutes);
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route not found.' }));
 
 app.use((error, _req, res, _next) => {
@@ -75,7 +84,7 @@ app.use((error, _req, res, _next) => {
 
 if (require.main === module) {
   initializeDatabase()
-    .then(() => app.listen(port, () => console.log(`SJ Ceramics API listening on http://localhost:${port}`)))
+    .then(() => app.listen(port, host, () => console.log(`SJ Ceramics API listening on ${hostUrl}`)))
     .catch((error) => {
       console.error('Unable to initialize MySQL:', error.message);
       process.exitCode = 1;

@@ -8,58 +8,11 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import './HeroSlider.css';
 
-import marbleFloorImage from '../assets/images/main-slider/hero-marble-floor-v2.webp';
-import designerWallImage from '../assets/images/main-slider/hero-designer-wall-v2.webp';
-import woodStoneImage from '../assets/images/main-slider/hero-wood-stone-v2.webp';
-import sanitaryBathImage from '../assets/images/main-slider/hero-sanitary-bath-v2.webp';
-
-const fallbackSlides = [
-  {
-    category: 'Floor Tiles',
-    image: marbleFloorImage,
-    title: 'MARBLE TILES',
-    copy: 'Bring quiet luxury home with expansive marble-inspired surfaces, refined veining and a beautifully polished finish.',
-    position: 'center center',
-    mobilePosition: '72% center',
-    state: { filterCategory: 'category', filterValue: 'Tiles' },
-  },
-  {
-    category: 'Wall Tiles',
-    image: designerWallImage,
-    title: 'DESIGNER WALL TILES',
-    copy: 'Create tactile feature walls with dimensional textures, warm stone character and considered contemporary detail.',
-    position: 'center center',
-    mobilePosition: '72% center',
-    state: { filterCategory: 'room', filterValue: 'Wall' },
-  },
-  {
-    category: 'Surface Collections',
-    image: woodStoneImage,
-    title: 'WOOD & STONE TILES',
-    copy: 'Discover the natural warmth of timber and the enduring character of stone, recreated for modern everyday spaces.',
-    position: 'center center',
-    mobilePosition: '69% center',
-    state: { filterCategory: 'category', filterValue: 'Tiles' },
-  },
-  {
-    category: 'Bathroom Collection',
-    image: sanitaryBathImage,
-    title: 'SANITARY WARES & BATH FITTINGS',
-    copy: 'Complete your bathroom with sculptural sanitary ware and precision fittings selected for comfort, function and lasting style.',
-    position: 'center center',
-    mobilePosition: '72% center',
-    state: {
-      filterCategory: 'category',
-      filterValues: ['Sanitary Wares', 'Bath Fittings'],
-    },
-  },
-];
-
 const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
   const swiperRef = useRef(null);
   const [prevEl, setPrevEl] = useState(null);
   const [nextEl, setNextEl] = useState(null);
-  const [slides, setSlides] = useState(fallbackSlides);
+  const [slides, setSlides] = useState([]);
 
   useEffect(() => {
     let active = true;
@@ -68,10 +21,10 @@ const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
       try {
         const banners = await getBanners();
         if (!active || !banners.length) return;
-        setSlides(banners.map((banner, index) => ({
+        setSlides(banners.filter((banner) => banner.imageUrl).map((banner) => ({
           id: banner.id,
           category: banner.placement || 'Featured Collection',
-          image: banner.imageUrl || fallbackSlides[index % fallbackSlides.length].image,
+          image: banner.imageUrl,
           title: banner.title,
           copy: banner.description,
           position: 'center center',
@@ -79,7 +32,7 @@ const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
           state: { filterCategory: 'category', filterValue: 'Tiles' },
         })));
       } catch {
-        // The existing curated slides remain visible when the API is unavailable.
+        if (active) setSlides([]);
       }
     };
 
@@ -100,6 +53,8 @@ const HeroSlider = forwardRef(function HeroSlider({ isActive = true }, ref) {
     if (isActive) autoplay.start();
     else autoplay.stop();
   }, [isActive]);
+
+  if (!slides.length) return null;
 
   return (
     <section ref={ref} className="premium-hero" aria-label="SJ Ceramics collections">

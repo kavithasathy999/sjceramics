@@ -83,7 +83,7 @@ function GalleryPage() {
   return (
     <section className="dashboard-content gallery-page page-enter">
       <div className="banner-page-head">
-        <div className="page-heading"><h1>Gallery</h1><p>Manage the images and titles displayed in the website gallery.</p></div>
+        <div className="page-heading"><h1>Gallery</h1><p>Manage the images and titles displayed in the website gallery</p></div>
         <button className="add-banner-button" type="button" disabled={atLimit} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Gallery Item</button>
       </div>
 

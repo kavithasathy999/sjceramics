@@ -4,6 +4,7 @@ import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
 import { getProducts } from '../services/productsApi';
+import { submitEnquiry } from '../services/enquiriesApi';
 import SearchableDropdown from './SearchableDropdown';
 import './ServiceEnquiryModal.css';
 
@@ -171,12 +172,13 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
     return Object.values(nextErrors).every((error) => !error);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateAll()) return;
 
     setIsSubmitting(true);
     const payload = {
+      type: 'service',
       sourceService,
       ...formData,
       phone: `+${formData.phone}`,
@@ -188,12 +190,16 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
       message: normalizeWhitespace(formData.message),
     };
 
-    // Replace this boundary with the enquiry API call when an endpoint is available.
-    window.setTimeout(() => {
-      console.info('Submitted service enquiry:', payload);
+    try {
+      await submitEnquiry(payload);
       toast.success(`Thank you, ${payload.fullName}. Your enquiry has been submitted.`);
       resetAndClose();
-    }, 600);
+    } catch (error) {
+      setErrors((current) => ({ ...current, ...(error.fields || {}) }));
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const cities = formData.state ? stateCitiesMap[formData.state] || [] : [];

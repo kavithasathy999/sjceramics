@@ -7,6 +7,7 @@ import BackToTop from '../components/BackToTop';
 import NewArrivalsSlider from '../components/NewArrivalsSlider';
 import ProductEnquiryModal from '../components/ProductEnquiryModal';
 import ProductImageModal from '../components/ProductImageModal';
+import PageMeta from '../components/PageMeta';
 import { getProducts } from '../services/productsApi';
 import headerBg from '../assets/images/background/14.jpg';
 import productsMarbleHero from '../assets/images/background/products-marble-hero.png';
@@ -307,6 +308,7 @@ export default function Products() {
 
   return (
     <div className="page-wrapper">
+      <PageMeta pageKey="products" />
       {/* 1. Header (Standard Website Header) */}
       <Header variant="inner" bgImage={headerBg} />
 

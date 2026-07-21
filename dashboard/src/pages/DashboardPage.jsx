@@ -3,12 +3,31 @@ import Icon from '../components/Icon'
 import { getHomeCategories } from '../services/categoriesApi'
 import { getGalleryItems } from '../services/galleryApi'
 import { getHomeOffers } from '../services/offersApi'
+import { getProducts } from '../services/productsApi'
+import { getBlogs } from '../services/blogsApi'
+import { getTestimonials } from '../services/testimonialsApi'
+import { getContactEnquiries } from '../services/contactEnquiriesApi'
 
-function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers, onOpenNewArrivals, onOpenCategories }) {
+function DashboardPage({
+  bannerCount,
+  onOpenBanners,
+  onOpenGallery,
+  onOpenOffers,
+  onOpenNewArrivals,
+  onOpenCategories,
+  onOpenProducts,
+  onOpenBlogs,
+  onOpenTestimonials,
+  onOpenContactEnquiries
+}) {
   const [galleryCount, setGalleryCount] = useState(null)
   const [offerCount, setOfferCount] = useState(null)
   const [newArrivalCount, setNewArrivalCount] = useState(null)
   const [categoryCount, setCategoryCount] = useState(null)
+  const [productCount, setProductCount] = useState(null)
+  const [blogCount, setBlogCount] = useState(null)
+  const [testimonialCount, setTestimonialCount] = useState(null)
+  const [contactEnquiryCount, setContactEnquiryCount] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -39,6 +58,38 @@ function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers
         })
         .catch(() => {
           // Keep the category card available with a neutral count fallback.
+        })
+
+      getProducts()
+        .then((payload) => {
+          if (active && payload && payload.data) setProductCount(payload.data.length)
+        })
+        .catch(() => {
+          // Stable fallback
+        })
+
+      getBlogs()
+        .then((items) => {
+          if (active && items) setBlogCount(items.length)
+        })
+        .catch(() => {
+          // Stable fallback
+        })
+
+      getTestimonials()
+        .then((items) => {
+          if (active && items) setTestimonialCount(items.length)
+        })
+        .catch(() => {
+          // Stable fallback
+        })
+
+      getContactEnquiries()
+        .then((items) => {
+          if (active && items) setContactEnquiryCount(items.length)
+        })
+        .catch(() => {
+          // Stable fallback
         })
     }
 
@@ -120,6 +171,58 @@ function DashboardPage({ bannerCount, onOpenBanners, onOpenGallery, onOpenOffers
           <span className="banner-stat-copy">
             <span>Category</span>
             <strong>{categoryCount ?? '—'}</strong>
+          </span>
+        </button>
+
+        <button
+          className="banner-stat-card"
+          type="button"
+          onClick={onOpenProducts}
+          aria-label={productCount === null ? 'Open Products' : `Open Products, ${productCount} total`}
+        >
+          <span className="banner-stat-icon"><Icon name="product" /></span>
+          <span className="banner-stat-copy">
+            <span>Products</span>
+            <strong>{productCount ?? '—'}</strong>
+          </span>
+        </button>
+
+        <button
+          className="banner-stat-card"
+          type="button"
+          onClick={onOpenBlogs}
+          aria-label={blogCount === null ? 'Open Blogs' : `Open Blogs, ${blogCount} total`}
+        >
+          <span className="banner-stat-icon"><Icon name="blog" /></span>
+          <span className="banner-stat-copy">
+            <span>Blogs</span>
+            <strong>{blogCount ?? '—'}</strong>
+          </span>
+        </button>
+
+        <button
+          className="banner-stat-card"
+          type="button"
+          onClick={onOpenTestimonials}
+          aria-label={testimonialCount === null ? 'Open Testimonials' : `Open Testimonials, ${testimonialCount} total`}
+        >
+          <span className="banner-stat-icon"><Icon name="testimonial" /></span>
+          <span className="banner-stat-copy">
+            <span>Testimonials</span>
+            <strong>{testimonialCount ?? '—'}</strong>
+          </span>
+        </button>
+
+        <button
+          className="banner-stat-card"
+          type="button"
+          onClick={onOpenContactEnquiries}
+          aria-label={contactEnquiryCount === null ? 'Open Contact Enquiries' : `Open Contact Enquiries, ${contactEnquiryCount} total`}
+        >
+          <span className="banner-stat-icon"><Icon name="mail" /></span>
+          <span className="banner-stat-copy">
+            <span>Contact Enquiries</span>
+            <strong>{contactEnquiryCount ?? '—'}</strong>
           </span>
         </button>
       </div>

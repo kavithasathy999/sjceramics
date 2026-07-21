@@ -69,7 +69,7 @@ function ContactEnquiriesPage() {
 
   return (
     <section className="dashboard-content contact-enquiries-page page-enter">
-      <div className="banner-page-head"><div className="page-heading"><h1>Contact Enquiries</h1><p>Manage enquiries submitted through the website contact form.</p></div></div>
+      <div className="banner-page-head"><div className="page-heading"><h1>Contact Enquiries</h1><p>Manage enquiries submitted through the website contact form</p></div></div>
       {error && <div className="banner-api-error" role="alert"><span>{error}</span><button type="button" onClick={loadItems}>Retry</button></div>}
       <div className="contact-enquiry-table-card">
         <div className="table-summary"><strong>All contact enquiries</strong><span>{items.length} items</span></div>

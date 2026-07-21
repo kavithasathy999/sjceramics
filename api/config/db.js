@@ -375,6 +375,21 @@ const initializeDatabase = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS page_meta (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      page_key VARCHAR(40) NOT NULL,
+      page_label VARCHAR(80) NOT NULL,
+      meta_title VARCHAR(70) NOT NULL,
+      meta_keywords VARCHAR(250) NOT NULL,
+      meta_description VARCHAR(170) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY page_meta_page_key_unique (page_key)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS explore_collection_settings (
       id TINYINT UNSIGNED NOT NULL,
       initialized TINYINT(1) NOT NULL DEFAULT 0,

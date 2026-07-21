@@ -3,6 +3,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
+import { submitEnquiry } from '../services/enquiriesApi';
 import SearchableDropdown from './SearchableDropdown';
 import './ProductEnquiryModal.css';
 
@@ -136,14 +137,25 @@ export default function ProductEnquiryModal({ product, onClose }) {
     return Object.values(nextErrors).every((error) => !error);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateAll()) return;
 
     setIsSubmitting(true);
     const payload = {
+      type: 'product',
       productId: product.id,
       productName: product.name,
+      category: product.category,
+      brand: product.brand,
+      size: product.size,
+      productType: product.type,
+      material: product.material,
+      finish: product.finish,
+      whereToUse: product.application,
+      mrp: product.mrp,
+      offerPrice: product.offerPrice,
+      arrivalStatus: product.arrivalStatus,
       ...formData,
       phone: `+${formData.phone}`,
       fullName: normalizeSpaces(formData.fullName),
@@ -153,13 +165,16 @@ export default function ProductEnquiryModal({ product, onClose }) {
       message: normalizeSpaces(formData.message),
     };
 
-    // Frontend-only submission boundary until the enquiry API is available.
-    window.setTimeout(() => {
-      console.info('Submitted product enquiry:', payload);
+    try {
+      await submitEnquiry(payload);
       toast.success(`Thank you, ${payload.fullName}. Your product enquiry has been received.`);
-      setIsSubmitting(false);
       resetAndClose();
-    }, 600);
+    } catch (error) {
+      setErrors((current) => ({ ...current, ...(error.fields || {}) }));
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const cities = formData.state ? stateCitiesMap[formData.state] || [] : [];

@@ -3,23 +3,21 @@ import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
-import { posts } from '../utils/BlogData';
+import PageMeta from '../components/PageMeta';
 import { getBlogs } from '../services/blogsApi';
+import { generateSlug } from '../utils/slug';
 
 export default function BlogDetail() {
-  const { id } = useParams();
-  const [blogPosts, setBlogPosts] = useState(posts);
+  const { slug } = useParams();
+  const [blogPosts, setBlogPosts] = useState([]);
 
   useEffect(() => {
     let active = true;
-    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {
-      // Preserve the original detail content while the API is unavailable.
-    });
+    getBlogs().then((items) => { if (active) setBlogPosts(items); }).catch(() => {});
     return () => { active = false; };
   }, []);
   
-  // Find matching blog post, defaulting to the first post if not found
-  const post = blogPosts.find((item) => String(item.id) === String(id)) || blogPosts[0];
+  const post = blogPosts.find((item) => generateSlug(item.title) === slug);
 
   if (!post) {
     return (
@@ -33,6 +31,7 @@ export default function BlogDetail() {
 
   return (
     <div className="page-wrapper">
+      <PageMeta pageKey="blog_detail" />
       <Header />
 
       {/* Hero Banner with Dark Background Image Overlay */}

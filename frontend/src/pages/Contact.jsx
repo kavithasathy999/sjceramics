@@ -3,12 +3,14 @@ import Header from '../components/Header';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import PageMeta from '../components/PageMeta';
 import bannerBg from '../assets/images/background/bathroom_banner.png';
 import './Contact.css';
 
 export default function Contact() {
   return (
     <div className="page-wrapper contact-page-wrapper">
+      <PageMeta pageKey="contact" />
       <Header />
       
       {/* Page Title */}

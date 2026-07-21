@@ -3,12 +3,12 @@ import { A11y, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { getFallbackNewArrivals, getNewArrivalProducts } from '../utils/newArrivalsData';
+import { getNewArrivalProducts } from '../utils/newArrivalsData';
 import './NewArrivalsSlider.css';
 
 export default function NewArrivalsSlider({ products: initialProducts }) {
   const [products, setProducts] = useState(() => (
-    initialProducts?.length ? initialProducts : getFallbackNewArrivals()
+    initialProducts?.length ? initialProducts : []
   ));
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function NewArrivalsSlider({ products: initialProducts }) {
         if (active) setProducts(items);
       })
       .catch(() => {
-        if (active && !initialProducts?.length) setProducts(getFallbackNewArrivals());
+        if (active && !initialProducts?.length) setProducts([]);
       });
     return () => { active = false; };
   }, [initialProducts]);

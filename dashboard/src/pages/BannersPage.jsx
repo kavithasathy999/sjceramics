@@ -6,7 +6,7 @@ function BannersPage({ banners, loading, error, onRetry, onAdd, onEdit, onDelete
       <div className="banner-page-head">
         <div className="page-heading">
           <h1>Banners</h1>
-          <p>Create and maintain the visual stories shown across your website.</p>
+          <p>Create and maintain the visual stories shown across your website</p>
         </div>
         <button className="add-banner-button" onClick={onAdd}><Icon name="plus" />Add Banner</button>
       </div>

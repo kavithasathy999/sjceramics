@@ -25,48 +25,71 @@ function DesktopSubmenu({ items, level = 1 }) {
   );
 }
 
-const uniqueValues = (values) => [...new Set(values.map((value) => String(value || '').trim()).filter(Boolean))];
-
-const buildProductMenu = (products) => {
-  const productTypes = uniqueValues(products.map((product) => product.productType || product.type));
-  const usageValues = uniqueValues(products.map((product) => product.whereToUse));
-  const sizeValues = uniqueValues(products.map((product) => product.size));
-
-  const menuSections = [
-    {
-      label: 'Product Type',
-      values: productTypes,
-      filterCategory: 'productType',
-    },
-    {
-      label: 'Where To Use',
-      values: usageValues,
-      filterCategory: 'room',
-    },
-    {
-      label: 'Size of the Tile',
-      values: sizeValues,
-      filterCategory: 'size',
-    },
-  ].filter((section) => section.values.length);
-
-  return menuSections.map((section) => ({
-    label: section.label,
-    path: '/products',
-    children: section.values.map((value) => ({
-      label: value,
-      path: '/products',
-      state: {
-        filterCategory: section.filterCategory,
-        filterValue: value,
-      },
-    })),
-  }));
-};
+const defaultProductMenuChildren = [
+  { label: 'Tiles', path: '/products', state: { filterCategory: 'category', filterValue: 'Tiles' } },
+  { label: 'Sanitary Wares', path: '/products', state: { filterCategory: 'category', filterValue: 'Sanitary Wares' } },
+  { label: 'Bath fittings', path: '/products', state: { filterCategory: 'category', filterValue: 'Bath fittings' } },
+  { label: 'Others', path: '/products', state: { filterCategory: 'category', filterValue: 'Others' } }
+];
 
 const navigationWithoutStaticProducts = baseNavigation.map((item) => (
-  item.label === 'Products' ? { ...item, children: undefined } : item
+  item.label === 'Products' ? { ...item, children: defaultProductMenuChildren } : item
 ));
+
+const buildProductMenu = (products) => {
+  const categories = ['Tiles', 'Sanitary Wares', 'Bath fittings', 'Others'];
+
+  return categories.map((cat) => {
+    const normalizedCat = cat.toLowerCase().replace(/\s+/g, '');
+    
+    // Filter products belonging to this category
+    const catProducts = products.filter((p) => {
+      const pCat = (p.category || '').toLowerCase().replace(/\s+/g, '');
+      if (normalizedCat === 'sanitarywares') {
+        return pCat === 'sanitarywares' || pCat === 'sanitaryware';
+      }
+      if (normalizedCat === 'bathfittings') {
+        return pCat === 'bathfittings' || pCat === 'bathfitting';
+      }
+      return pCat === normalizedCat;
+    });
+
+    // Get unique productType/type values for these products
+    const uniqueTypes = [...new Set(catProducts.map((p) => p.productType || p.type).filter(Boolean))];
+
+    return {
+      label: cat,
+      path: '/products',
+      state: {
+        filterCategory: 'category',
+        filterValue: cat,
+      },
+      children: uniqueTypes.length ? uniqueTypes.map((type) => {
+        const typeProducts = catProducts.filter((p) => (p.productType || p.type) === type);
+        
+        return {
+          label: type,
+          path: '/products',
+          state: {
+            filterCategory: 'type',
+            filterValue: type,
+            parentCategory: cat === 'Sanitary Wares' ? 'Sanitarywares' : cat === 'Bath fittings' ? 'Bath fittings' : cat,
+          },
+          children: typeProducts.length ? typeProducts.map((prod) => ({
+            label: prod.name,
+            path: '/products',
+            state: {
+              filterCategory: 'product',
+              filterValue: prod.name,
+              parentCategory: cat === 'Sanitary Wares' ? 'Sanitarywares' : cat === 'Bath fittings' ? 'Bath fittings' : cat,
+              parentType: type,
+            },
+          })) : undefined,
+        };
+      }) : undefined,
+    };
+  });
+};
 
 export default function Header() {
   const navigate = useNavigate();

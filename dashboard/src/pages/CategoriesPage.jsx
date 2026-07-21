@@ -79,7 +79,7 @@ function CategoriesPage() {
 
   return (
     <section className="dashboard-content categories-page page-enter">
-      <div className="banner-page-head"><div className="page-heading"><h1>Category</h1><p>Manage the collection cards displayed in the home-page category marquee.</p></div><button className="add-banner-button" type="button" disabled={loading || Boolean(error)} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Category</button></div>
+      <div className="banner-page-head"><div className="page-heading"><h1>Category</h1><p>Manage the collection cards displayed in the home-page category</p></div><button className="add-banner-button" type="button" disabled={loading || Boolean(error)} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Category</button></div>
       {error && <div className="banner-api-error" role="alert"><span>{error}</span><button type="button" onClick={loadItems}>Retry</button></div>}
       <div className="category-table-card">
         <div className="table-summary"><strong>All categories</strong><span>{items.length} items</span></div>

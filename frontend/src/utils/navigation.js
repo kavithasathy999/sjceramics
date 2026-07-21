@@ -1,39 +1,3 @@
-import { products } from './ProductData';
-
-const productCategoryOrder = ['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others'];
-
-const productMenuChildren = productCategoryOrder.map((category) => {
-  const categoryProducts = products.filter((product) => product.category === category);
-  const types = [...new Set(categoryProducts.map((product) => product.type))];
-
-  return {
-    label: category,
-    path: '/products',
-    state: { filterCategory: 'category', filterValue: category },
-    children: types.map((type) => ({
-      label: type,
-      path: '/products',
-      state: {
-        filterCategory: 'type',
-        filterValue: type,
-        parentCategory: category,
-      },
-      children: categoryProducts
-        .filter((product) => product.type === type)
-        .map((product) => ({
-          label: product.name,
-          path: '/products',
-          state: {
-            filterCategory: 'product',
-            filterValue: product.name,
-            parentCategory: category,
-            parentType: type,
-          },
-        })),
-    })),
-  };
-});
-
 // Central navigation data so the desktop and mobile menus never fall out of sync.
 export const navigation = [
   {
@@ -60,7 +24,6 @@ export const navigation = [
   {
     label: 'Products',
     path: '/products',
-    children: productMenuChildren,
   },
   {
     label: 'Blogs',

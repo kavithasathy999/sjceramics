@@ -71,7 +71,7 @@ function TestimonialsPage() {
 
   return (
     <section className="dashboard-content testimonials-page page-enter">
-      <div className="banner-page-head"><div className="page-heading"><h1>Testimonials</h1><p>Manage the customer feedback displayed on the home page.</p></div><button className="add-banner-button" type="button" disabled={loading || Boolean(error)} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Testimonial</button></div>
+      <div className="banner-page-head"><div className="page-heading"><h1>Testimonials</h1><p>Manage the customer feedback displayed on the home page</p></div><button className="add-banner-button" type="button" disabled={loading || Boolean(error)} onClick={() => { setEditingItem(null); setModalOpen(true) }}><Icon name="plus" />Add Testimonial</button></div>
       {error && <div className="banner-api-error" role="alert"><span>{error}</span><button type="button" onClick={loadItems}>Retry</button></div>}
       <div className="testimonial-table-card">
         <div className="table-summary"><strong>All testimonials</strong><span>{items.length} items</span></div>

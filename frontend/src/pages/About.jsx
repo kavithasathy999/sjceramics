@@ -11,6 +11,7 @@ import MapLocation from '../components/MapLocation';
 import ChooseTabSection from '../components/ChooseTabSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import PageMeta from '../components/PageMeta';
 import { getRoomDesigns } from '../services/aboutSectionApi';
 import bannerBg from '../assets/images/background/25.jpg';
 import './About.css';
@@ -102,6 +103,7 @@ export default function About() {
 
   return (
     <div className="page-wrapper about-page-wrapper">
+      <PageMeta pageKey="about" />
       <Header />
       
       {/* Page Title */}

@@ -45,6 +45,7 @@ const emailShell = ({ preheader, heading, intro, details = '', closing }) => `<!
 </table></td></tr></table></body></html>`;
 
 const detailRow = (label, value) => `<tr><td class="detail-label" width="34%" valign="top" style="padding:11px 14px;border-bottom:1px solid #eee5e1;color:${BRAND_BLACK};background:#faf8f7;font-size:12px;font-weight:700;">${escapeHtml(label)}</td><td class="detail-value" valign="top" style="padding:11px 14px;border-bottom:1px solid #eee5e1;color:${BRAND_BLACK};font-size:13px;line-height:1.6;overflow-wrap:anywhere;">${value}</td></tr>`;
+const listValue = (items) => items.filter(Boolean).map(escapeHtml).join('<br>');
 
 const adminTemplate = (enquiry) => ({
   subject: `New Website Enquiry - ${safeHeader(enquiry.fullName)}`,
@@ -138,20 +139,117 @@ const sendContactEmails = async (enquiry) => {
   const configuration = await smtpConfiguration();
   const transporter = transportFactory(configuration.transport);
   const admin = adminTemplate(enquiry);
-  const logos = inlineLogos();
-  const deliveries = [
-    transporter.sendMail({ ...admin, from: configuration.from, to: ADMIN_EMAIL, replyTo: enquiry.email, attachments: logos }),
-  ];
-
   if (recipientKey(enquiry.email) !== recipientKey(ADMIN_EMAIL)) {
     const user = userTemplate(enquiry);
-    deliveries.push(transporter.sendMail({ ...user, from: configuration.from, to: enquiry.email, replyTo: configuration.from, attachments: inlineLogos() }));
+    await transporter.sendMail({ ...user, from: configuration.from, to: enquiry.email, replyTo: configuration.from, attachments: inlineLogos() });
   }
+  await transporter.sendMail({ ...admin, from: configuration.from, to: ADMIN_EMAIL, replyTo: enquiry.email, attachments: inlineLogos() });
+};
 
-  await Promise.all(deliveries);
+const enquiryLabel = (type) => ({
+  contact: 'Website Enquiry',
+  service: 'Service Enquiry',
+  product: 'Product Enquiry',
+}[type] || 'Website Enquiry');
+
+const contactDetails = (enquiry) => [
+  detailRow('Customer Name', escapeHtml(enquiry.fullName)),
+  detailRow('Email Address', `<a href="mailto:${escapeHtml(enquiry.email)}" style="color:${BRAND_RED};">${escapeHtml(enquiry.email)}</a>`),
+  detailRow('Mobile Number', `<a href="tel:${escapeHtml(enquiry.phone)}" style="color:${BRAND_RED};">${escapeHtml(enquiry.phone)}</a>`),
+  detailRow('Address', listValue([enquiry.address1, enquiry.address2, enquiry.city, enquiry.state])),
+];
+
+const productPreferencesDetails = (rows = []) => rows.map((row, index) => (
+  `Preference ${index + 1}: ${[
+    row.productType && `Product Type - ${row.productType}`,
+    row.whereToUse && `Where to Use - ${row.whereToUse}`,
+    row.tileSize && `Tile Size - ${row.tileSize}`,
+    row.roomLength && `Room Length - ${row.roomLength} ft`,
+    row.roomWidth && `Room Width - ${row.roomWidth} ft`,
+  ].filter(Boolean).join(', ')}`
+));
+
+const adminEnquiryTemplate = (enquiry) => {
+  const label = enquiryLabel(enquiry.type);
+  const extraRows = [];
+  if (enquiry.type === 'contact') {
+    extraRows.push(
+      detailRow('Preference', escapeHtml(enquiry.preference)),
+      detailRow('Product Preferences', listValue(productPreferencesDetails(enquiry.productPreferences))),
+      detailRow('Interested In', messageHtml(enquiry.interest)),
+    );
+  }
+  if (enquiry.type === 'service') {
+    extraRows.push(
+      detailRow('Source Service', escapeHtml(enquiry.sourceService || 'Website')),
+      detailRow('Room Type', escapeHtml(enquiry.roomType)),
+      detailRow('Area', `${escapeHtml(enquiry.areaSqFt)} sq.ft`),
+      detailRow('Boxes Required', escapeHtml(enquiry.boxesRequired)),
+      detailRow('Tile Type', escapeHtml(enquiry.tileType)),
+      detailRow('Message', messageHtml(enquiry.message)),
+    );
+  }
+  if (enquiry.type === 'product') {
+    extraRows.push(
+      detailRow('Product Name', escapeHtml(enquiry.productName)),
+      detailRow('Category', escapeHtml(enquiry.category || '')),
+      detailRow('Brand', escapeHtml(enquiry.brand || '')),
+      detailRow('Size', escapeHtml(enquiry.size || '')),
+      detailRow('Type', escapeHtml(enquiry.productType || enquiry.typeValue || '')),
+      detailRow('Material', escapeHtml(enquiry.material || '')),
+      detailRow('Finish', escapeHtml(enquiry.finish || '')),
+      detailRow('Where to Use', escapeHtml(enquiry.whereToUse || '')),
+      detailRow('Price Details', listValue([
+        enquiry.mrp ? `MRP - Rs. ${enquiry.mrp}` : '',
+        enquiry.offerPrice ? `Offer Price - Rs. ${enquiry.offerPrice}` : '',
+        enquiry.arrivalStatus ? `Arrival Status - ${enquiry.arrivalStatus}` : '',
+      ])),
+      detailRow('Message', messageHtml(enquiry.message)),
+    );
+  }
+  return {
+    subject: `New ${label} - ${safeHeader(enquiry.fullName)}`,
+    html: emailShell({
+      preheader: `A new ${label.toLowerCase()} has been submitted.`,
+      heading: `New ${label}`,
+      intro: `A customer has submitted the following details through the SJ Ceramics ${label.toLowerCase()} form.`,
+      details: [
+        ...contactDetails(enquiry),
+        ...extraRows,
+        detailRow('Submitted', escapeHtml(submittedTime(enquiry.submittedAt))),
+      ].join(''),
+      closing: 'Please respond to this enquiry at your earliest convenience.',
+    }),
+    text: `SJ Ceramics\n\nNEW ${label.toUpperCase()}\nCustomer: ${enquiry.fullName}\nEmail: ${enquiry.email}\nMobile: ${enquiry.phone}\nSubmitted: ${submittedTime(enquiry.submittedAt)}`,
+  };
+};
+
+const userEnquiryTemplate = (enquiry) => {
+  const label = enquiryLabel(enquiry.type).toLowerCase();
+  return {
+    subject: 'Thank You for Contacting SJ Ceramics',
+    html: emailShell({
+      preheader: 'Thank you for contacting SJ Ceramics.',
+      heading: 'Thank You for Contacting Us',
+      intro: `Dear <strong>${escapeHtml(enquiry.fullName)}</strong>,<br><br>Thank you for contacting SJ Ceramics. We have successfully received your ${escapeHtml(label)}.`,
+      closing: 'Our team will review your request and get in touch with you shortly. If your enquiry is urgent, please call <strong>+91 93841 05222</strong> or email <a href="mailto:sales@sjceramics.in" style="color:#dd2328;">sales@sjceramics.in</a>.<br><br>Warm regards,<br><strong>SJ Ceramics Team</strong>',
+    }),
+    text: `Dear ${enquiry.fullName},\n\nThank you for contacting SJ Ceramics. We have successfully received your ${label}.\n\nWarm regards,\nSJ Ceramics Team`,
+  };
+};
+
+const sendEnquiryEmails = async (enquiry) => {
+  const configuration = await smtpConfiguration();
+  const transporter = transportFactory(configuration.transport);
+  if (recipientKey(enquiry.email) !== recipientKey(ADMIN_EMAIL)) {
+    const user = userEnquiryTemplate(enquiry);
+    await transporter.sendMail({ ...user, from: configuration.from, to: enquiry.email, replyTo: configuration.from, attachments: inlineLogos() });
+  }
+  const admin = adminEnquiryTemplate(enquiry);
+  await transporter.sendMail({ ...admin, from: configuration.from, to: ADMIN_EMAIL, replyTo: enquiry.email, attachments: inlineLogos() });
 };
 
 const setTransportFactoryForTests = (factory) => { transportFactory = factory; };
 const resetTransportFactoryForTests = () => { transportFactory = (configuration) => nodemailer.createTransport(configuration); };
 
-module.exports = { sendContactEmails, adminTemplate, userTemplate, setTransportFactoryForTests, resetTransportFactoryForTests };
+module.exports = { sendContactEmails, sendEnquiryEmails, adminTemplate, userTemplate, adminEnquiryTemplate, userEnquiryTemplate, setTransportFactoryForTests, resetTransportFactoryForTests };

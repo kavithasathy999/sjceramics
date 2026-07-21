@@ -4,7 +4,7 @@ import Icon from '../components/Icon'
 const ADMIN_EMAIL = 'admin@sjceramics.com'
 const ADMIN_PASSWORD = 'sjceramics@2026'
 
-function LoginPage({ onLogin }) {
+function LoginPage({ onLogin, sessionExpiredNotice }) {
   const [form, setForm] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
@@ -99,6 +99,11 @@ function LoginPage({ onLogin }) {
           </header>
 
           <form onSubmit={handleSubmit} noValidate>
+            {sessionExpiredNotice && (
+              <div className="credential-error" role="alert">
+                Your session has expired after 2 hours. Please sign in again.
+              </div>
+            )}
             {errors.credentials && <div className="credential-error" role="alert">{errors.credentials}</div>}
 
             <div className={`field-group ${errors.email ? 'has-error' : ''}`}>

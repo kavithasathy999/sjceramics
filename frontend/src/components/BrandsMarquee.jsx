@@ -4,72 +4,32 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import './BrandsMarquee.css';
-import { products } from '../utils/ProductData';
 import { getHomeOffers } from '../services/homeOffersApi';
 import { getHomeCategories } from '../services/homeCategoriesApi';
 
-import allTiles from '../assets/images/brands/all_tiles.png';
-import wallTiles from '../assets/images/brands/wall_tiles.png';
-import floorTiles from '../assets/images/brands/floor_tiles.png';
-import athangudiTiles from '../assets/images/brands/athangudi_tiles.png';
-import sanitaryware from '../assets/images/brands/sanitaryware.png';
-import flushTank from '../assets/images/brands/flush_tank.png';
-import aquaFaucet from '../assets/images/brands/aqua_faucet.png';
-import kitchenSink from '../assets/images/brands/kitchen_sink.png';
-import ptmtTaps from '../assets/images/brands/ptmt_taps.png';
-import adhesiveGrout from '../assets/images/brands/adhesive_grout.png';
-
-const fallbackOfferProducts = [
-  { label: "Today's Offer", productId: 4, availability: 'Limited-period showroom offer' },
-  { label: 'Launching Offer', productId: 8, availability: 'Coming soon to our showroom' },
-].map((offer) => {
-  const product = products.find(({ id }) => id === offer.productId);
-  const saving = product.mrp - product.offerPrice;
-
-  return {
-    ...offer,
-    product,
-    saving,
-    discount: Math.round((saving / product.mrp) * 100),
-  };
-});
-
 const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
-
-const fallbackMarqueeCategories = [
-  { name: 'All Tiles', group: 'Tiles', image: allTiles },
-  { name: 'Wall Tiles', group: 'Tiles', image: wallTiles },
-  { name: 'Floor Tiles', group: 'Tiles', image: floorTiles },
-  { name: 'Athangudi Tiles', group: 'Tiles', image: athangudiTiles },
-  { name: 'Sanitary Wares', group: 'Sanitary Wares', image: sanitaryware },
-  { name: 'Flush Tanks', group: 'Sanitary Wares', image: flushTank },
-  { name: 'Bath Fittings', group: 'Bath Fittings', image: aquaFaucet },
-  { name: 'Kitchen Sinks', group: 'Bath Fittings', image: kitchenSink },
-  { name: 'PTMT Taps', group: 'Bath Fittings', image: ptmtTaps },
-  { name: 'Adhesives & Grout', group: 'Others', image: adhesiveGrout },
-];
 
 const categoryState = (filterValue) => ({ filterCategory: 'category', filterValue });
 
 export default function BrandsMarquee({ children }) {
-  const [offerProducts, setOfferProducts] = useState(fallbackOfferProducts);
-  const [marqueeCategories, setMarqueeCategories] = useState(fallbackMarqueeCategories);
+  const [offerProducts, setOfferProducts] = useState([]);
+  const [marqueeCategories, setMarqueeCategories] = useState([]);
 
   useEffect(() => {
     let active = true;
     getHomeOffers()
       .then((sections) => {
         if (!active) return;
-        const dynamicOffers = ['todays_offer', 'launching_offer'].flatMap((sectionType, index) => {
+        const dynamicOffers = ['todays_offer', 'launching_offer'].flatMap((sectionType) => {
           const section = sections.find((entry) => entry.sectionType === sectionType);
-          if (!section?.configured) return [fallbackOfferProducts[index]];
+          if (!section?.configured) return [];
           return section.items.slice(0, 1).map((item) => {
-            const saving = item.mrp - item.offerPrice;
+            const saving = Number(item.mrp || 0) - Number(item.offerPrice || 0);
             return {
               label: item.label,
               availability: item.availability,
               saving,
-              discount: Math.round((saving / item.mrp) * 100),
+              discount: item.mrp ? Math.round((saving / item.mrp) * 100) : 0,
               product: {
                 id: item.id,
                 name: item.productName,
@@ -86,7 +46,7 @@ export default function BrandsMarquee({ children }) {
         setOfferProducts(dynamicOffers);
       })
       .catch(() => {
-        // Keep the original curated cards when the API is unavailable.
+        if (active) setOfferProducts([]);
       });
     return () => { active = false; };
   }, []);
@@ -95,7 +55,11 @@ export default function BrandsMarquee({ children }) {
     let active = true;
     getHomeCategories()
       .then(({ configured, items }) => {
-        if (!active || !configured) return;
+        if (!active) return;
+        if (!configured) {
+          setMarqueeCategories([]);
+          return;
+        }
         setMarqueeCategories(items.map((item) => ({
           id: item.id,
           name: item.name,
@@ -104,7 +68,7 @@ export default function BrandsMarquee({ children }) {
         })));
       })
       .catch(() => {
-        // Keep the original ten category cards when the API is unavailable.
+        if (active) setMarqueeCategories([]);
       });
     return () => { active = false; };
   }, []);
@@ -126,7 +90,7 @@ export default function BrandsMarquee({ children }) {
           </Link>
         </header>
 
-        <div className="collection-stories__posts">
+        {offerProducts.length > 0 && <div className="collection-stories__posts">
           {offerProducts.map((offer) => (
             <article className="story-post" key={offer.label}>
               <img src={offer.product.image} alt={`${offer.product.name} tile`} />
@@ -154,7 +118,7 @@ export default function BrandsMarquee({ children }) {
               </div>
             </article>
           ))}
-        </div>
+        </div>}
 
         {children ? (
           <div className="collection-stories__interlude">

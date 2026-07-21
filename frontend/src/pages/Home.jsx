@@ -14,6 +14,7 @@ import TestimonialSlider from '../components/TestimonialSlider';
 import BlogSection from '../components/BlogSection';
 import Footer from '../components/Footer';
 import BackToTop from '../components/BackToTop';
+import PageMeta from '../components/PageMeta';
 import './Home.css';
 
 export default function Home() {
@@ -60,6 +61,7 @@ export default function Home() {
 
   return (
     <div className="page-wrapper home-page">
+      <PageMeta pageKey="home" />
       <Header />
       <HeroSlider ref={heroRef} isActive={isHeroVisible} />
       

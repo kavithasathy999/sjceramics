@@ -31,6 +31,7 @@ function DashboardHeader({ activePage, onMenu, onLogout }) {
     categories: 'Category Management',
     products: 'Products Management',
     footer: 'Footer Management',
+    meta: 'Meta Tags Management',
     blogs: 'Blogs Management',
     testimonials: 'Testimonials Management',
     'contact-enquiries': 'Contact Enquiries Management',

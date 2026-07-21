@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  getFallbackNewArrivals,
   getNewArrivalProducts,
   HOME_NEW_ARRIVALS_LIMIT,
 } from '../utils/newArrivalsData';
@@ -8,9 +7,7 @@ import './BrandsMarquee.css';
 import './HomeNewArrivals.css';
 
 export default function HomeNewArrivals() {
-  const [upcomingProducts, setUpcomingProducts] = useState(() => (
-    getFallbackNewArrivals({ limit: HOME_NEW_ARRIVALS_LIMIT })
-  ));
+  const [upcomingProducts, setUpcomingProducts] = useState([]);
 
   useEffect(() => {
     let active = true;
@@ -19,7 +16,7 @@ export default function HomeNewArrivals() {
         if (active) setUpcomingProducts(items);
       })
       .catch(() => {
-        if (active) setUpcomingProducts(getFallbackNewArrivals({ limit: HOME_NEW_ARRIVALS_LIMIT }));
+        if (active) setUpcomingProducts([]);
       });
     return () => { active = false; };
   }, []);
