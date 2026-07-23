@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'offers');
 const MAX_IMAGE_SIZE = 3 * 1024 * 1024;
@@ -14,9 +15,6 @@ const ARRIVAL_STATUSES = new Set(['Coming soon', 'Available soon', 'Showroom arr
 const countWords = (value) => value ? value.split(/\s+/).filter(Boolean).length : 0;
 const normalizeText = (value) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '';
 const imagePath = (filename) => `uploads/offers/${path.basename(filename)}`;
-const publicUrl = (req, value) => value
-  ? `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`
-  : '';
 
 const removeFile = async (value) => {
   if (!value) return;
@@ -65,18 +63,31 @@ const validateOffer = (body, sectionType) => {
   const availability = validateText(errors, 'availability', 'Availability', body.availability, { min: 5, max: 150, words: 20 });
   let mrp = null;
   let offerPrice = null;
+  let discount = null;
   let arrivalStatus = null;
 
   if (sectionType === 'new_arrivals') {
     arrivalStatus = normalizeText(body.arrivalStatus);
     if (!ARRIVAL_STATUSES.has(arrivalStatus)) errors.arrivalStatus = 'Select a valid arrival status.';
   } else {
-    mrp = parsePrice(errors, 'mrp', 'MRP', body.mrp);
-    offerPrice = parsePrice(errors, 'offerPrice', 'Offer price', body.offerPrice);
+    if (body.mrp !== undefined && body.mrp !== null && body.mrp !== '') {
+      mrp = parsePrice(errors, 'mrp', 'MRP', body.mrp);
+    }
+    if (body.offerPrice !== undefined && body.offerPrice !== null && body.offerPrice !== '') {
+      offerPrice = parsePrice(errors, 'offerPrice', 'Offer price', body.offerPrice);
+    }
     if (mrp !== null && offerPrice !== null && offerPrice >= mrp) errors.offerPrice = 'Offer price must be lower than MRP.';
+    if (body.discount !== undefined && body.discount !== null && body.discount !== '') {
+      const d = Number(body.discount);
+      if (!Number.isInteger(d) || d < 1 || d > 99) {
+        errors.discount = 'Discount percentage must be between 1 and 99.';
+      } else {
+        discount = d;
+      }
+    }
   }
 
-  return { errors, values: { productName, category, size, finish, availability, mrp, offerPrice, arrivalStatus } };
+  return { errors, values: { productName, category, size, finish, availability, mrp, offerPrice, discount, arrivalStatus } };
 };
 
 const serializeItem = (req, row) => ({
@@ -89,6 +100,7 @@ const serializeItem = (req, row) => ({
   finish: row.finish,
   mrp: row.mrp === null ? null : Number(row.mrp),
   offerPrice: row.offer_price === null ? null : Number(row.offer_price),
+  discount: row.discount === null || row.discount === undefined ? null : Number(row.discount),
   availability: row.availability,
   arrivalStatus: row.arrival_status,
   imageUrl: publicUrl(req, row.image),
@@ -144,9 +156,9 @@ const createHomeOffer = async (req, res, next) => {
     const values = validated.values;
     const [result] = await connection.execute(
       `INSERT INTO home_offer_items
-       (section_type, product_name, category, size, finish, mrp, offer_price, availability, arrival_status, image, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [sectionType, values.productName, values.category, values.size, values.finish, values.mrp, values.offerPrice, values.availability, values.arrivalStatus, imagePath(req.file.filename), Number(itemCount) + 1],
+       (section_type, product_name, category, size, finish, mrp, offer_price, discount, availability, arrival_status, image, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [sectionType, values.productName, values.category, values.size, values.finish, values.mrp, values.offerPrice, values.discount, values.availability, values.arrivalStatus, imagePath(req.file.filename), Number(itemCount) + 1],
     );
     await connection.execute('UPDATE home_offer_sections SET configured = 1 WHERE section_type = ?', [sectionType]);
     const [created] = await connection.execute('SELECT * FROM home_offer_items WHERE id = ?', [result.insertId]);
@@ -184,8 +196,8 @@ const updateHomeOffer = async (req, res, next) => {
     const nextImage = req.file ? imagePath(req.file.filename) : existing.image;
     await db.execute(
       `UPDATE home_offer_items SET product_name = ?, category = ?, size = ?, finish = ?, mrp = ?,
-       offer_price = ?, availability = ?, arrival_status = ?, image = ? WHERE id = ?`,
-      [values.productName, values.category, values.size, values.finish, values.mrp, values.offerPrice, values.availability, values.arrivalStatus, nextImage, id],
+       offer_price = ?, discount = ?, availability = ?, arrival_status = ?, image = ? WHERE id = ?`,
+      [values.productName, values.category, values.size, values.finish, values.mrp, values.offerPrice, values.discount, values.availability, values.arrivalStatus, nextImage, id],
     );
     await db.execute('UPDATE home_offer_sections SET configured = 1 WHERE section_type = ?', [existing.section_type]);
     const [updated] = await db.execute('SELECT * FROM home_offer_items WHERE id = ?', [id]);

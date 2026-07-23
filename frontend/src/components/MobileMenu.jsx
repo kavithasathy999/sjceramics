@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { navigation } from '../utils/navigation';
 import mobileLogo from '../assets/images/mobile-logo.png';
 
-function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem, onClose }) {
+function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem, onClose, currentPath }) {
   return items.map((item, index) => {
     const itemKey = `${parentKey}-${index}`;
     const isOpen = Boolean(openItems[itemKey]);
+    const isActive = item.path && !item.path.startsWith('#') && (
+      item.path === '/' ? currentPath === '/' : currentPath === item.path || currentPath.startsWith(`${item.path}/`)
+    );
 
     return (
       <li
         key={`${itemKey}-${item.label}`}
-        className={`${item.children ? 'dropdown' : ''}${isOpen ? ' open' : ''}`}
+        className={`${item.children ? 'dropdown' : ''}${isOpen ? ' open' : ''}${isActive ? ' current' : ''}`.trim()}
       >
         {item.path.startsWith('#') ? (
           <a href={item.path} onClick={item.children ? undefined : onClose}>
@@ -44,6 +47,7 @@ function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem,
                 openItems={openItems}
                 toggleItem={toggleItem}
                 onClose={onClose}
+                currentPath={currentPath}
               />
             </ul>
           </>
@@ -54,6 +58,7 @@ function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem,
 }
 
 export default function MobileMenu({ open, onClose, onOpenContactModal, navigationItems = navigation }) {
+  const location = useLocation();
   const [openItems, setOpenItems] = useState({});
 
   useEffect(() => {
@@ -89,6 +94,7 @@ export default function MobileMenu({ open, onClose, onOpenContactModal, navigati
               openItems={openItems}
               toggleItem={toggleItem}
               onClose={onClose}
+              currentPath={location.pathname}
             />
           </ul>
         </div>

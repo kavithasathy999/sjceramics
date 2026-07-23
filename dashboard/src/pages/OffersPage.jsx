@@ -107,7 +107,7 @@ function OffersPage() {
               <article className="dashboard-offer-card" role="row" key={item.id}>
                 <span className="offer-serial" role="cell">{index + 1}</span>
                 <div className="dashboard-offer-image" role="cell"><img src={item.imageUrl} alt={`${item.productName} preview`} /></div>
-                <div className="dashboard-offer-copy" role="cell"><small>{item.category}</small><h2>{item.productName}</h2><p>{item.size} · {item.finish}</p>{activeType === 'new_arrivals' ? <strong>{item.arrivalStatus}</strong> : <strong>₹{item.offerPrice} <del>₹{item.mrp}</del></strong>}<p>{item.availability}</p></div>
+                <div className="dashboard-offer-copy" role="cell"><small>{item.category}</small><h2>{item.productName}</h2><p>{item.size} · {item.finish}</p>{activeType === 'new_arrivals' ? <strong>{item.arrivalStatus}</strong> : (item.discount ? <strong>{item.discount}% Off</strong> : null)}<p>{item.availability}</p></div>
                 <div className="row-actions" role="cell"><button className="edit" type="button" onClick={() => { setEditingItem(item); setModalOpen(true) }} aria-label={`Edit ${item.productName}`} title="Edit card"><Icon name="edit" /></button><button className="delete" type="button" onClick={() => setDeleteTarget(item)} aria-label={`Delete ${item.productName}`} title="Delete card"><Icon name="trash" /></button></div>
               </article>
             ))}

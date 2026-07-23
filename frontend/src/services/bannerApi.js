@@ -1,8 +1,10 @@
+import { secureMediaItem } from './mediaUrl';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const getBanners = async () => {
   const response = await fetch(`${API_URL}/banners`);
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.message || 'Unable to load banners.');
-  return payload.data;
+  return Array.isArray(payload.data) ? payload.data.map((item) => secureMediaItem(item)) : [];
 };

@@ -9,12 +9,20 @@ const hasUnsupportedControl = (value) => Array.from(value).some((character) => {
   const code = character.codePointAt(0);
   return code < 32 && code !== 9 && code !== 10;
 });
+const requestBaseUrl = (req) => {
+  const forwardedProto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+  const forwardedHost = String(req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+  const protocol = forwardedProto || req.protocol || 'http';
+  const host = forwardedHost || req.get('host');
+  return host ? `${protocol}://${host}` : undefined;
+};
 
 const validate = (body = {}) => {
   const errors = {};
   const fullName = normalize(body.fullName);
   const email = normalize(body.email).toLowerCase();
   const phone = normalize(body.phone);
+  const address = normalize(body.address);
   const message = normalizeMessage(body.message);
 
   if (!fullName) errors.fullName = 'Full name is required.';
@@ -28,13 +36,18 @@ const validate = (body = {}) => {
   if (!phone) errors.phone = 'Mobile number is required.';
   else if (!/^[6-9]\d{9}$/.test(phone)) errors.phone = 'Enter a valid 10-digit Indian mobile number.';
 
+  if (!address) errors.address = 'Address is required.';
+  else if (address.length < 5 || address.length > 200) errors.address = 'Address must contain 5-200 characters.';
+  else if (countWords(address) > 35) errors.address = 'Address must contain 35 words or fewer.';
+  else if (!/^[a-zA-Z0-9\s,./#()'-]+$/.test(address) || hasUnsupportedControl(address)) errors.address = 'Address contains unsupported characters.';
+
   if (!message) errors.message = 'Your message is required.';
   else if (countWords(message) < 3) errors.message = 'Your message must contain at least 3 words.';
   else if (countWords(message) > 100) errors.message = 'Your message must contain 100 words or fewer.';
   else if (message.length > 700) errors.message = 'Your message must contain 700 characters or fewer.';
   else if (/[<>]/.test(message) || hasUnsupportedControl(message)) errors.message = 'Your message contains unsupported characters.';
 
-  return { errors, fullName, email, phone, message };
+  return { errors, fullName, email, phone, address, message };
 };
 
 const serialize = (row) => ({
@@ -42,6 +55,7 @@ const serialize = (row) => ({
   fullName: row.full_name,
   email: row.email,
   phone: row.phone,
+  address: row.address,
   message: row.message,
   submittedAt: row.submitted_at,
   updatedAt: row.updated_at,
@@ -69,21 +83,15 @@ const submitContactEnquiry = async (req, res, next) => {
 
   try {
     const [result] = await db.execute(
-      'INSERT INTO contact_enquiries (full_name, email, phone, message) VALUES (?, ?, ?, ?)',
-      [validated.fullName, validated.email, validated.phone, validated.message],
+      'INSERT INTO contact_enquiries (full_name, email, phone, address, message) VALUES (?, ?, ?, ?, ?)',
+      [validated.fullName, validated.email, validated.phone, validated.address, validated.message],
     );
     const [rows] = await db.execute('SELECT * FROM contact_enquiries WHERE id = ?', [result.insertId]);
     const enquiry = serialize(rows[0]);
 
-    try {
-      await sendContactEmails(enquiry);
-    } catch (error) {
+    sendContactEmails(enquiry, { assetBaseUrl: requestBaseUrl(req) }).catch((error) => {
       console.error('Contact email delivery failed:', error.message);
-      if (error.code === 'SMTP_CONFIGURATION_MISSING') {
-        return res.status(503).json({ success: false, message: 'Your enquiry was saved, but the email service is not configured. Please contact us by phone.' });
-      }
-      return res.status(502).json({ success: false, message: 'Your enquiry was saved, but email delivery failed. Please try again later.' });
-    }
+    });
 
     return res.status(201).json({ success: true, message: 'Your message has been sent successfully.', data: enquiry });
   } catch (error) {
@@ -103,8 +111,8 @@ const updateContactEnquiry = async (req, res, next) => {
     const [existing] = await db.execute('SELECT id FROM contact_enquiries WHERE id = ?', [id]);
     if (!existing.length) return res.status(404).json({ success: false, message: 'Contact enquiry not found.' });
     await db.execute(
-      'UPDATE contact_enquiries SET full_name = ?, email = ?, phone = ?, message = ? WHERE id = ?',
-      [validated.fullName, validated.email, validated.phone, validated.message, id],
+      'UPDATE contact_enquiries SET full_name = ?, email = ?, phone = ?, address = ?, message = ? WHERE id = ?',
+      [validated.fullName, validated.email, validated.phone, validated.address, validated.message, id],
     );
     const [rows] = await db.execute('SELECT * FROM contact_enquiries WHERE id = ?', [id]);
     return res.json({ success: true, message: 'Contact enquiry updated successfully.', data: serialize(rows[0]) });

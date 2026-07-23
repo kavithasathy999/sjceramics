@@ -17,7 +17,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Preloader />
-      <ToastContainer position="top-right" autoClose={4000} theme="colored" />
+      <ToastContainer position="top-right" autoClose={1500} theme="colored" />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

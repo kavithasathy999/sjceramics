@@ -92,7 +92,7 @@ export default function Home() {
       
       <TestimonialSlider />
       <Footer />
-      <BackToTop hideWhatsApp={isHeroVisible} />
+      <BackToTop />
     </div>
   );
 }

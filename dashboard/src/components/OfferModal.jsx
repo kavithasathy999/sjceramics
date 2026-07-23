@@ -17,6 +17,7 @@ const initialValues = (item, sectionType) => ({
   finish: item?.finish || '',
   mrp: item?.mrp ?? '',
   offerPrice: item?.offerPrice ?? '',
+  discount: item?.discount ?? '',
   availability: item?.availability || '',
   arrivalStatus: item?.arrivalStatus || (sectionType === 'new_arrivals' ? 'Coming soon' : ''),
 })
@@ -46,10 +47,12 @@ const validate = (values, image, editing) => {
   if (values.sectionType === 'new_arrivals') {
     if (!ARRIVAL_STATUSES.includes(values.arrivalStatus)) errors.arrivalStatus = 'Select a valid arrival status.'
   } else {
-    const validPrice = (value) => /^\d+(\.\d{1,2})?$/.test(String(value).trim()) && Number(value) > 0 && Number(value) <= 1000000
-    if (!validPrice(values.mrp)) errors.mrp = 'MRP must be between 0.01 and 10,00,000 with up to 2 decimal places.'
-    if (!validPrice(values.offerPrice)) errors.offerPrice = 'Offer price must be between 0.01 and 10,00,000 with up to 2 decimal places.'
-    else if (validPrice(values.mrp) && Number(values.offerPrice) >= Number(values.mrp)) errors.offerPrice = 'Offer price must be lower than MRP.'
+    if (values.discount !== '' && values.discount !== null && values.discount !== undefined) {
+      const d = Number(values.discount)
+      if (!Number.isInteger(d) || d < 1 || d > 99) {
+        errors.discount = 'Discount percentage must be between 1 and 99.'
+      }
+    }
   }
   if (!editing && !image) errors.image = 'Offer image is required.'
   return errors
@@ -164,10 +167,11 @@ function OfferModal({ item, sectionType, onClose, onSave }) {
                 {errors.arrivalStatus && <em id="arrivalStatus-error">{errors.arrivalStatus}</em>}
               </label>
             ) : (
-              <>
-                <label className="offer-field"><span><strong>MRP (₹)</strong></span><input type="number" min="0.01" max="1000000" step="0.01" value={values.mrp} onChange={change('mrp')} placeholder="350" aria-invalid={invalid('mrp')} aria-describedby={fieldError('mrp')} />{errors.mrp && <em id="mrp-error">{errors.mrp}</em>}</label>
-                <label className="offer-field"><span><strong>Offer price (₹)</strong></span><input type="number" min="0.01" max="1000000" step="0.01" value={values.offerPrice} onChange={change('offerPrice')} placeholder="290" aria-invalid={invalid('offerPrice')} aria-describedby={fieldError('offerPrice')} />{errors.offerPrice && <em id="offerPrice-error">{errors.offerPrice}</em>}</label>
-              </>
+              <label className="offer-field">
+                <span><strong>Discount (%)</strong></span>
+                <input type="number" min="1" max="99" value={values.discount} onChange={change('discount')} placeholder="20" aria-invalid={invalid('discount')} aria-describedby={fieldError('discount')} />
+                {errors.discount && <em id="discount-error">{errors.discount}</em>}
+              </label>
             )}
             <label className="offer-field offer-field-wide">
               <span><strong>Availability</strong><small className={countWords(values.availability) > 20 ? 'over-limit' : ''}>{countWords(values.availability)} / 20 words</small></span>

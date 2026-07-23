@@ -39,6 +39,20 @@ export const updateFounderShowcase = async (portrait) => {
   return payload.data
 }
 
+export const getMissionVision = async () => {
+  const payload = await parseResponse(await fetch(`${API_URL}/mission-vision`))
+  return payload.data
+}
+
+export const updateMissionVision = async (data) => {
+  const payload = await parseResponse(await fetch(`${API_URL}/mission-vision`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }))
+  return payload.data
+}
+
 export const getRoomDesigns = async () => {
   const payload = await parseResponse(await fetch(`${API_URL}/room-designs`))
   return payload.data

@@ -5,9 +5,11 @@ import {
   deleteRoomDesign,
   getAboutSection,
   getFounderShowcase,
+  getMissionVision,
   getRoomDesigns,
   updateAboutSection,
   updateFounderShowcase,
+  updateMissionVision,
   updateRoomDesign,
 } from '../services/aboutSectionApi'
 import useToast from '../hooks/useToast'
@@ -400,9 +402,184 @@ function RoomDesignsEditor() {
   )
 }
 
+function MissionVisionEditor() {
+  const { showToast } = useToast()
+  const [form, setForm] = useState({
+    headerBadge: '',
+    headerTitle: '',
+    headerDescription: '',
+    missionTag: '',
+    missionTitle: '',
+    missionDescription: '',
+    missionBadges: '',
+    visionTag: '',
+    visionTitle: '',
+    visionDescription: '',
+    visionBadges: '',
+  })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const applyData = (data) => {
+    setForm({
+      headerBadge: data.headerBadge || '',
+      headerTitle: data.headerTitle || '',
+      headerDescription: data.headerDescription || '',
+      missionTag: data.missionTag || '',
+      missionTitle: data.missionTitle || '',
+      missionDescription: data.missionDescription || '',
+      missionBadges: Array.isArray(data.missionBadges) ? data.missionBadges.join(', ') : '',
+      visionTag: data.visionTag || '',
+      visionTitle: data.visionTitle || '',
+      visionDescription: data.visionDescription || '',
+      visionBadges: Array.isArray(data.visionBadges) ? data.visionBadges.join(', ') : '',
+    })
+  }
+
+  const loadData = () => {
+    setLoading(true)
+    setError('')
+    return getMissionVision()
+      .then(applyData)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    let active = true
+    getMissionVision()
+      .then((data) => {
+        if (active) applyData(data)
+      })
+      .catch((err) => {
+        if (active) setError(err.message)
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => { active = false }
+  }, [])
+
+  const updateField = (field, value) => {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    if (!form.headerTitle.trim() || !form.missionTitle.trim() || !form.visionTitle.trim()) {
+      showToast('Header, Mission, and Vision titles are required.', 'error')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    try {
+      const updated = await updateMissionVision({
+        headerBadge: form.headerBadge.trim(),
+        headerTitle: form.headerTitle.trim(),
+        headerDescription: form.headerDescription.trim(),
+        missionTag: form.missionTag.trim(),
+        missionTitle: form.missionTitle.trim(),
+        missionDescription: form.missionDescription.trim(),
+        missionBadges: form.missionBadges.split(',').map((s) => s.trim()).filter(Boolean),
+        visionTag: form.visionTag.trim(),
+        visionTitle: form.visionTitle.trim(),
+        visionDescription: form.visionDescription.trim(),
+        visionBadges: form.visionBadges.split(',').map((s) => s.trim()).filter(Boolean),
+      })
+      applyData(updated)
+      showToast('Our Mission & Vision updated successfully.')
+    } catch (err) {
+      setError(err.message)
+      showToast(err.message, 'error')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return <div className="about-editor-loading"><span className="spinner banner-spinner" /><strong>Loading Mission &amp; Vision section</strong></div>
+  }
+
+  return (
+    <div className="about-tab-panel">
+      {error && <div className="banner-api-error" role="alert"><span>{error}</span><button type="button" onClick={loadData}>Retry</button></div>}
+
+      <form id="mission-vision-settings-form" className="about-editor-card" onSubmit={handleSubmit} aria-busy={loading || saving}>
+        <div className="editor-settings-toolbar">
+          <button className="about-save-settings" type="submit" disabled={saving}>
+            <Icon name="save" />{saving ? 'Saving...' : 'Save Settings'}
+          </button>
+        </div>
+
+        <div className="about-editor-fields">
+          <h3 style={{ margin: '10px 0 15px', color: '#231f1c', fontSize: '18px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>Section Header Settings</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '15px' }}>
+            <label>
+              <strong>Header Badge Text</strong>
+              <input value={form.headerBadge} onChange={(e) => updateField('headerBadge', e.target.value)} placeholder="e.g. Core Foundation" />
+            </label>
+            <label>
+              <strong>Section Main Title</strong>
+              <input value={form.headerTitle} onChange={(e) => updateField('headerTitle', e.target.value)} placeholder="e.g. Our Mission & Vision" />
+            </label>
+          </div>
+          <label>
+            <strong>Section Subtitle / Description</strong>
+            <textarea value={form.headerDescription} onChange={(e) => updateField('headerDescription', e.target.value)} placeholder="Enter section description" rows="3" />
+          </label>
+
+          <h3 style={{ margin: '25px 0 15px', color: '#231f1c', fontSize: '18px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>Mission Card Settings</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '15px' }}>
+            <label>
+              <strong>Mission Tag</strong>
+              <input value={form.missionTag} onChange={(e) => updateField('missionTag', e.target.value)} placeholder="e.g. VISIONARY DESIGN" />
+            </label>
+            <label>
+              <strong>Mission Card Title</strong>
+              <input value={form.missionTitle} onChange={(e) => updateField('missionTitle', e.target.value)} placeholder="e.g. Mission" />
+            </label>
+          </div>
+          <label>
+            <strong>Mission Description Text</strong>
+            <textarea value={form.missionDescription} onChange={(e) => updateField('missionDescription', e.target.value)} placeholder="Enter mission description" rows="4" />
+          </label>
+          <label>
+            <strong>Mission Badges (Comma Separated)</strong>
+            <input value={form.missionBadges} onChange={(e) => updateField('missionBadges', e.target.value)} placeholder="e.g. Luxury Living, Uncompromising Quality, Premium Materials" />
+          </label>
+
+          <h3 style={{ margin: '25px 0 15px', color: '#231f1c', fontSize: '18px', borderBottom: '1px solid #eee', paddingBottom: '8px' }}>Vision Card Settings</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '15px' }}>
+            <label>
+              <strong>Vision Tag</strong>
+              <input value={form.visionTag} onChange={(e) => updateField('visionTag', e.target.value)} placeholder="e.g. CLIENT CENTRICITY" />
+            </label>
+            <label>
+              <strong>Vision Card Title</strong>
+              <input value={form.visionTitle} onChange={(e) => updateField('visionTitle', e.target.value)} placeholder="e.g. Vision" />
+            </label>
+          </div>
+          <label>
+            <strong>Vision Description Text</strong>
+            <textarea value={form.visionDescription} onChange={(e) => updateField('visionDescription', e.target.value)} placeholder="Enter vision description" rows="4" />
+          </label>
+          <label>
+            <strong>Vision Badges (Comma Separated)</strong>
+            <input value={form.visionBadges} onChange={(e) => updateField('visionBadges', e.target.value)} placeholder="e.g. KAG Partnership, Absolute Integrity, Lifetime Trust" />
+          </label>
+        </div>
+      </form>
+    </div>
+  )
+}
+
 const tabs = [
   { id: 'home', label: 'Home About Section' },
   { id: 'founder', label: 'CEO & Founder' },
+  { id: 'mission-vision', label: 'Our Mission & Vision' },
   { id: 'room-designs', label: 'Room Designs' },
   { id: 'explore-collections', label: 'Explore Collections' },
 ]
@@ -443,6 +620,7 @@ function AboutSectionPage() {
 
       {activeTab === 'home' && <HomeAboutEditor />}
       {activeTab === 'founder' && <FounderEditor />}
+      {activeTab === 'mission-vision' && <MissionVisionEditor />}
       {activeTab === 'room-designs' && <RoomDesignsEditor />}
       {activeTab === 'explore-collections' && <ExploreCollectionsEditor />}
     </section>

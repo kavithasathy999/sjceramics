@@ -318,6 +318,7 @@ html, body {
   color: var(--color-seven);
   margin: 0 0 20px;
   flex-grow: 1;
+  text-align: justify;
 }
 
 .blog-card-readmore {

@@ -1,12 +1,10 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'founder');
 const storedPath = (filename) => `uploads/founder/${path.basename(filename)}`;
-const publicUrl = (req, value) => value
-  ? `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`
-  : null;
 
 const removeFile = async (value) => {
   if (!value) return;
@@ -19,7 +17,7 @@ const removeFile = async (value) => {
 
 const serialize = (req, row) => ({
   id: row.id,
-  portraitUrl: publicUrl(req, row.portrait),
+  portraitUrl: publicUrl(req, row.portrait) || null,
   updatedAt: row.updated_at,
 });
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Icon from '../components/Icon'
 
-const ADMIN_EMAIL = 'admin@sjceramics.com'
+const ADMIN_EMAIL = 'sjceramics2026@gmail.com'
 const ADMIN_PASSWORD = 'sjceramics@2026'
 
 function LoginPage({ onLogin, sessionExpiredNotice }) {
@@ -58,11 +58,7 @@ function LoginPage({ onLogin, sessionExpiredNotice }) {
             <span className="partner-link" aria-hidden="true"><i /><b>×</b><i /></span>
             <div className="logo-partner-unit kag-partner-unit">
               <div className="partner-logo-card kag-logo-card">
-                <img src="/kaglogo.svg" alt="KAG Tiles" />
-              </div>
-              <div className="kag-partner-copy">
-                <span className="tamil-line" lang="ta">இது பேரல்ல, பெருமை</span>
-                <h1 id="partner-title">We Are Authorized<br />Channel Partner</h1>
+                <img src="/kaglogo.png" alt="KAG Tiles" />
               </div>
             </div>
           </div>
@@ -87,7 +83,6 @@ function LoginPage({ onLogin, sessionExpiredNotice }) {
               <span>×</span>
               <div className="mobile-logo-unit mobile-kag-unit">
                 <img src="/kaglogo.svg" alt="KAG Tiles" />
-                <div><strong lang="ta">இது பேரல்ல, பெருமை</strong><small>We Are Authorized<br />Channel Partner</small></div>
               </div>
             </div>
           </div>
@@ -101,7 +96,7 @@ function LoginPage({ onLogin, sessionExpiredNotice }) {
           <form onSubmit={handleSubmit} noValidate>
             {sessionExpiredNotice && (
               <div className="credential-error" role="alert">
-                Your session has expired after 2 hours. Please sign in again.
+                Your session has expired after 2 hours of inactivity. Please sign in again.
               </div>
             )}
             {errors.credentials && <div className="credential-error" role="alert">{errors.credentials}</div>}

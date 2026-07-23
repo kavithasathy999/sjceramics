@@ -75,7 +75,7 @@ export default function AboutSection({ showButton = true }) {
             <div className="sec-title about-company-title">
               <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
               <h2 className="sec-title_heading">{content.title}</h2>
-              <div className="sec-title_text">{content.description}</div>
+              <div className="sec-title_text" style={{ textAlign: 'justify' }}>{content.description}</div>
             </div>
 
             {showButton && (

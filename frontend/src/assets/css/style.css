@@ -441,6 +441,7 @@
 	font-size:18px;
 	margin-bottom:25px;
     color:var(--color-seven);
+    text-align: justify;
 }
 
 .about-one_list{
@@ -567,6 +568,7 @@
     line-height: 30px;
     font-size: 16px;
     color: var(--color-nine);
+    text-align: justify;
 }
 
 /*** 

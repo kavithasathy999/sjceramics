@@ -1,10 +1,10 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'room-designs');
 const storedPath = (filename) => `uploads/room-designs/${path.basename(filename)}`;
-const publicUrl = (req, value) => `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`;
 const countWords = (value) => value.trim().split(/\s+/).filter(Boolean).length;
 
 const validateTitle = (value) => {

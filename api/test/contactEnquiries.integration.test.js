@@ -20,6 +20,13 @@ const request = (baseUrl, method, body, id = '') => fetch(`${baseUrl}${id ? `/${
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(body),
 });
+const waitFor = async (predicate, timeoutMs = 500) => {
+  const startedAt = Date.now();
+  while (!predicate()) {
+    if (Date.now() - startedAt > timeoutMs) throw new Error('Timed out waiting for expected condition.');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+};
 
 test('contact enquiries persist, support dashboard CRUD, and send separate emails with filename-free inline logos', async () => {
   await db.initializeDatabase();
@@ -44,6 +51,7 @@ test('contact enquiries persist, support dashboard CRUD, and send separate email
       fullName: "  Meera   D'Souza  ",
       email: 'MEERA@example.com',
       phone: '9876543210',
+      address: '107 Mambakkam Main Road, Chennai',
       message: 'Please share details about your premium bathroom tile collection.',
     });
     const valid = await validResponse.json();
@@ -52,6 +60,7 @@ test('contact enquiries persist, support dashboard CRUD, and send separate email
     assert.equal(valid.reference, undefined);
     assert.equal(valid.data.email, 'meera@example.com');
     createdId = valid.data.id;
+    await waitFor(() => sentMessages.length === 2);
     assert.equal(sentMessages.length, 2);
 
     const adminEmail = sentMessages.find((message) => message.to === 'aryastm195@gmail.com');
@@ -63,21 +72,15 @@ test('contact enquiries persist, support dashboard CRUD, and send separate email
     assert.equal(adminEmail.bcc, undefined);
     assert.equal(userEmail.cc, undefined);
     assert.equal(userEmail.bcc, undefined);
-    assert.equal(adminEmail.attachments.length, 2);
-    assert.equal(userEmail.attachments.length, 2);
-    for (const email of [adminEmail, userEmail]) {
-      assert.deepEqual(email.attachments.map((attachment) => attachment.cid), ['sj-ceramics-logo', 'kag-logo']);
-      assert.ok(email.attachments.every((attachment) => attachment.filename === false));
-      assert.ok(email.attachments.every((attachment) => attachment.contentDisposition === 'inline'));
-      assert.ok(email.attachments.every((attachment) => attachment.contentType === 'image/png'));
-    }
+    assert.equal(adminEmail.attachments, undefined);
+    assert.equal(userEmail.attachments, undefined);
     assert.doesNotMatch(adminEmail.html, /Reference/);
     assert.doesNotMatch(userEmail.html, /Reference/);
     assert.ok(adminEmail.html.indexOf('Message') < adminEmail.html.indexOf('Submitted'));
     assert.match(userEmail.subject, /Thank You for Contacting SJ Ceramics/);
     assert.match(userEmail.html, /Thank you for contacting SJ Ceramics/);
-    assert.match(adminEmail.html, /cid:sj-ceramics-logo/);
-    assert.match(adminEmail.html, /cid:kag-logo/);
+    assert.match(adminEmail.html, /\/email-assets\/sj-logo\.png/);
+    assert.match(adminEmail.html, /\/email-assets\/kag-logo\.png/);
 
     const deliveryCountBeforeSameAddress = sentMessages.length;
     await sendContactEmails({
@@ -102,6 +105,7 @@ test('contact enquiries persist, support dashboard CRUD, and send separate email
       fullName: "Meera D'Souza",
       email: 'customer@example.com',
       phone: '9876543210',
+      address: '107 Mambakkam Main Road, Chennai',
       message: 'Please share the latest premium bathroom tile catalogue.',
     }, createdId);
     const updated = await updateResponse.json();

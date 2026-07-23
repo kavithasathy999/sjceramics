@@ -3,7 +3,6 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast } from 'react-toastify';
 import { statesList, stateCitiesMap } from '../utils/indiaData';
-import { getProducts } from '../services/productsApi';
 import { submitEnquiry } from '../services/enquiriesApi';
 import SearchableDropdown from './SearchableDropdown';
 import './ServiceEnquiryModal.css';
@@ -31,6 +30,7 @@ const ADDRESS_PATTERN = /^[a-zA-Z0-9\s,./-]*$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const wordCount = (value) => value.trim() ? value.trim().split(/\s+/).length : 0;
 const normalizeWhitespace = (value) => value.trim().replace(/\s+/g, ' ');
+const TILE_TYPE_MAX_LENGTH = 50;
 
 function getFieldError(field, value) {
   const trimmed = typeof value === 'string' ? value.trim() : value;
@@ -43,7 +43,7 @@ function getFieldError(field, value) {
     case 'boxesRequired':
       return Number.isInteger(Number(value)) && Number(value) > 0 ? '' : 'Please enter at least 1 box.';
     case 'tileType':
-      return value ? '' : 'Please select a type of tile.';
+      return trimmed && trimmed.length <= TILE_TYPE_MAX_LENGTH ? '' : 'Type of tile is required and must be 50 characters or fewer.';
     case 'fullName':
       return trimmed && NAME_PATTERN.test(trimmed) ? '' : 'Please enter a valid name (letters and spaces only).';
     case 'email':
@@ -70,23 +70,6 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const firstFieldRef = useRef(null);
-
-  const [tileTypes, setTileTypes] = useState([]);
-
-  useEffect(() => {
-    getProducts()
-      .then((data) => {
-        const types = [...new Set(data
-          .filter(p => p.category === 'Tiles')
-          .map(p => p.productType)
-          .filter(Boolean)
-        )];
-        setTileTypes(types);
-      })
-      .catch((err) => {
-        console.error('Failed to load dynamic tile types for ServiceEnquiryModal:', err);
-      });
-  }, []);
 
   const resetAndClose = useCallback(() => {
     setFormData(EMPTY_FORM);
@@ -125,8 +108,9 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
     if ((name === 'address1' || name === 'address2') && (!ADDRESS_PATTERN.test(value) || value.length > 150)) return;
     if (name === 'areaSqFt' && value && !/^\d*(\.\d{0,2})?$/.test(value)) return;
     if (name === 'boxesRequired' && value && !/^\d+$/.test(value)) return;
+    if (name === 'tileType' && value.length > TILE_TYPE_MAX_LENGTH) return;
 
-    const nextValue = (name === 'roomType' || name === 'fullName') ? value.replace(/^\s+/, '') : value;
+    const nextValue = (name === 'roomType' || name === 'fullName' || name === 'tileType') ? value.replace(/^\s+/, '') : value;
     setFormData((current) => ({ ...current, [name]: nextValue }));
     setLiveError(name, nextValue);
   };
@@ -187,6 +171,7 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
       email: formData.email.trim(),
       address1: normalizeWhitespace(formData.address1),
       address2: normalizeWhitespace(formData.address2),
+      tileType: normalizeWhitespace(formData.tileType),
       message: normalizeWhitespace(formData.message),
     };
 
@@ -250,10 +235,8 @@ export default function ServiceEnquiryModal({ isOpen, onClose, sourceService }) 
               </div>
               <div className="form-group">
                 <label htmlFor="service-tileType">Type of Tile <span className="required">*</span></label>
-                <select id="service-tileType" name="tileType" value={formData.tileType} onChange={handleInputChange} className={errors.tileType ? 'error' : ''} aria-required="true" {...errorProps('tileType')}>
-                  <option value="">{tileTypes.length ? 'Select tile type' : 'No product types available'}</option>
-                  {tileTypes.map((tileType) => <option value={tileType} key={tileType}>{tileType}</option>)}
-                </select>
+                <input type="text" id="service-tileType" name="tileType" value={formData.tileType} maxLength={TILE_TYPE_MAX_LENGTH} onChange={handleInputChange} onBlur={() => trimOnBlur('tileType')} placeholder="e.g. Ceramic, Vitrified, Porcelain" className={errors.tileType ? 'error' : ''} aria-required="true" {...errorProps('tileType')} />
+                <span className="char-counter">{formData.tileType.length}/{TILE_TYPE_MAX_LENGTH} characters</span>
                 <Error field="tileType" />
               </div>
             </div>

@@ -42,7 +42,7 @@ export default function ServicesThree() {
               <div className="sec-title">
                 <div className="sec-title_title"><i className="flaticon-wood-1" /> Our Core Values</div>
                 <h2 className="sec-title_heading">Why Choose Us</h2>
-                <div className="sec-title_text">
+                <div className="sec-title_text" style={{ textAlign: 'justify' }}>
                   At SJ Ceramics, we believe in quality without compromise, offering premium tiles,
                   sanitary ware, and bath fittings that deliver lasting beauty, durability, and value.
                   We put customers first through honest guidance, personalized solutions, and

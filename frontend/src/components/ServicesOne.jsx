@@ -60,7 +60,7 @@ export default function ServicesOne() {
                       </button>
                     </h4>
                   </div>
-                  <div className="service-block_one-text">{service.text}</div>
+                  <div className="service-block_one-text" style={{ textAlign: 'justify' }}>{service.text}</div>
                 </div>
               </div>
             ))}

@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const MAX_IMAGE_SIZE = 3 * 1024 * 1024;
 const GROUP_VALUES = new Set(['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others']);
@@ -8,7 +9,6 @@ const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'categories');
 const countWords = (value) => value ? value.split(/\s+/).filter(Boolean).length : 0;
 const normalize = (value) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '';
 const storedPath = (filename) => `uploads/categories/${path.basename(filename)}`;
-const publicUrl = (req, value) => `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`;
 
 const removeFile = async (value) => {
   if (!value) return;

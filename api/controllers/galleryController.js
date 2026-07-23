@@ -1,12 +1,12 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const MAX_GALLERY_ITEMS = 20;
 const CATEGORY_VALUES = new Set(['Tiles', 'Sanitary Wares', 'Bath Fittings', 'Others']);
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'gallery');
 const storedPath = (filename) => `uploads/gallery/${path.basename(filename)}`;
-const publicUrl = (req, value) => `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`;
 const countWords = (value) => value.trim().split(/\s+/).filter(Boolean).length;
 
 const validateTitle = (value) => {

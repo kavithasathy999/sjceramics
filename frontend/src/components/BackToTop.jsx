@@ -14,10 +14,10 @@ export default function BackToTop({ hideWhatsApp = false }) {
           href="https://wa.me/919384105222"
           target="_blank"
           rel="noopener noreferrer"
-          className="whatsapp-float"
+          className={`whatsapp-float${visible ? ' active-whatsapp' : ''}`}
           aria-label="Contact us on WhatsApp"
         >
-          <i className="fa-brands fa-whatsapp" />
+          <i className="fa-brands fab fa-whatsapp" />
         </a>
       )}
       <div

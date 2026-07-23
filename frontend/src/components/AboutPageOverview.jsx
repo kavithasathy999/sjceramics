@@ -23,7 +23,7 @@ export default function AboutPageOverview() {
               <div className="sec-title">
                 <div className="sec-title_title"><i className="flaticon-wood-1" /> About us</div>
                 <h2 className="sec-title_heading">Premium Tiles, Sanitarywares &amp; Bath Fittings</h2>
-                <div className="sec-title_text">
+                <div className="sec-title_text" style={{ textAlign: 'justify' }}>
                   We are your one-stop destination for premium tiles, sanitary wares, and luxurious
                   bath fittings, offering high-quality products directly from KAG&apos;s exclusive collections.
                 </div>
@@ -44,10 +44,10 @@ export default function AboutPageOverview() {
                 </div>
               </div>
 
-              <div className="about-one_text">
+              <div className="about-one_text" style={{ textAlign: 'justify' }}>
                 As a premier showroom and authorized KAG channel partner in Chennai, we supply
                 premium floor and wall tiles, sanitaryware, elegant bath fittings, and building
-                ceramics directly from KAG&apos;s trusted 25-year industry-leading catalog.
+                ceramics directly from KAG&apos;s trusted 25-year industry-leading catalogue.
               </div>
 
               <div className="row clearfix">

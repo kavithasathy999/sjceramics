@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import footerLogo from '../assets/images/Logo-Png.png';
-import kagLogo from '../assets/images/kaglogo.svg';
+import kagLogo from '../assets/images/kaglogo.png';
 import { getFooterColumns } from '../services/footerApi';
 import '../styles/quicklinks.css';
 
@@ -108,18 +108,15 @@ export default function Footer() {
                       <div className="footer-partner-brand">
                         <div className="footer-partner-logo-card">
                           <img src={kagLogo} alt="KAG Tiles" title="KAG Tiles" />
-                        </div>       
-                        <span className="footer-partner-label footer-partner-label--tagline" lang="ta">
-                          இது பேரல்ல, பெருமை
-                        </span>
-                        <span className="footer-partner-label footer-partner-label--channel">
-                          Authorized Channel Partner
+                        </div>
+                        <span className="footer-partner-label">
+                          We Are Authorized Channel Partner
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="footer-text">
-                    SJ Ceramics, a proud channel partner of KAG Tiles, is your trusted destination for premium sanitary wares, luxurious bath fittings, and top-quality tiles. Browse our wide range of products and enquire directly.
+                    SJ Ceramics, a proud channel partner of KAG Tiles, is your trusted destination for premium top-quality tiles, sanitary wares, and luxurious bath fittings. Browse our wide range of products and enquire directly.
                   </div>
                   <div className="footer_socials">
                     <a className="fa-brands fa-facebook-f fa-fw me-2" href="#" aria-label="Facebook" />
@@ -191,18 +188,18 @@ export default function Footer() {
                   <h5 className="footer-title">CONTACT US</h5>
                   <ul className="footer-list">
                     <li className="mb-3">
-                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Mobile Numbers</span>
+                      <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Phone Numbers</span>
                       <a href="tel:+919384105222" style={{ display: 'flex', alignItems: 'center' }}>
-                        <i className="fa-solid fa-phone me-2" style={{ fontSize: '1.1em' }} /> +91 93841 05222
+                        <i className="fa-solid" style={{ fontSize: '1.1em' }} /> +91 93841 05222
                       </a>
                       <a href="tel:044-4656 0926" style={{ display: 'flex', alignItems: 'center' }}>
-                        <i className="fa-solid fa-phone me-2" style={{ fontSize: '1.1em' }} /> 044-4656 0926
+                        <i className="fa-solid" style={{ fontSize: '1.1em' }} /> 044-4656 0926 (LandLine)
                       </a>
                     </li>
                     <li>
                       <span className="d-block text-white mb-1" style={{ fontWeight: '500' }}>Email Address</span>
                       <a href="mailto:sales@sjceramics.in" style={{ display: 'flex', alignItems: 'center' }}>
-                        <i className="fa-solid fa-envelope me-2" style={{ fontSize: '1.1em' }} /> sales@sjceramics.in
+                        <i className="fa-solid" style={{ fontSize: '1.1em' }} /> sales@sjceramics.in
                       </a>
                     </li>
                   </ul>

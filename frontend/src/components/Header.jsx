@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useStickyHeader from '../hooks/useStickyHeader';
 import { navigation as baseNavigation } from '../utils/navigation';
 import { getProducts } from '../services/productsApi';
 import MobileMenu from './MobileMenu';
 import ContactModal from './ContactModal';
 import logo from '../assets/images/Logo-Png.png';
-import partnerLogo from '../assets/images/kaglogo.svg';
+import partnerLogo from '../assets/images/kaglogo.png';
 
 function DesktopSubmenu({ items, level = 1 }) {
   return (
@@ -93,6 +93,7 @@ const buildProductMenu = (products) => {
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const headerRef = useRef(null);
   const headerShellRef = useRef(null);
   const { isSticky: isFixed, isVisible } = useStickyHeader(200);
@@ -102,6 +103,12 @@ export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [navigation, setNavigation] = useState(navigationWithoutStaticProducts);
   const shouldShowHeader = isVisible || mobileMenuOpen || isModalOpen;
+
+  const isPathActive = (itemPath) => {
+    if (!itemPath || itemPath.startsWith('#')) return false;
+    if (itemPath === '/') return location.pathname === '/';
+    return location.pathname === itemPath || location.pathname.startsWith(`${itemPath}/`);
+  };
 
   useEffect(() => {
     let active = true;
@@ -204,7 +211,7 @@ export default function Header() {
                       <circle cx="12" cy="12" r="9" />
                       <path d="M12 7v5l3.5 2" />
                     </svg>
-                    Sun - Sun 9.00 am - 10.00 pm
+                    All Days 9.00 am - 10.00 pm
                   </li>
                 </ul>
               </div>
@@ -230,8 +237,7 @@ export default function Header() {
                           className="header-logo-partner"
                           onError={() => setPartnerLogoFailed(true)}
                         />
-                        <span className="header-logo-partner-copy">
-                          <span className="header-logo-partner-slogan" lang="ta">இது பேரல்ல, பெருமை</span>
+                        <span className="header-logo-partner-copy">                        
                           <span className="header-logo-partner-status">We Are Authorized Channel Partner</span>
                         </span>
                       </div>
@@ -242,31 +248,34 @@ export default function Header() {
                     <nav className="main-menu navbar-expand-md" aria-label="Primary navigation">
                       <div className="navbar-collapse collapse clearfix" id="navbarSupportedContent">
                         <ul className="navigation clearfix">
-                          {navigation.map((item) => (
-                            <li
-                              key={item.label}
-                              className={`${item.children ? 'dropdown' : ''}${item.label === 'Products' ? ' products-dropdown' : ''}`.trim() || undefined}
-                            >
-                              {item.path.startsWith('#') ? (
-                                <a href={item.path}>{item.label}</a>
-                              ) : (
-                                <Link
-                                  to={item.path}
-                                  state={item.state}
-                                  onClick={() => {
-                                    if (item.path === '/products' && window.location.pathname === '/products') {
-                                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    }
-                                  }}
-                                >
-                                  {item.label}
-                                </Link>
-                              )}
-                              {item.children && (
-                                <DesktopSubmenu items={item.children} />
-                              )}
-                            </li>
-                          ))}
+                          {navigation.map((item) => {
+                            const active = isPathActive(item.path);
+                            return (
+                              <li
+                                key={item.label}
+                                className={`${active ? 'current ' : ''}${item.children ? 'dropdown ' : ''}${item.label === 'Products' ? 'products-dropdown' : ''}`.trim() || undefined}
+                              >
+                                {item.path.startsWith('#') ? (
+                                  <a href={item.path}>{item.label}</a>
+                                ) : (
+                                  <Link
+                                    to={item.path}
+                                    state={item.state}
+                                    onClick={() => {
+                                      if (item.path === '/products' && location.pathname === '/products') {
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                      }
+                                    }}
+                                  >
+                                    {item.label}
+                                  </Link>
+                                )}
+                                {item.children && (
+                                  <DesktopSubmenu items={item.children} />
+                                )}
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     </nav>

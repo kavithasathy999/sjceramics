@@ -6,7 +6,7 @@ import contactImg2 from '../assets/images/background/contact-floating-tile-beige
 import ball from '../assets/images/icons/ball.png';
 import { submitContactEnquiry } from '../services/contactEnquiriesApi';
 
-const INITIAL_VALUES = { fullName: '', email: '', phone: '', message: '' };
+const INITIAL_VALUES = { fullName: '', email: '', phone: '', address: '', message: '' };
 const FIELD_NAMES = Object.keys(INITIAL_VALUES);
 const CONTACT_TOAST_ID = 'contact-enquiry-status';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -42,6 +42,14 @@ const fieldError = (field, value) => {
     if (!trimmed) return 'Mobile number is required.';
     if (!/^[6-9]\d{9}$/.test(trimmed)) return 'Enter a valid 10-digit Indian mobile number.';
   }
+  if (field === 'address') {
+    const normalized = normalize(value);
+    if (!normalized) return 'Address is required.';
+    if (normalized.length < 5 || normalized.length > 200) return 'Address must contain 5-200 characters.';
+    if (countWords(normalized) > 35) return 'Address must contain 35 words or fewer.';
+    if (/[<>]/.test(normalized) || hasUnsupportedControl(normalized)) return 'Address contains unsupported characters.';
+    if (!/^[a-zA-Z0-9\s,./#()'-]+$/.test(normalized)) return 'Enter a valid address (letters, numbers, spaces, commas, periods, etc.).';
+  }
   if (field === 'message') {
     if (!trimmed) return 'Your message is required.';
     if (countWords(trimmed) < 3) return 'Your message must contain at least 3 words.';
@@ -58,7 +66,7 @@ export default function ContactSection() {
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState('idle');
   const formRef = useRef(null);
-  const refs = { fullName: useRef(null), email: useRef(null), phone: useRef(null), message: useRef(null) };
+  const refs = { fullName: useRef(null), email: useRef(null), phone: useRef(null), address: useRef(null), message: useRef(null) };
   const resetTimerRef = useRef(null);
 
   useEffect(() => () => { if (resetTimerRef.current) clearTimeout(resetTimerRef.current); }, []);
@@ -97,6 +105,7 @@ export default function ContactSection() {
       fullName: normalize(values.fullName),
       email: values.email.trim().toLowerCase(),
       phone: values.phone.trim(),
+      address: normalize(values.address),
       message: values.message.replace(/\r\n?/g, '\n').trim(),
     };
     const nextErrors = Object.fromEntries(FIELD_NAMES.map((field) => [field, fieldError(field, normalizedValues[field])]).filter(([, error]) => error));
@@ -232,6 +241,22 @@ export default function ContactSection() {
                           {...errorProps('phone')}
                         />
                         <ErrorMessage field="phone" />
+                      </div>
+                      <div className={`col-lg-12 col-md-12 col-sm-12 form-group${errors.address ? ' has-error' : ''}`}>
+                        <input
+                          ref={refs.address}
+                          type="text"
+                          name="address"
+                          placeholder="Address*"
+                          value={values.address}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          maxLength="200"
+                          required
+                          aria-required="true"
+                          {...errorProps('address')}
+                        />
+                        <ErrorMessage field="address" />
                       </div>
                       <div className={`col-lg-12 col-md-12 col-sm-12 form-group${errors.message ? ' has-error' : ''}`}>
                         <textarea

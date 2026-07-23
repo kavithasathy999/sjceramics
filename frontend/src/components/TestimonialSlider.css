@@ -38,6 +38,10 @@
   stroke-linejoin: round;
 }
 
+.testimonial-block_one-text {
+  text-align: justify;
+}
+
 .testimonial-block_one-rating .is-empty {
   color: #d8d8d8;
 }

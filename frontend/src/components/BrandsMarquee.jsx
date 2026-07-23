@@ -7,8 +7,6 @@ import './BrandsMarquee.css';
 import { getHomeOffers } from '../services/homeOffersApi';
 import { getHomeCategories } from '../services/homeCategoriesApi';
 
-const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
-
 const categoryState = (filterValue) => ({ filterCategory: 'category', filterValue });
 
 export default function BrandsMarquee({ children }) {
@@ -24,12 +22,13 @@ export default function BrandsMarquee({ children }) {
           const section = sections.find((entry) => entry.sectionType === sectionType);
           if (!section?.configured) return [];
           return section.items.slice(0, 1).map((item) => {
-            const saving = Number(item.mrp || 0) - Number(item.offerPrice || 0);
+            const discount = item.discount
+              ? Number(item.discount)
+              : (item.mrp && item.offerPrice ? Math.round(((Number(item.mrp) - Number(item.offerPrice)) / Number(item.mrp)) * 100) : 0);
             return {
               label: item.label,
               availability: item.availability,
-              saving,
-              discount: item.mrp ? Math.round((saving / item.mrp) * 100) : 0,
+              discount,
               product: {
                 id: item.id,
                 name: item.productName,
@@ -37,8 +36,6 @@ export default function BrandsMarquee({ children }) {
                 category: item.category,
                 size: item.size,
                 finish: item.finish,
-                mrp: item.mrp,
-                offerPrice: item.offerPrice,
               },
             };
           });
@@ -96,10 +93,12 @@ export default function BrandsMarquee({ children }) {
               <img src={offer.product.image} alt={`${offer.product.name} tile`} />
               <div className="story-post__shade" />
               <div className="story-post__topline">
-                <span className="story-post__number">
-                  <strong>{offer.discount}%</strong>
-                  <small>Off</small>
-                </span>
+                {offer.discount > 0 ? (
+                  <span className="story-post__number">
+                    <strong>{offer.discount}%</strong>
+                    <small>Off</small>
+                  </span>
+                ) : <span />}
                 <span className="story-post__category">{offer.product.category}</span>
               </div>
               <div className="story-post__content">
@@ -108,12 +107,8 @@ export default function BrandsMarquee({ children }) {
                   <strong>{offer.product.name}</strong>
                   <span>{offer.product.size} · {offer.product.finish}</span>
                 </p>
-                <div className="story-post__availability" aria-label={`${offer.label} pricing`}>
-                  <span>MRP <del>₹{formatPrice(offer.product.mrp)}</del></span>
-                  <span>Offer <strong>₹{formatPrice(offer.product.offerPrice)}</strong> / sq.ft</span>
-                </div>
                 <p className="story-post__offer-note">
-                  Save ₹{formatPrice(offer.saving)} / sq.ft · {offer.availability}
+                  {offer.availability}
                 </p>
               </div>
             </article>

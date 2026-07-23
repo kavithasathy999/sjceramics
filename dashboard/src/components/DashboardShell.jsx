@@ -13,6 +13,7 @@ import MetaPage from '../pages/MetaPage'
 import BlogsPage from '../pages/BlogsPage'
 import TestimonialsPage from '../pages/TestimonialsPage'
 import ContactEnquiriesPage from '../pages/ContactEnquiriesPage'
+import EnquiriesPage from '../pages/EnquiriesPage'
 import Sidebar from './Sidebar'
 import DashboardHeader from './DashboardHeader'
 import BannerModal from './BannerModal'
@@ -158,6 +159,8 @@ function DashboardShell({ onLogout }) {
           <CategoriesPage />
         ) : activePage === 'testimonials' ? (
           <TestimonialsPage />
+        ) : activePage === 'enquiries' ? (
+          <EnquiriesPage />
         ) : (
           <ContactEnquiriesPage />
         )}

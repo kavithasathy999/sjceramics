@@ -1,14 +1,11 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'banners');
 const countWords = (value) => value.trim().split(/\s+/).filter(Boolean).length;
 const imagePath = (filename) => filename ? `uploads/banners/${path.basename(filename)}` : null;
-
-const imageUrl = (req, storedPath) => storedPath
-  ? `${req.protocol}://${req.get('host')}/${storedPath.replace(/\\/g, '/').replace(/^\/+/, '')}`
-  : null;
 
 const serializeBanner = (req, banner) => ({
   id: banner.id,
@@ -16,7 +13,7 @@ const serializeBanner = (req, banner) => ({
   description: banner.description,
   placement: banner.placement,
   sortOrder: banner.sort_order,
-  imageUrl: imageUrl(req, banner.image),
+  imageUrl: publicUrl(req, banner.image) || null,
   createdAt: banner.created_at,
   updatedAt: banner.updated_at,
 });

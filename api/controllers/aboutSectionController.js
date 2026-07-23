@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const uploadDirectory = path.resolve(__dirname, '..', 'uploads', 'about');
 const countWords = (value) => value.trim().split(/\s+/).filter(Boolean).length;
@@ -19,7 +20,7 @@ const serializeSection = (req, section) => ({
   id: section.id,
   title: section.title,
   description: section.description,
-  videoUrl: `${req.protocol}://${req.get('host')}/${section.video.replace(/\\/g, '/').replace(/^\/+/, '')}`,
+  videoUrl: publicUrl(req, section.video),
   createdAt: section.created_at,
   updatedAt: section.updated_at,
 });

@@ -63,7 +63,7 @@ export default function TestimonialSlider() {
                       <div className="testimonial-block_one-quote flaticon-left" />
                     </div>
                     <div className="testimonial-block_one-lower">
-                      <div className="testimonial-block_one-text">{item.description}</div>
+                      <div className="testimonial-block_one-text" style={{ textAlign: 'justify' }}>{item.description}</div>
                       <div className="testimonial-block_one-rating" aria-label={`${item.starRating} out of 5 stars`}>
                         {Array.from({ length: 5 }).map((_, i) => (
                           <span className={`fa fa-star${i < item.starRating ? '' : ' is-empty'}`} aria-hidden="true" key={i} />

@@ -40,20 +40,23 @@ function Sidebar({ activePage, onNavigate, open, onClose }) {
           <button className={activePage === 'products' ? 'active' : ''} onClick={() => onNavigate('products')}>
             <Icon name="product" /><span>Products</span>
           </button>
-          <button className={activePage === 'footer' ? 'active' : ''} onClick={() => onNavigate('footer')}>
-            <Icon name="footer" /><span>Footer Columns</span>
-          </button>
-          <button className={activePage === 'meta' ? 'active' : ''} onClick={() => onNavigate('meta')}>
-            <Icon name="blog" /><span>Meta Tags</span>
-          </button>
           <button className={activePage === 'blogs' ? 'active' : ''} onClick={() => onNavigate('blogs')}>
             <Icon name="blog" /><span>Blogs</span>
           </button>
           <button className={activePage === 'testimonials' ? 'active' : ''} onClick={() => onNavigate('testimonials')}>
             <Icon name="testimonial" /><span>Testimonials</span>
           </button>
+          <button className={activePage === 'enquiries' ? 'active' : ''} onClick={() => onNavigate('enquiries')}>
+            <Icon name="mail" /><span>Enquiries</span>
+          </button>
           <button className={activePage === 'contact-enquiries' ? 'active' : ''} onClick={() => onNavigate('contact-enquiries')}>
             <Icon name="mail" /><span>Contact Enquiries</span>
+          </button>
+          <button className={activePage === 'footer' ? 'active' : ''} onClick={() => onNavigate('footer')}>
+            <Icon name="footer" /><span>Footer Columns</span>
+          </button>
+          <button className={activePage === 'meta' ? 'active' : ''} onClick={() => onNavigate('meta')}>
+            <Icon name="blog" /><span>Meta Tags</span>
           </button>
         </nav>
       </aside>

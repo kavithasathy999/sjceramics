@@ -4,6 +4,10 @@
   padding-left: clamp(18px, 2.5vw, 40px);
 }
 
+.services-three .sec-title_text {
+  text-align: justify;
+}
+
 .services-three_highlights {
   gap: 16px;
 }

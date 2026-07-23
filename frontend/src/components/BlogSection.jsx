@@ -68,7 +68,7 @@ export default function BlogSection() {
                     <h5 className="blog-card-heading">
                       <Link to={`/blog/${generateSlug(post.title)}`}>{post.title}</Link>
                     </h5>
-                    <p className="blog-card-excerpt">{post.excerpt}</p>
+                    <p className="blog-card-excerpt" style={{ textAlign: 'justify' }}>{post.excerpt}</p>
                     <Link to={`/blog/${generateSlug(post.title)}`} className="blog-card-readmore">Read More</Link>
                   </div>
                 </div>

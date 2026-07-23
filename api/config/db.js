@@ -87,6 +87,47 @@ const initializeDatabase = async () => {
   await pool.query('INSERT IGNORE INTO founder_showcase (id, portrait) VALUES (1, NULL)');
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS mission_vision (
+      id TINYINT UNSIGNED NOT NULL,
+      header_badge VARCHAR(100) NOT NULL,
+      header_title VARCHAR(150) NOT NULL,
+      header_description TEXT NOT NULL,
+      mission_tag VARCHAR(100) NOT NULL,
+      mission_title VARCHAR(100) NOT NULL,
+      mission_description TEXT NOT NULL,
+      mission_badges TEXT NOT NULL,
+      vision_tag VARCHAR(100) NOT NULL,
+      vision_title VARCHAR(100) NOT NULL,
+      vision_description TEXT NOT NULL,
+      vision_badges TEXT NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(
+    `INSERT IGNORE INTO mission_vision (
+      id, header_badge, header_title, header_description,
+      mission_tag, mission_title, mission_description, mission_badges,
+      vision_tag, vision_title, vision_description, vision_badges
+    ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      'Core Foundation',
+      'Our Mission & Vision',
+      'Guiding our commitment to quality, trust, and craftsmanship in every tile and sanitary ware we deliver.',
+      'VISIONARY DESIGN',
+      'Mission',
+      'To shape inspiring environments by delivering the finest top-tier tiles sanitary wares, and premium bath fitting that seamlessly integrate beauty, longevity, and everyday luxury.',
+      JSON.stringify(['Luxury Living', 'Uncompromising Quality', 'Premium Materials']),
+      'CLIENT CENTRICITY',
+      'Vision',
+      "SJ Ceramics' vision of becoming a trusted destination for premium building materials while complementing KAG's focus on quality, innovation, ethical values, and customer satisfaction.",
+      JSON.stringify(['KAG Partnership', 'Absolute Integrity', 'Lifetime Trust']),
+    ],
+  );
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS room_designs (
       id INT UNSIGNED NOT NULL AUTO_INCREMENT,
       title VARCHAR(100) NOT NULL,
@@ -149,6 +190,18 @@ const initializeDatabase = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS product_settings (
+      setting_key VARCHAR(50) NOT NULL PRIMARY KEY,
+      setting_value VARCHAR(255) NOT NULL,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await pool.query(
+    "INSERT IGNORE INTO product_settings (setting_key, setting_value) VALUES ('display_max_price', '8500')"
+  );
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS home_offer_items (
       id INT UNSIGNED NOT NULL AUTO_INCREMENT,
       section_type VARCHAR(30) NOT NULL,
@@ -172,6 +225,11 @@ const initializeDatabase = async () => {
   `);
 
   await pool.query('ALTER TABLE home_offer_items MODIFY sort_order SMALLINT UNSIGNED NOT NULL');
+  try {
+    await pool.query('ALTER TABLE home_offer_items ADD COLUMN discount INT DEFAULT NULL');
+  } catch (err) {
+    if (err.code !== 'ER_DUP_FIELDNAME') console.error('Error adding discount column:', err.message);
+  }
 
   await pool.query(
     `INSERT IGNORE INTO home_offer_sections (section_type, configured)
@@ -366,6 +424,7 @@ const initializeDatabase = async () => {
       full_name VARCHAR(60) NOT NULL,
       email VARCHAR(120) NOT NULL,
       phone VARCHAR(10) NOT NULL,
+      address VARCHAR(200) NULL,
       message VARCHAR(700) NOT NULL,
       submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -373,6 +432,37 @@ const initializeDatabase = async () => {
       KEY contact_enquiries_submitted_at_index (submitted_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
+
+  try {
+    await pool.query('ALTER TABLE contact_enquiries ADD COLUMN IF NOT EXISTS address VARCHAR(200) NULL AFTER phone');
+  } catch (err) {
+    // Ignore if column already exists
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS enquiries (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      type VARCHAR(20) NOT NULL,
+      full_name VARCHAR(100) NOT NULL,
+      email VARCHAR(120) NOT NULL,
+      phone VARCHAR(20) NOT NULL,
+      address1 VARCHAR(150) NULL,
+      address2 VARCHAR(150) NULL,
+      state VARCHAR(60) NULL,
+      city VARCHAR(60) NULL,
+      details JSON NOT NULL,
+      status VARCHAR(30) NOT NULL DEFAULT 'New',
+      submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      KEY enquiries_type_idx (type)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  // Remove static sample entries if any were previously seeded
+  await pool.query(
+    "DELETE FROM enquiries WHERE email IN ('rajesh.kumar@example.com', 'priya.s@example.com', 'arun.s@example.com')"
+  );
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS page_meta (

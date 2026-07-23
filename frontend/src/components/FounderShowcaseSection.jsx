@@ -42,7 +42,7 @@ export default function FounderShowcaseSection() {
           <div className="sec-title_title">
             <i className="flaticon-wood-1" /> Our Leadership
           </div>
-          <h2 className="sec-title_heading">Meet Our CEO &amp; Founder</h2>
+          <h2 className="sec-title_heading">Meet Our Founder &amp; CEO</h2>
         </div>
 
         <div className="founder-showcase_layout">
@@ -62,7 +62,7 @@ export default function FounderShowcaseSection() {
             ) : (
               <div className="founder-showcase_portrait founder-showcase_portrait--pending" role="img" aria-label="CEO and Founder portrait placeholder" />
             )}
-            <figcaption>CEO &amp; Founder</figcaption>
+            <figcaption>Founder &amp; CEO</figcaption>
           </figure>
         </div>
       </div>

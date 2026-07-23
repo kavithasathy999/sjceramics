@@ -118,6 +118,7 @@
 .about-company-title .sec-title_text {
   max-width: 640px;
   line-height: 1.75;
+  text-align: justify;
 }
 
 @media screen and (min-width: 768px) and (max-width: 1024px) {

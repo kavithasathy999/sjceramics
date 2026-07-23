@@ -1,6 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const db = require('../config/db');
+const { publicUrl } = require('../utils/publicUrl');
 
 const MAX_IMAGE_SIZE = 3 * 1024 * 1024;
 const MAX_VIDEO_SIZE = 8 * 1024 * 1024;
@@ -13,7 +14,6 @@ const normalizeTitle = (value) => typeof value === 'string' ? value.trim().repla
 const normalizeAuthor = (value) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ') : '';
 const normalizeDescription = (value) => typeof value === 'string' ? value.replace(/\r\n?/g, '\n').trim() : '';
 const storedPath = (filename) => `uploads/blogs/${path.basename(filename)}`;
-const publicUrl = (req, value) => `${req.protocol}://${req.get('host')}/${value.replace(/\\/g, '/').replace(/^\/+/, '')}`;
 
 const removeFile = async (value) => {
   if (!value) return;
