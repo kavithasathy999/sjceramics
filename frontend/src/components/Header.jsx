@@ -96,6 +96,7 @@ export default function Header() {
   const location = useLocation();
   const headerRef = useRef(null);
   const headerShellRef = useRef(null);
+  const mobileMenuWasOpenRef = useRef(false);
   const { isSticky: isFixed, isVisible } = useStickyHeader(200);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -130,8 +131,32 @@ export default function Header() {
   // The original template toggled these as body-level classes so the
   // CSS transitions (defined against `body.mobile-menu-visible`) keep working unmodified.
   useEffect(() => {
-    document.body.classList.toggle('mobile-menu-visible', mobileMenuOpen);
+    let closeTimer;
+
+    if (mobileMenuOpen) {
+      mobileMenuWasOpenRef.current = true;
+      document.body.classList.remove('mobile-menu-closing');
+      document.body.classList.add('mobile-menu-visible');
+    } else if (mobileMenuWasOpenRef.current) {
+      document.body.classList.add('mobile-menu-closing');
+      closeTimer = window.setTimeout(() => {
+        document.body.classList.remove('mobile-menu-visible', 'mobile-menu-closing');
+        mobileMenuWasOpenRef.current = false;
+      }, 360);
+    }
+
+    return () => {
+      window.clearTimeout(closeTimer);
+    };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => () => {
+    document.body.classList.remove('mobile-menu-visible', 'mobile-menu-closing');
+  }, []);
 
   // Preserve the complete header's document space when both rows become fixed.
   useEffect(() => {

@@ -38,7 +38,6 @@ function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem,
             </button>
             <ul
               className={`mobile-menu-level mobile-menu-level-${level + 1}`}
-              style={{ display: isOpen ? 'block' : 'none' }}
             >
               <MobileNavigationItems
                 items={item.children}
@@ -62,7 +61,13 @@ export default function MobileMenu({ open, onClose, onOpenContactModal, navigati
   const [openItems, setOpenItems] = useState({});
 
   useEffect(() => {
-    if (!open) setOpenItems({});
+    if (open) return undefined;
+
+    const resetTimer = window.setTimeout(() => {
+      setOpenItems({});
+    }, 360);
+
+    return () => window.clearTimeout(resetTimer);
   }, [open]);
 
   const toggleItem = (itemKey) => {

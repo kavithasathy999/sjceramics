@@ -511,6 +511,104 @@ html, body {
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1100px) and (min-height: 1200px) {
+  .blog-one {
+    padding: 74px 0 62px;
+  }
+
+  .blog-one .auto-container {
+    width: 100%;
+    max-width: 940px;
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  .blog-section-header {
+    display: grid;
+    grid-template-columns: minmax(132px, 1fr) minmax(0, auto) minmax(132px, 1fr);
+    align-items: start;
+    column-gap: 18px;
+  }
+
+  .blog-section-header .sec-title {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
+  .blog-section-header .sec-title_heading {
+    max-width: 680px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 38px;
+    line-height: 1.18;
+    white-space: normal;
+  }
+
+  .blog-view-all-button {
+    position: static;
+    grid-column: 3;
+    justify-self: end;
+    min-height: 42px;
+    margin-top: 6px;
+    padding: 10px 18px;
+    border-radius: 7px;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: nowrap;
+  }
+
+  .blog-slider-container {
+    max-width: 884px;
+    margin: 32px auto 0;
+  }
+
+  .blog-swiper {
+    padding-bottom: 26px !important;
+  }
+
+  .blog-card {
+    border-radius: 8px;
+    box-shadow: 0 14px 30px rgba(35, 31, 28, 0.08);
+  }
+
+  .blog-card-image-wrap {
+    aspect-ratio: 1.42;
+  }
+
+  .blog-card-content {
+    min-height: 224px;
+    padding: 20px 20px 18px;
+  }
+
+  .blog-card-heading {
+    min-height: 58px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.36;
+  }
+
+  .blog-card-excerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.58;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .blog-card-readmore {
+    margin-top: auto;
+    font-size: 12px;
+  }
+
+  .blog-slider-pagination {
+    margin-top: 24px;
+  }
+}
+
 /* ==========================================================================
    Blogs & Articles List Styles
    ========================================================================== */
