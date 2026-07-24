@@ -424,6 +424,81 @@ html, body {
   }
 }
 
+@media (min-width: 768px) and (max-width: 900px) {
+  .blog-one {
+    padding: 68px 0 58px;
+  }
+
+  .blog-one .auto-container {
+    width: 100%;
+    max-width: 736px;
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .blog-section-header .sec-title {
+    margin-bottom: 0;
+  }
+
+  .blog-section-header .sec-title_heading {
+    max-width: 660px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 39px;
+    line-height: 1.16;
+  }
+
+  .blog-view-all-button {
+    min-height: 42px;
+    margin-top: 18px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .blog-slider-container {
+    margin-top: 28px;
+  }
+
+  .blog-swiper {
+    padding-bottom: 24px !important;
+  }
+
+  .blog-card {
+    border-radius: 8px;
+  }
+
+  .blog-card-image-wrap {
+    aspect-ratio: 1.42;
+  }
+
+  .blog-card-content {
+    min-height: 210px;
+    padding: 18px 18px 16px;
+  }
+
+  .blog-card-heading {
+    min-height: 48px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  .blog-card-excerpt {
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .blog-card-readmore {
+    font-size: 12px;
+  }
+
+  .blog-slider-pagination {
+    margin-top: 22px;
+  }
+}
+
 /* Desktop view only */
 @media (min-width: 1024px) {
   .blog-one .auto-container {
@@ -498,6 +573,33 @@ html, body {
   content: "/";
   margin-left: 10px;
   color: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 1199px) {
+  .page-title .bread-crumb,
+  .page-title .bread-crumb *,
+  .blogs-breadcrumbs,
+  .blogs-breadcrumbs *,
+  .main-header .mobile-menu .navigation li.dropdown .dropdown-btn {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .page-title .bread-crumb a,
+  .blogs-breadcrumbs a,
+  .main-header .mobile-menu .navigation li.dropdown .dropdown-btn {
+    touch-action: manipulation;
+  }
+
+  .page-title .bread-crumb a:active,
+  .page-title .bread-crumb a:focus:not(:focus-visible),
+  .blogs-breadcrumbs a:active,
+  .blogs-breadcrumbs a:focus:not(:focus-visible),
+  .main-header .mobile-menu .navigation li.dropdown .dropdown-btn:active,
+  .main-header .mobile-menu .navigation li.dropdown .dropdown-btn:focus:not(:focus-visible) {
+    outline: none;
+    background: transparent;
+    box-shadow: none;
+  }
 }
 
 .blogs-hero-wave {

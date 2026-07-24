@@ -62,7 +62,6 @@ export default function HomeNewArrivals() {
                 </p>
                 <div className="story-post__availability" aria-label={`${displayName} arrival status`}>
                   <span>{product.arrivalStatus}</span>
-                  <span>Showroom arrival</span>
                 </div>
                 <p className="story-post__offer-note">{product.availability}</p>
               </div>

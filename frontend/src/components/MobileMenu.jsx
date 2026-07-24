@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { navigation } from '../utils/navigation';
-import mobileLogo from '../assets/images/mobile-logo.png';
+import mobileLogo from '../assets/images/Logo-Png.png';
 
 function MobileNavigationItems({ items, level, parentKey, openItems, toggleItem, onClose, currentPath }) {
   return items.map((item, index) => {

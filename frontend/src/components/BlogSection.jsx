@@ -47,6 +47,10 @@ export default function BlogSection() {
               },
               768: {
                 slidesPerView: 2,
+                spaceBetween: 16,
+              },
+              901: {
+                slidesPerView: 2,
                 spaceBetween: 20,
               },
               1024: {
